@@ -787,7 +787,7 @@ const validateATS = (resume: Resume): ATSValidation => {
   }
 
   // Check for skills section
-  const skillsSection = resume.sections.find((s) => s.type === "skills");
+  const skillsSection = (resume.sections || []).find((s) => s.type === "skills");
   if (!skillsSection || !skillsSection.enabled) {
     issues.push({
       id: "no-skills",
@@ -806,7 +806,7 @@ const validateATS = (resume: Resume): ATSValidation => {
     "Georgia",
     "Calibri",
   ];
-  if (!atsSafeFonts.includes(resume.layout.fontFamily)) {
+  if (!atsSafeFonts.includes(resume.layout?.fontFamily || "Arial")) {
     issues.push({
       id: "unsafe-font",
       type: "warning",
@@ -852,7 +852,7 @@ export const ResumeProvider: React.FC<ResumeProviderProps> = ({ children }) => {
   useEffect(() => {
     const validation = validateATS(resume);
     setAtsValidation(validation);
-  }, [resume]);
+  }, [resume.personalInfo, resume.sections, resume.layout]);
 
   // Restore data on mount
   useEffect(() => {
@@ -869,14 +869,14 @@ export const ResumeProvider: React.FC<ResumeProviderProps> = ({ children }) => {
     };
 
     restoreData();
-  }, [autoSave]);
+  }, []); // Remove autoSave dependency to prevent infinite loop
 
-  // Handle auto-save errors
-  useEffect(() => {
-    if (autoSave.error) {
-      setError(autoSave.error);
-    }
-  }, [autoSave.error]);
+  // Handle auto-save errors - removed to prevent infinite loops
+  // useEffect(() => {
+  //   if (autoSave.error) {
+  //     setError(autoSave.error);
+  //   }
+  // }, [autoSave.error]);
 
   const contextValue: ResumeContextType = {
     resume,
