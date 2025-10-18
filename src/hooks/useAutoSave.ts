@@ -1,10 +1,9 @@
-import React, { useEffect, useRef, useCallback, useState } from "react";
+import { useEffect, useRef, useCallback, useState } from "react";
 import { Resume } from "../types/resume.types";
 import {
   saveToLocalStorage,
   loadFromLocalStorage,
   STORAGE_KEYS,
-  StorageResult,
 } from "../utils/storageManager";
 
 /**
@@ -90,9 +89,9 @@ export const useAutoSave = (
   const [isRestored, setIsRestored] = useState(false);
 
   // Refs
-  const saveTimeoutRef = useRef<NodeJS.Timeout>();
-  const debounceTimeoutRef = useRef<NodeJS.Timeout>();
-  const lastSavedDataRef = useRef<string>();
+  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const debounceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastSavedDataRef = useRef<string | null>(null);
   const isSavingRef = useRef(false);
 
   /**
@@ -198,7 +197,7 @@ export const useAutoSave = (
    * Handle window beforeunload event
    */
   const handleBeforeUnload = useCallback(
-    (event: BeforeUnloadEvent) => {
+    (_event: BeforeUnloadEvent) => {
       if (hasDataChanged()) {
         // Perform synchronous save
         try {

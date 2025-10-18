@@ -132,7 +132,7 @@ export const saveToLocalStorage = async <T>(
 
     if (compress && typeof data === "object") {
       // Simple compression by removing whitespace from JSON
-      dataToStore = JSON.stringify(data);
+      dataToStore = JSON.stringify(data) as T;
     }
 
     const storageData = {

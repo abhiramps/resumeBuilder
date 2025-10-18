@@ -1,6 +1,7 @@
 import React from "react";
 import { useResume } from "../../contexts/ResumeContext";
 import { Plus, Eye, EyeOff } from "lucide-react";
+import { SummaryEditor, ExperienceEditor, ProjectsEditor, SkillsEditor } from "../Editor";
 
 const Sidebar: React.FC = () => {
   const { resume, dispatch } = useResume();
@@ -39,11 +40,10 @@ const Sidebar: React.FC = () => {
                 <span className="text-sm text-gray-700">{section.title}</span>
                 <button
                   onClick={() => handleSectionToggle(section.id)}
-                  className={`p-1 rounded ${
-                    section.enabled
-                      ? "text-green-600 hover:bg-green-50"
-                      : "text-gray-400 hover:bg-gray-50"
-                  }`}
+                  className={`p-1 rounded ${section.enabled
+                    ? "text-green-600 hover:bg-green-50"
+                    : "text-gray-400 hover:bg-gray-50"
+                    }`}
                 >
                   {section.enabled ? (
                     <Eye className="h-4 w-4" />
@@ -167,6 +167,26 @@ const Sidebar: React.FC = () => {
                 />
               </div>
             </div>
+          </div>
+
+          {/* Summary Editor */}
+          <div className="mb-6">
+            <SummaryEditor />
+          </div>
+
+          {/* Experience Editor */}
+          <div className="mb-6">
+            <ExperienceEditor />
+          </div>
+
+          {/* Projects Editor */}
+          <div className="mb-6">
+            <ProjectsEditor />
+          </div>
+
+          {/* Skills Editor */}
+          <div className="mb-6">
+            <SkillsEditor />
           </div>
 
           {/* TODO: Add other section editors */}

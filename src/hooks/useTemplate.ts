@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from "react";
 import { useResumeContext } from "../contexts/ResumeContext";
 import { TemplateType, LayoutSettings } from "../types/resume.types";
-import { TEMPLATE_CONFIGS, TemplateConfig } from "../types/template.types";
+import { TEMPLATE_CONFIGS } from "../types/template.types";
 
 /**
  * useTemplate Hook

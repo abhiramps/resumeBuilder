@@ -9,3 +9,15 @@
 export { PersonalInfoEditor } from "./PersonalInfoEditor";
 export type { PersonalInfoEditorProps } from "./PersonalInfoEditor";
 
+export { SummaryEditor } from "./SummaryEditor";
+export type { SummaryEditorProps } from "./SummaryEditor";
+
+export { ExperienceEditor } from "./ExperienceEditor";
+export type { ExperienceEditorProps } from "./ExperienceEditor";
+
+export { ProjectsEditor } from "./ProjectsEditor";
+export type { ProjectsEditorProps } from "./ProjectsEditor";
+
+export { SkillsEditor } from "./SkillsEditor";
+export type { SkillsEditorProps } from "./SkillsEditor";
+
