@@ -1,0 +1,218 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles for the resume builder */
+@layer base {
+  html {
+    font-family: "Inter", system-ui, sans-serif;
+  }
+}
+
+@layer components {
+  /* Print styles for PDF generation */
+  @media print {
+    /* Reset page margins and setup */
+    @page {
+      size: letter;
+      margin: 0;
+    }
+
+    /* Hide all non-resume elements */
+    body * {
+      visibility: hidden;
+    }
+
+    /* Show only the resume preview */
+    .resume-preview,
+    .resume-preview * {
+      visibility: visible;
+    }
+
+    /* Position resume at top of page */
+    .resume-preview {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 8.5in !important;
+      max-width: 8.5in !important;
+      min-height: 11in;
+      box-shadow: none !important;
+      margin: 0 !important;
+      background: white !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    /* Hide preview container elements */
+    .preview-container > *:not(.preview-area) {
+      display: none !important;
+    }
+
+    .preview-area {
+      background: transparent !important;
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+
+    .preview-wrapper {
+      transform: none !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    /* Hide non-printable elements */
+    .no-print,
+    .print-hidden {
+      display: none !important;
+    }
+
+    /* Ensure proper page breaks */
+    section {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    /* Optimize text rendering for print */
+    * {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    /* Ensure links are visible in print */
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* Remove any transforms or shadows */
+    * {
+      transform: none !important;
+      box-shadow: none !important;
+    }
+  }
+
+  /* Custom scrollbar styles */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+  }
+
+  /* Range input styles */
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  input[type="range"]::-webkit-slider-track {
+    background: #e5e7eb;
+    height: 4px;
+    border-radius: 2px;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    background: #2c3e50;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  input[type="range"]::-webkit-slider-thumb:hover {
+    background: #1a252f;
+  }
+
+  input[type="range"]::-moz-range-track {
+    background: #e5e7eb;
+    height: 4px;
+    border-radius: 2px;
+    border: none;
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    background: #2c3e50;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+  }
+
+  /* Focus styles */
+  .focus-ring:focus {
+    outline: none;
+    ring: 2px;
+    ring-color: #2c3e50;
+    ring-offset: 2px;
+  }
+
+  /* Animation classes */
+  .fade-in {
+    animation: fadeIn 0.2s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .slide-in {
+    animation: slideIn 0.3s ease-out;
+  }
+
+  @keyframes slideIn {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+}
+
+@layer utilities {
+  /* Custom utility classes */
+  .text-shadow {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+
+  .border-gradient {
+    border-image: linear-gradient(45deg, #2c3e50, #555) 1;
+  }
+
+  /* Print utilities */
+  .print-hidden {
+    @media print {
+      display: none !important;
+    }
+  }
+
+  .print-visible {
+    display: none;
+    @media print {
+      display: block !important;
+    }
+  }
+}
