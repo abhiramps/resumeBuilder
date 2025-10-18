@@ -11,8 +11,8 @@ const Footer: React.FC = () => {
     saveStatus: "saved" as const,
     lastSaved: new Date().toISOString(),
     error: undefined,
-    saveNow: async () => {},
-    clearSaved: async () => {},
+    saveNow: async () => { },
+    clearSaved: async () => { },
     restoreData: async () => null,
     isRestored: false,
   };
@@ -48,12 +48,12 @@ const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="sticky bottom-0 z-20 bg-white border-t border-gray-200 shadow-sm">
+    <footer className="sticky bottom-0 z-20 bg-white/95 backdrop-blur-sm border-t border-gray-200 shadow-lg">
       <div className="px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-14">
+        <div className="flex items-center justify-between h-16">
           {/* ATS Score and Issues */}
-          <div className="flex items-center space-x-3 min-w-0 flex-1">
-            <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-4 min-w-0 flex-1">
+            <div className="flex items-center space-x-3 bg-gray-50 px-3 py-2 rounded-lg">
               {getScoreIcon(atsValidation.score)}
               <span className="text-sm font-medium text-gray-700 hidden sm:inline">
                 ATS Score:
@@ -62,7 +62,7 @@ const Footer: React.FC = () => {
                 ATS:
               </span>
               <span
-                className={`text-sm font-bold ${getScoreColor(
+                className={`text-lg font-bold ${getScoreColor(
                   atsValidation.score
                 )}`}
               >
@@ -72,38 +72,38 @@ const Footer: React.FC = () => {
 
             {/* Issue Counts */}
             {(errorCount > 0 || warningCount > 0) && (
-              <div className="flex items-center space-x-2 text-sm text-gray-500">
+              <div className="flex items-center space-x-3">
                 {errorCount > 0 && (
-                  <span className="flex items-center space-x-1">
-                    <AlertTriangle className="h-3 w-3 text-red-500" />
-                    <span className="hidden sm:inline">
+                  <div className="flex items-center space-x-2 bg-red-50 px-3 py-1.5 rounded-lg">
+                    <AlertTriangle className="h-4 w-4 text-red-500" />
+                    <span className="text-sm font-medium text-red-700 hidden sm:inline">
                       {errorCount} Error{errorCount !== 1 ? "s" : ""}
                     </span>
-                    <span className="sm:hidden">{errorCount}</span>
-                  </span>
+                    <span className="text-sm font-medium text-red-700 sm:hidden">{errorCount}</span>
+                  </div>
                 )}
                 {warningCount > 0 && (
-                  <span className="flex items-center space-x-1">
-                    <AlertTriangle className="h-3 w-3 text-yellow-500" />
-                    <span className="hidden sm:inline">
+                  <div className="flex items-center space-x-2 bg-yellow-50 px-3 py-1.5 rounded-lg">
+                    <AlertTriangle className="h-4 w-4 text-yellow-500" />
+                    <span className="text-sm font-medium text-yellow-700 hidden sm:inline">
                       {warningCount} Warning{warningCount !== 1 ? "s" : ""}
                     </span>
-                    <span className="sm:hidden">{warningCount}</span>
-                  </span>
+                    <span className="text-sm font-medium text-yellow-700 sm:hidden">{warningCount}</span>
+                  </div>
                 )}
               </div>
             )}
           </div>
 
           {/* Action Buttons */}
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-3">
             {/* View Details Button */}
             {atsValidation.issues.length > 0 && (
               <Button
-                variant="ghost"
+                variant="outline"
                 size="sm"
                 onClick={handleViewDetails}
-                className="text-sm"
+                className="text-sm font-medium border-gray-300 hover:border-primary hover:text-primary"
               >
                 <span className="hidden sm:inline">View Details</span>
                 <span className="sm:hidden">Details</span>
@@ -116,7 +116,7 @@ const Footer: React.FC = () => {
               size="sm"
               onClick={handleShowHelp}
               leftIcon={<HelpCircle className="h-4 w-4" />}
-              className="text-sm"
+              className="text-sm font-medium text-gray-600 hover:text-primary hover:bg-primary-50"
             >
               <span className="hidden sm:inline">Help</span>
             </Button>
@@ -130,7 +130,7 @@ const Footer: React.FC = () => {
             </div>
 
             {/* Last Updated */}
-            <div className="text-xs text-gray-400 hidden lg:block">
+            <div className="text-xs text-gray-500 hidden lg:block bg-gray-50 px-2 py-1 rounded">
               Last validated:{" "}
               {new Date(atsValidation.lastValidated).toLocaleTimeString()}
             </div>

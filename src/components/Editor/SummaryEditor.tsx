@@ -97,7 +97,7 @@ export const SummaryEditor: React.FC<SummaryEditorProps> = ({
   const [showKeywords, setShowKeywords] = useState(false);
 
   // Find the summary section
-  const summarySection = resume.sections.find(
+  const summarySection = (resume.sections || []).find(
     (section) => section.type === "summary"
   );
 

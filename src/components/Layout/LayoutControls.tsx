@@ -13,7 +13,7 @@ const LayoutControls: React.FC = () => {
       type: "UPDATE_LAYOUT",
       payload: {
         pageMargins: {
-          ...resume.layout.pageMargins,
+          ...(resume.layout?.pageMargins || { top: 1, right: 1, bottom: 1, left: 1 }),
           [side]: value,
         },
       },
@@ -46,7 +46,7 @@ const LayoutControls: React.FC = () => {
       type: "UPDATE_LAYOUT",
       payload: {
         fontSize: {
-          ...resume.layout.fontSize,
+          ...(resume.layout?.fontSize || { name: 22, title: 12, sectionHeader: 12, body: 10 }),
           [type]: value,
         },
       },
@@ -70,7 +70,7 @@ const LayoutControls: React.FC = () => {
       type: "UPDATE_LAYOUT",
       payload: {
         colors: {
-          ...resume.layout.colors,
+          ...(resume.layout?.colors || { primary: "#2c3e50", secondary: "#555555", text: "#333333" }),
           [type]: value,
         },
       },
@@ -86,142 +86,152 @@ const LayoutControls: React.FC = () => {
   ];
 
   return (
-    <div className="h-full overflow-y-auto">
-      <div className="p-4">
-        <h3 className="text-sm font-semibold text-gray-900 mb-4">
+    <div className="h-full overflow-y-auto custom-scrollbar">
+      <div className="p-6">
+        <h3 className="text-sm font-semibold text-gray-900 mb-6 flex items-center">
+          <div className="w-2 h-2 bg-primary rounded-full mr-2"></div>
           Layout Controls
         </h3>
 
         {/* Page Margins */}
-        <div className="mb-6">
-          <h4 className="text-xs font-medium text-gray-600 uppercase tracking-wide mb-3">
+        <div className="mb-8 bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+          <h4 className="text-sm font-semibold text-gray-900 mb-4 flex items-center">
+            <div className="w-1.5 h-1.5 bg-primary rounded-full mr-2"></div>
             Page Margins (inches)
           </h4>
-          <div className="space-y-3">
+          <div className="space-y-4">
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">
-                Top: {resume.layout.pageMargins.top}"
+              <label className="block text-xs font-medium text-gray-700 mb-2 flex justify-between">
+                <span>Top</span>
+                <span className="text-primary font-semibold">{resume.layout?.pageMargins?.top || 1}"</span>
               </label>
               <input
                 type="range"
                 min="0.1"
                 max="2"
                 step="0.1"
-                value={resume.layout.pageMargins.top}
+                value={resume.layout?.pageMargins?.top || 1}
                 onChange={(e) =>
                   handleMarginChange("top", parseFloat(e.target.value))
                 }
-                className="w-full"
+                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">
-                Right: {resume.layout.pageMargins.right}"
+              <label className="block text-xs font-medium text-gray-700 mb-2 flex justify-between">
+                <span>Right</span>
+                <span className="text-primary font-semibold">{resume.layout?.pageMargins?.right || 1}"</span>
               </label>
               <input
                 type="range"
                 min="0.1"
                 max="2"
                 step="0.1"
-                value={resume.layout.pageMargins.right}
+                value={resume.layout?.pageMargins?.right || 1}
                 onChange={(e) =>
                   handleMarginChange("right", parseFloat(e.target.value))
                 }
-                className="w-full"
+                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">
-                Bottom: {resume.layout.pageMargins.bottom}"
+              <label className="block text-xs font-medium text-gray-700 mb-2 flex justify-between">
+                <span>Bottom</span>
+                <span className="text-primary font-semibold">{resume.layout?.pageMargins?.bottom || 1}"</span>
               </label>
               <input
                 type="range"
                 min="0.1"
                 max="2"
                 step="0.1"
-                value={resume.layout.pageMargins.bottom}
+                value={resume.layout?.pageMargins?.bottom || 1}
                 onChange={(e) =>
                   handleMarginChange("bottom", parseFloat(e.target.value))
                 }
-                className="w-full"
+                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">
-                Left: {resume.layout.pageMargins.left}"
+              <label className="block text-xs font-medium text-gray-700 mb-2 flex justify-between">
+                <span>Left</span>
+                <span className="text-primary font-semibold">{resume.layout?.pageMargins?.left || 1}"</span>
               </label>
               <input
                 type="range"
                 min="0.1"
                 max="2"
                 step="0.1"
-                value={resume.layout.pageMargins.left}
+                value={resume.layout?.pageMargins?.left || 1}
                 onChange={(e) =>
                   handleMarginChange("left", parseFloat(e.target.value))
                 }
-                className="w-full"
+                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
               />
             </div>
           </div>
         </div>
 
         {/* Spacing */}
-        <div className="mb-6">
-          <h4 className="text-xs font-medium text-gray-600 uppercase tracking-wide mb-3">
+        <div className="mb-8 bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+          <h4 className="text-sm font-semibold text-gray-900 mb-4 flex items-center">
+            <div className="w-1.5 h-1.5 bg-primary rounded-full mr-2"></div>
             Spacing
           </h4>
-          <div className="space-y-3">
+          <div className="space-y-4">
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">
-                Section Spacing: {resume.layout.sectionSpacing}px
+              <label className="block text-xs font-medium text-gray-700 mb-2 flex justify-between">
+                <span>Section Spacing</span>
+                <span className="text-primary font-semibold">{resume.layout?.sectionSpacing || 16}px</span>
               </label>
               <input
                 type="range"
                 min="5"
                 max="30"
                 step="1"
-                value={resume.layout.sectionSpacing}
+                value={resume.layout?.sectionSpacing || 16}
                 onChange={(e) => handleSpacingChange(parseInt(e.target.value))}
-                className="w-full"
+                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">
-                Line Height: {resume.layout.lineHeight}
+              <label className="block text-xs font-medium text-gray-700 mb-2 flex justify-between">
+                <span>Line Height</span>
+                <span className="text-primary font-semibold">{resume.layout?.lineHeight || 1.4}</span>
               </label>
               <input
                 type="range"
                 min="1.0"
                 max="2.0"
                 step="0.1"
-                value={resume.layout.lineHeight}
+                value={resume.layout?.lineHeight || 1.4}
                 onChange={(e) =>
                   handleLineHeightChange(parseFloat(e.target.value))
                 }
-                className="w-full"
+                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
               />
             </div>
           </div>
         </div>
 
         {/* Typography */}
-        <div className="mb-6">
-          <h4 className="text-xs font-medium text-gray-600 uppercase tracking-wide mb-3">
+        <div className="mb-8 bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+          <h4 className="text-sm font-semibold text-gray-900 mb-4 flex items-center">
+            <div className="w-1.5 h-1.5 bg-primary rounded-full mr-2"></div>
             Typography
           </h4>
-          <div className="space-y-3">
+          <div className="space-y-4">
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">
+              <label className="block text-xs font-medium text-gray-700 mb-2">
                 Font Family
               </label>
               <select
-                value={resume.layout.fontFamily}
+                value={resume.layout?.fontFamily || "Arial"}
                 onChange={(e) => handleFontFamilyChange(e.target.value)}
-                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-200 focus:border-primary transition-all duration-200"
               >
                 {atsSafeFonts.map((font) => (
                   <option key={font} value={font}>
@@ -232,144 +242,149 @@ const LayoutControls: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">
-                Name Size: {resume.layout.fontSize.name}pt
+              <label className="block text-xs font-medium text-gray-700 mb-2 flex justify-between">
+                <span>Name Size</span>
+                <span className="text-primary font-semibold">{resume.layout?.fontSize?.name || 22}pt</span>
               </label>
               <input
                 type="range"
                 min="16"
                 max="32"
                 step="1"
-                value={resume.layout.fontSize.name}
+                value={resume.layout?.fontSize?.name || 22}
                 onChange={(e) =>
                   handleFontSizeChange("name", parseInt(e.target.value))
                 }
-                className="w-full"
+                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">
-                Title Size: {resume.layout.fontSize.title}pt
+              <label className="block text-xs font-medium text-gray-700 mb-2 flex justify-between">
+                <span>Title Size</span>
+                <span className="text-primary font-semibold">{resume.layout?.fontSize?.title || 12}pt</span>
               </label>
               <input
                 type="range"
                 min="8"
                 max="16"
                 step="1"
-                value={resume.layout.fontSize.title}
+                value={resume.layout?.fontSize?.title || 12}
                 onChange={(e) =>
                   handleFontSizeChange("title", parseInt(e.target.value))
                 }
-                className="w-full"
+                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">
-                Section Header: {resume.layout.fontSize.sectionHeader}pt
+              <label className="block text-xs font-medium text-gray-700 mb-2 flex justify-between">
+                <span>Section Header</span>
+                <span className="text-primary font-semibold">{resume.layout?.fontSize?.sectionHeader || 12}pt</span>
               </label>
               <input
                 type="range"
                 min="8"
                 max="16"
                 step="1"
-                value={resume.layout.fontSize.sectionHeader}
+                value={resume.layout?.fontSize?.sectionHeader || 12}
                 onChange={(e) =>
                   handleFontSizeChange(
                     "sectionHeader",
                     parseInt(e.target.value)
                   )
                 }
-                className="w-full"
+                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">
-                Body Text: {resume.layout.fontSize.body}pt
+              <label className="block text-xs font-medium text-gray-700 mb-2 flex justify-between">
+                <span>Body Text</span>
+                <span className="text-primary font-semibold">{resume.layout?.fontSize?.body || 10}pt</span>
               </label>
               <input
                 type="range"
                 min="8"
                 max="14"
                 step="1"
-                value={resume.layout.fontSize.body}
+                value={resume.layout?.fontSize?.body || 10}
                 onChange={(e) =>
                   handleFontSizeChange("body", parseInt(e.target.value))
                 }
-                className="w-full"
+                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
               />
             </div>
           </div>
         </div>
 
         {/* Colors */}
-        <div className="mb-6">
-          <h4 className="text-xs font-medium text-gray-600 uppercase tracking-wide mb-3">
+        <div className="mb-8 bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+          <h4 className="text-sm font-semibold text-gray-900 mb-4 flex items-center">
+            <div className="w-1.5 h-1.5 bg-primary rounded-full mr-2"></div>
             Colors
           </h4>
-          <div className="space-y-3">
+          <div className="space-y-4">
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">
+              <label className="block text-xs font-medium text-gray-700 mb-2">
                 Primary Color
               </label>
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-3">
                 <input
                   type="color"
-                  value={resume.layout.colors.primary}
+                  value={resume.layout?.colors?.primary || "#2c3e50"}
                   onChange={(e) => handleColorChange("primary", e.target.value)}
-                  className="w-8 h-8 border border-gray-300 rounded"
+                  className="w-10 h-10 border-2 border-gray-300 rounded-lg cursor-pointer"
                 />
                 <input
                   type="text"
-                  value={resume.layout.colors.primary}
+                  value={resume.layout?.colors?.primary || "#2c3e50"}
                   onChange={(e) => handleColorChange("primary", e.target.value)}
-                  className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded"
+                  className="flex-1 px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-200 focus:border-primary transition-all duration-200"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">
+              <label className="block text-xs font-medium text-gray-700 mb-2">
                 Secondary Color
               </label>
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-3">
                 <input
                   type="color"
-                  value={resume.layout.colors.secondary}
+                  value={resume.layout?.colors?.secondary || "#555555"}
                   onChange={(e) =>
                     handleColorChange("secondary", e.target.value)
                   }
-                  className="w-8 h-8 border border-gray-300 rounded"
+                  className="w-10 h-10 border-2 border-gray-300 rounded-lg cursor-pointer"
                 />
                 <input
                   type="text"
-                  value={resume.layout.colors.secondary}
+                  value={resume.layout?.colors?.secondary || "#555555"}
                   onChange={(e) =>
                     handleColorChange("secondary", e.target.value)
                   }
-                  className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded"
+                  className="flex-1 px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-200 focus:border-primary transition-all duration-200"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">
+              <label className="block text-xs font-medium text-gray-700 mb-2">
                 Text Color
               </label>
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-3">
                 <input
                   type="color"
-                  value={resume.layout.colors.text}
+                  value={resume.layout?.colors?.text || "#333333"}
                   onChange={(e) => handleColorChange("text", e.target.value)}
-                  className="w-8 h-8 border border-gray-300 rounded"
+                  className="w-10 h-10 border-2 border-gray-300 rounded-lg cursor-pointer"
                 />
                 <input
                   type="text"
-                  value={resume.layout.colors.text}
+                  value={resume.layout?.colors?.text || "#333333"}
                   onChange={(e) => handleColorChange("text", e.target.value)}
-                  className="flex-1 px-2 py-1 text-xs border border-gray-300 rounded"
+                  className="flex-1 px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-200 focus:border-primary transition-all duration-200"
                 />
               </div>
             </div>

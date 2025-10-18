@@ -537,7 +537,7 @@ export const SkillsEditor: React.FC<SkillsEditorProps> = ({
     const [showTemplates, setShowTemplates] = useState(false);
 
     // Find the skills section
-    const skillsSection = resume.sections.find(
+    const skillsSection = (resume.sections || []).find(
         (section) => section.type === "skills"
     );
 

@@ -551,7 +551,7 @@ export const ExperienceEditor: React.FC<ExperienceEditorProps> = ({
     const [editingEntryId, setEditingEntryId] = useState<string | null>(null);
 
     // Find the experience section
-    const experienceSection = resume.sections.find(
+    const experienceSection = (resume.sections || []).find(
         (section) => section.type === "experience"
     );
 

@@ -30,22 +30,27 @@ const Header: React.FC = () => {
   ];
 
   return (
-    <header className="sticky top-0 z-30 bg-white border-b border-gray-200 shadow-sm">
+    <header className="sticky top-0 z-30 bg-white border-b border-gray-200 shadow-sm backdrop-blur-sm bg-white/95">
       <div className="px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo and Title */}
           <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
-              <FileText className="h-8 w-8 text-primary" />
-              <h1 className="text-xl font-bold text-gray-900 hidden sm:block">
-                ATS Resume Builder
-              </h1>
-              <h1 className="text-lg font-bold text-gray-900 sm:hidden">ARB</h1>
+            <div className="flex items-center space-x-3">
+              <div className="p-2 bg-primary-50 rounded-lg">
+                <FileText className="h-6 w-6 text-primary" />
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-gray-900 hidden sm:block">
+                  ATS Resume Builder
+                </h1>
+                <h1 className="text-lg font-bold text-gray-900 sm:hidden">ARB</h1>
+                <p className="text-xs text-gray-500 hidden sm:block">Professional Resume Creator</p>
+              </div>
             </div>
           </div>
 
           {/* Template Selector */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-4 bg-gray-50 px-4 py-2 rounded-lg">
             <div className="hidden sm:block">
               <label className="text-sm font-medium text-gray-700">
                 Template:
@@ -59,7 +64,7 @@ const Header: React.FC = () => {
                   handleTemplateChange(value as TemplateType)
                 }
                 placeholder="Template"
-                className="text-sm"
+                className="text-sm border-0 bg-white shadow-sm"
               />
             </div>
           </div>
@@ -68,7 +73,7 @@ const Header: React.FC = () => {
           <div className="flex items-center space-x-2 sm:space-x-3">
             <button
               onClick={handleSave}
-              className="flex items-center space-x-1 sm:space-x-2 px-3 sm:px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors text-sm"
+              className="flex items-center space-x-1 sm:space-x-2 px-3 sm:px-4 py-2.5 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 text-sm font-medium shadow-sm"
               title="Save Resume"
             >
               <Save className="h-4 w-4" />
@@ -77,7 +82,7 @@ const Header: React.FC = () => {
 
             <button
               onClick={handleExportPDF}
-              className="flex items-center space-x-1 sm:space-x-2 px-3 sm:px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors text-sm"
+              className="flex items-center space-x-1 sm:space-x-2 px-3 sm:px-4 py-2.5 bg-primary text-white rounded-lg hover:bg-primary-700 transition-all duration-200 text-sm font-medium shadow-sm hover:shadow-md"
               title="Export PDF"
             >
               <Download className="h-4 w-4" />

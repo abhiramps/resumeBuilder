@@ -30,23 +30,23 @@ export interface ResumePreviewProps {
 export const ResumePreview = forwardRef<HTMLDivElement, ResumePreviewProps>(
   ({ resume, className = "", printMode = false }, ref) => {
     // Calculate enabled sections in order
-    const enabledSections = resume.sections
+    const enabledSections = (resume.sections || [])
       .filter((section) => section.enabled)
       .sort((a, b) => a.order - b.order);
 
     // Apply layout settings to inline styles
     const containerStyles: React.CSSProperties = {
-      fontFamily: resume.layout.fontFamily,
-      fontSize: `${resume.layout.fontSize.body}pt`,
-      lineHeight: resume.layout.lineHeight,
-      color: resume.layout.colors.text,
+      fontFamily: resume.layout?.fontFamily || "Arial",
+      fontSize: `${resume.layout?.fontSize?.body || 10}pt`,
+      lineHeight: resume.layout?.lineHeight || 1.4,
+      color: resume.layout?.colors?.text || "#333333",
       backgroundColor: "white",
       // Letter size dimensions (8.5" x 11")
       width: printMode ? "8.5in" : "100%",
       maxWidth: "8.5in",
       minHeight: printMode ? "11in" : "auto",
       // Apply page margins
-      padding: `${resume.layout.pageMargins.top}in ${resume.layout.pageMargins.right}in ${resume.layout.pageMargins.bottom}in ${resume.layout.pageMargins.left}in`,
+      padding: `${resume.layout?.pageMargins?.top || 1}in ${resume.layout?.pageMargins?.right || 1}in ${resume.layout?.pageMargins?.bottom || 1}in ${resume.layout?.pageMargins?.left || 1}in`,
       // Box shadow for paper effect (hidden in print)
       boxShadow: printMode ? "none" : "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
       // Ensure proper page breaks
@@ -55,27 +55,27 @@ export const ResumePreview = forwardRef<HTMLDivElement, ResumePreviewProps>(
 
     const headerStyles: React.CSSProperties = {
       textAlign: "center",
-      marginBottom: `${resume.layout.sectionSpacing}px`,
+      marginBottom: `${resume.layout?.sectionSpacing || 16}px`,
     };
 
     const nameStyles: React.CSSProperties = {
-      fontSize: `${resume.layout.fontSize.name}pt`,
+      fontSize: `${resume.layout?.fontSize?.name || 22}pt`,
       fontWeight: "bold",
-      color: resume.layout.colors.primary,
+      color: resume.layout?.colors?.primary || "#2c3e50",
       marginBottom: "4px",
       lineHeight: 1.2,
     };
 
     const titleStyles: React.CSSProperties = {
-      fontSize: `${resume.layout.fontSize.title}pt`,
-      color: resume.layout.colors.secondary,
+      fontSize: `${resume.layout?.fontSize?.title || 12}pt`,
+      color: resume.layout?.colors?.secondary || "#555555",
       marginBottom: "8px",
       fontStyle: "italic",
     };
 
     const contactStyles: React.CSSProperties = {
-      fontSize: `${resume.layout.fontSize.body - 1}pt`,
-      color: resume.layout.colors.secondary,
+      fontSize: `${(resume.layout?.fontSize?.body || 10) - 1}pt`,
+      color: resume.layout?.colors?.secondary || "#555555",
       display: "flex",
       justifyContent: "center",
       flexWrap: "wrap",
@@ -83,11 +83,11 @@ export const ResumePreview = forwardRef<HTMLDivElement, ResumePreviewProps>(
     };
 
     const sectionHeaderStyles: React.CSSProperties = {
-      fontSize: `${resume.layout.fontSize.sectionHeader}pt`,
+      fontSize: `${resume.layout?.fontSize?.sectionHeader || 12}pt`,
       fontWeight: "bold",
-      color: resume.layout.colors.primary,
+      color: resume.layout?.colors?.primary || "#2c3e50",
       textTransform: "uppercase",
-      borderBottom: `1px solid ${resume.layout.colors.primary}`,
+      borderBottom: `1px solid ${resume.layout?.colors?.primary || "#2c3e50"}`,
       paddingBottom: "2px",
       marginBottom: "12px",
       letterSpacing: "0.5px",
@@ -98,25 +98,25 @@ export const ResumePreview = forwardRef<HTMLDivElement, ResumePreviewProps>(
      */
     const renderContactInfo = () => {
       const contactItems = [];
-      
-      if (resume.personalInfo.email) {
+
+      if (resume.personalInfo?.email) {
         contactItems.push(resume.personalInfo.email);
       }
-      if (resume.personalInfo.phone) {
+      if (resume.personalInfo?.phone) {
         // Use template helper to format phone number
         contactItems.push(templateHelpers.phone.format(resume.personalInfo.phone));
       }
-      if (resume.personalInfo.location) {
+      if (resume.personalInfo?.location) {
         contactItems.push(resume.personalInfo.location);
       }
-      if (resume.personalInfo.linkedin) {
+      if (resume.personalInfo?.linkedin) {
         // Use template helper to format URL for display
         contactItems.push(templateHelpers.url.formatForDisplay(resume.personalInfo.linkedin));
       }
-      if (resume.personalInfo.github) {
+      if (resume.personalInfo?.github) {
         contactItems.push(templateHelpers.url.formatForDisplay(resume.personalInfo.github));
       }
-      if (resume.personalInfo.portfolio) {
+      if (resume.personalInfo?.portfolio) {
         contactItems.push(templateHelpers.url.formatForDisplay(resume.personalInfo.portfolio));
       }
 
@@ -130,7 +130,7 @@ export const ResumePreview = forwardRef<HTMLDivElement, ResumePreviewProps>(
      */
     const renderSectionContent = (section: typeof resume.sections[0]) => {
       const contentStyles: React.CSSProperties = {
-        fontSize: `${resume.layout.fontSize.body}pt`,
+        fontSize: `${resume.layout?.fontSize?.body || 10}pt`,
         lineHeight: resume.layout.lineHeight,
       };
 
@@ -153,27 +153,27 @@ export const ResumePreview = forwardRef<HTMLDivElement, ResumePreviewProps>(
                 <div key={exp.id || index} style={{ marginBottom: index < experiences.length - 1 ? "16px" : "0" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
                     <div>
-                      <h3 style={{ 
-                        fontSize: `${resume.layout.fontSize.body + 1}pt`, 
-                        fontWeight: "bold", 
-                        color: resume.layout.colors.primary,
+                      <h3 style={{
+                        fontSize: `${(resume.layout?.fontSize?.body || 10) + 1}pt`,
+                        fontWeight: "bold",
+                        color: resume.layout?.colors?.primary || "#2c3e50",
                         margin: 0,
                         lineHeight: 1.2
                       }}>
                         {exp.jobTitle || "Job Title"}
                       </h3>
-                      <p style={{ 
-                        fontSize: `${resume.layout.fontSize.body}pt`, 
-                        fontStyle: "italic", 
-                        color: resume.layout.colors.secondary,
+                      <p style={{
+                        fontSize: `${resume.layout?.fontSize?.body || 10}pt`,
+                        fontStyle: "italic",
+                        color: resume.layout?.colors?.secondary || "#555555",
                         margin: "2px 0"
                       }}>
                         {exp.company || "Company Name"} {exp.location && `• ${exp.location}`}
                       </p>
                     </div>
-                    <span style={{ 
-                      fontSize: `${resume.layout.fontSize.body - 1}pt`, 
-                      color: resume.layout.colors.secondary,
+                    <span style={{
+                      fontSize: `${(resume.layout?.fontSize?.body || 10) - 1}pt`,
+                      color: resume.layout?.colors?.secondary || "#555555",
                       whiteSpace: "nowrap"
                     }}>
                       {templateHelpers.date.formatDateRange(exp.startDate || "", exp.endDate || "", exp.current)}
@@ -205,28 +205,28 @@ export const ResumePreview = forwardRef<HTMLDivElement, ResumePreviewProps>(
               {projects.map((project, index) => (
                 <div key={project.id || index} style={{ marginBottom: index < projects.length - 1 ? "16px" : "0" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
-                    <h3 style={{ 
-                      fontSize: `${resume.layout.fontSize.body + 1}pt`, 
-                      fontWeight: "bold", 
-                      color: resume.layout.colors.primary,
+                    <h3 style={{
+                      fontSize: `${resume.layout?.fontSize?.body || 10 + 1}pt`,
+                      fontWeight: "bold",
+                      color: resume.layout?.colors?.primary || "#2c3e50",
                       margin: 0,
                       lineHeight: 1.2
                     }}>
                       {project.name || "Project Name"}
                     </h3>
-                    <span style={{ 
-                      fontSize: `${resume.layout.fontSize.body - 1}pt`, 
-                      color: resume.layout.colors.secondary,
+                    <span style={{
+                      fontSize: `${resume.layout?.fontSize?.body || 10 - 1}pt`,
+                      color: resume.layout?.colors?.secondary || "#555555",
                       whiteSpace: "nowrap"
                     }}>
                       {project.startDate || "Start"} - {project.current ? "Present" : (project.endDate || "End")}
                     </span>
                   </div>
                   {project.techStack && project.techStack.length > 0 && (
-                    <p style={{ 
-                      fontSize: `${resume.layout.fontSize.body}pt`, 
-                      fontStyle: "italic", 
-                      color: resume.layout.colors.secondary,
+                    <p style={{
+                      fontSize: `${resume.layout?.fontSize?.body || 10}pt`,
+                      fontStyle: "italic",
+                      color: resume.layout?.colors?.secondary || "#555555",
                       margin: "2px 0"
                     }}>
                       <strong>Tech Stack:</strong> {project.techStack.join(", ")}
@@ -238,9 +238,9 @@ export const ResumePreview = forwardRef<HTMLDivElement, ResumePreviewProps>(
                     </p>
                   )}
                   {(project.url || project.githubUrl) && (
-                    <p style={{ 
-                      fontSize: `${resume.layout.fontSize.body - 1}pt`, 
-                      color: resume.layout.colors.secondary,
+                    <p style={{
+                      fontSize: `${resume.layout?.fontSize?.body || 10 - 1}pt`,
+                      color: resume.layout?.colors?.secondary || "#555555",
                       margin: "4px 0"
                     }}>
                       {project.url && <span>URL: {project.url}</span>}
@@ -267,9 +267,9 @@ export const ResumePreview = forwardRef<HTMLDivElement, ResumePreviewProps>(
             <div style={contentStyles}>
               {Object.entries(skillsByCategory).map(([category, skillNames], index) => (
                 <div key={category} style={{ marginBottom: index < Object.keys(skillsByCategory).length - 1 ? "8px" : "0" }}>
-                  <span style={{ 
-                    fontWeight: "bold", 
-                    color: resume.layout.colors.primary,
+                  <span style={{
+                    fontWeight: "bold",
+                    color: resume.layout?.colors?.primary || "#2c3e50",
                     textTransform: "capitalize"
                   }}>
                     {category.replace(/([A-Z])/g, ' $1').trim()}:
@@ -290,44 +290,44 @@ export const ResumePreview = forwardRef<HTMLDivElement, ResumePreviewProps>(
                 <div key={edu.id || index} style={{ marginBottom: index < education.length - 1 ? "12px" : "0" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                     <div>
-                      <h3 style={{ 
-                        fontSize: `${resume.layout.fontSize.body + 1}pt`, 
-                        fontWeight: "bold", 
-                        color: resume.layout.colors.primary,
+                      <h3 style={{
+                        fontSize: `${resume.layout?.fontSize?.body || 10 + 1}pt`,
+                        fontWeight: "bold",
+                        color: resume.layout?.colors?.primary || "#2c3e50",
                         margin: 0,
                         lineHeight: 1.2
                       }}>
                         {edu.degree || "Degree"}
                       </h3>
-                      <p style={{ 
-                        fontSize: `${resume.layout.fontSize.body}pt`, 
-                        color: resume.layout.colors.secondary,
+                      <p style={{
+                        fontSize: `${resume.layout?.fontSize?.body || 10}pt`,
+                        color: resume.layout?.colors?.secondary || "#555555",
                         margin: "2px 0"
                       }}>
                         {edu.institution || "Institution"} {edu.location && `• ${edu.location}`}
                       </p>
                       {edu.gpa && (
-                        <p style={{ 
-                          fontSize: `${resume.layout.fontSize.body - 1}pt`, 
-                          color: resume.layout.colors.secondary,
+                        <p style={{
+                          fontSize: `${resume.layout?.fontSize?.body || 10 - 1}pt`,
+                          color: resume.layout?.colors?.secondary || "#555555",
                           margin: "2px 0"
                         }}>
                           GPA: {edu.gpa}
                         </p>
                       )}
                       {edu.coursework && edu.coursework.length > 0 && (
-                        <p style={{ 
-                          fontSize: `${resume.layout.fontSize.body - 1}pt`, 
-                          color: resume.layout.colors.secondary,
+                        <p style={{
+                          fontSize: `${resume.layout?.fontSize?.body || 10 - 1}pt`,
+                          color: resume.layout?.colors?.secondary || "#555555",
                           margin: "2px 0"
                         }}>
                           <strong>Relevant Coursework:</strong> {edu.coursework.join(", ")}
                         </p>
                       )}
                     </div>
-                    <span style={{ 
-                      fontSize: `${resume.layout.fontSize.body - 1}pt`, 
-                      color: resume.layout.colors.secondary,
+                    <span style={{
+                      fontSize: `${resume.layout?.fontSize?.body || 10 - 1}pt`,
+                      color: resume.layout?.colors?.secondary || "#555555",
                       whiteSpace: "nowrap"
                     }}>
                       {edu.startDate || "Start"} - {edu.endDate || "End"}
@@ -346,35 +346,35 @@ export const ResumePreview = forwardRef<HTMLDivElement, ResumePreviewProps>(
                 <div key={cert.id || index} style={{ marginBottom: index < certifications.length - 1 ? "12px" : "0" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                     <div>
-                      <h3 style={{ 
-                        fontSize: `${resume.layout.fontSize.body + 1}pt`, 
-                        fontWeight: "bold", 
-                        color: resume.layout.colors.primary,
+                      <h3 style={{
+                        fontSize: `${resume.layout?.fontSize?.body || 10 + 1}pt`,
+                        fontWeight: "bold",
+                        color: resume.layout?.colors?.primary || "#2c3e50",
                         margin: 0,
                         lineHeight: 1.2
                       }}>
                         {cert.name || "Certification Name"}
                       </h3>
-                      <p style={{ 
-                        fontSize: `${resume.layout.fontSize.body}pt`, 
-                        color: resume.layout.colors.secondary,
+                      <p style={{
+                        fontSize: `${resume.layout?.fontSize?.body || 10}pt`,
+                        color: resume.layout?.colors?.secondary || "#555555",
                         margin: "2px 0"
                       }}>
                         {cert.issuer || "Issuing Organization"}
                       </p>
                       {cert.credentialId && (
-                        <p style={{ 
-                          fontSize: `${resume.layout.fontSize.body - 1}pt`, 
-                          color: resume.layout.colors.secondary,
+                        <p style={{
+                          fontSize: `${resume.layout?.fontSize?.body || 10 - 1}pt`,
+                          color: resume.layout?.colors?.secondary || "#555555",
                           margin: "2px 0"
                         }}>
                           Credential ID: {cert.credentialId}
                         </p>
                       )}
                       {cert.url && (
-                        <p style={{ 
-                          fontSize: `${resume.layout.fontSize.body - 1}pt`, 
-                          color: resume.layout.colors.secondary,
+                        <p style={{
+                          fontSize: `${resume.layout?.fontSize?.body || 10 - 1}pt`,
+                          color: resume.layout?.colors?.secondary || "#555555",
                           margin: "2px 0"
                         }}>
                           URL: {cert.url}
@@ -382,17 +382,17 @@ export const ResumePreview = forwardRef<HTMLDivElement, ResumePreviewProps>(
                       )}
                     </div>
                     <div style={{ textAlign: "right" }}>
-                      <span style={{ 
-                        fontSize: `${resume.layout.fontSize.body - 1}pt`, 
-                        color: resume.layout.colors.secondary,
+                      <span style={{
+                        fontSize: `${resume.layout?.fontSize?.body || 10 - 1}pt`,
+                        color: resume.layout?.colors?.secondary || "#555555",
                         whiteSpace: "nowrap"
                       }}>
                         {cert.issueDate || "Issue Date"}
                       </span>
                       {cert.expiryDate && (
-                        <div style={{ 
-                          fontSize: `${resume.layout.fontSize.body - 1}pt`, 
-                          color: resume.layout.colors.secondary,
+                        <div style={{
+                          fontSize: `${resume.layout?.fontSize?.body || 10 - 1}pt`,
+                          color: resume.layout?.colors?.secondary || "#555555",
                           whiteSpace: "nowrap"
                         }}>
                           Expires: {cert.expiryDate}
@@ -418,7 +418,7 @@ export const ResumePreview = forwardRef<HTMLDivElement, ResumePreviewProps>(
         default:
           return (
             <div style={contentStyles}>
-              <p style={{ margin: 0, fontStyle: "italic", color: resume.layout.colors.secondary }}>
+              <p style={{ margin: 0, fontStyle: "italic", color: resume.layout?.colors?.secondary || "#555555" }}>
                 Unknown section type: {section.type}
               </p>
             </div>
@@ -427,23 +427,23 @@ export const ResumePreview = forwardRef<HTMLDivElement, ResumePreviewProps>(
     };
 
     return (
-      <div 
-        ref={ref} 
+      <div
+        ref={ref}
         className={`resume-preview ${className}`}
         style={containerStyles}
       >
         {/* Header Section */}
         <header style={headerStyles}>
           <h1 style={nameStyles}>
-            {resume.personalInfo.fullName || "Your Name"}
+            {resume.personalInfo?.fullName || "Your Name"}
           </h1>
-          
-          {resume.personalInfo.title && (
+
+          {resume.personalInfo?.title && (
             <p style={titleStyles}>
               {resume.personalInfo.title}
             </p>
           )}
-          
+
           <div style={contactStyles}>
             {renderContactInfo()}
           </div>
@@ -451,9 +451,9 @@ export const ResumePreview = forwardRef<HTMLDivElement, ResumePreviewProps>(
 
         {/* Resume Sections */}
         {enabledSections.map((section, index) => (
-          <section 
-            key={section.id} 
-            style={{ 
+          <section
+            key={section.id}
+            style={{
               marginBottom: index < enabledSections.length - 1 ? `${resume.layout.sectionSpacing}px` : "0",
               pageBreakInside: "avoid"
             }}
@@ -467,10 +467,10 @@ export const ResumePreview = forwardRef<HTMLDivElement, ResumePreviewProps>(
 
         {/* Empty state when no sections are enabled */}
         {enabledSections.length === 0 && (
-          <div style={{ 
-            textAlign: "center", 
-            padding: "40px 20px", 
-            color: resume.layout.colors.secondary,
+          <div style={{
+            textAlign: "center",
+            padding: "40px 20px",
+            color: resume.layout?.colors?.secondary || "#555555",
             fontStyle: "italic"
           }}>
             <p>No sections enabled. Enable sections from the sidebar to see your resume content.</p>

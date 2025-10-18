@@ -48,22 +48,22 @@ export const EditorLayout: React.FC<EditorLayoutProps> = ({
 
         {/* Main Content Area - Three Panel Layout */}
         <div className="flex-1 flex overflow-hidden">
-          {/* Left Sidebar - Section Editors (300px fixed) */}
-          <div className="hidden lg:block w-[300px] bg-white border-r border-gray-200 flex-shrink-0">
+          {/* Left Sidebar - Section Editors (320px fixed) */}
+          <div className="hidden lg:block w-[320px] bg-gray-50 border-r border-gray-200 flex-shrink-0">
             <div className="h-full overflow-y-auto">
               <Sidebar />
             </div>
           </div>
 
           {/* Center - Resume Preview (flexible, max 850px) */}
-          <div className="flex-1 bg-gray-100 overflow-auto min-w-0">
-            <div className="max-w-[850px] mx-auto p-6">
+          <div className="flex-1 bg-gradient-to-br from-gray-50 to-gray-100 overflow-auto min-w-0">
+            <div className="max-w-[850px] mx-auto p-8">
               <Preview />
             </div>
           </div>
 
-          {/* Right Sidebar - Layout Controls (250px fixed) */}
-          <div className="hidden lg:block w-[250px] bg-white border-l border-gray-200 flex-shrink-0">
+          {/* Right Sidebar - Layout Controls (280px fixed) */}
+          <div className="hidden lg:block w-[280px] bg-gray-50 border-l border-gray-200 flex-shrink-0">
             <div className="h-full overflow-y-auto">
               <LayoutControls />
             </div>
@@ -192,11 +192,10 @@ export const MobileEditorLayout: React.FC<EditorLayoutProps> = ({
               onClick={() =>
                 setActivePanel(activePanel === "sidebar" ? null : "sidebar")
               }
-              className={`flex items-center space-x-2 px-4 py-2 rounded-md transition-colors ${
-                activePanel === "sidebar"
+              className={`flex items-center space-x-2 px-4 py-2 rounded-md transition-colors ${activePanel === "sidebar"
                   ? "bg-primary text-white"
                   : "text-gray-600 hover:bg-gray-100"
-              }`}
+                }`}
             >
               <svg
                 className="h-4 w-4"
@@ -218,11 +217,10 @@ export const MobileEditorLayout: React.FC<EditorLayoutProps> = ({
               onClick={() =>
                 setActivePanel(activePanel === "controls" ? null : "controls")
               }
-              className={`flex items-center space-x-2 px-4 py-2 rounded-md transition-colors ${
-                activePanel === "controls"
+              className={`flex items-center space-x-2 px-4 py-2 rounded-md transition-colors ${activePanel === "controls"
                   ? "bg-primary text-white"
                   : "text-gray-600 hover:bg-gray-100"
-              }`}
+                }`}
             >
               <svg
                 className="h-4 w-4"

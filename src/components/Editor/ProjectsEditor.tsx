@@ -631,7 +631,7 @@ export const ProjectsEditor: React.FC<ProjectsEditorProps> = ({
     const [editingProjectId, setEditingProjectId] = useState<string | null>(null);
 
     // Find the projects section
-    const projectsSection = resume.sections.find(
+    const projectsSection = (resume.sections || []).find(
         (section) => section.type === "projects"
     );
 
