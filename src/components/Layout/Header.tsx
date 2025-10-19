@@ -3,6 +3,7 @@ import { useResume } from "../../contexts/ResumeContext";
 import { TemplateType } from "../../types/resume.types";
 import { Download, Save, FileText } from "lucide-react";
 import { TemplateSelector } from "../UI";
+import { TemplateImportExport } from "./TemplateImportExport";
 
 const Header: React.FC = () => {
   const { resume, dispatch } = useResume();
@@ -49,6 +50,8 @@ const Header: React.FC = () => {
 
           {/* Action Buttons */}
           <div className="flex items-center space-x-2 sm:space-x-3">
+            <TemplateImportExport />
+
             <button
               onClick={handleSave}
               className="flex items-center space-x-1 sm:space-x-2 px-3 sm:px-4 py-2.5 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 text-sm font-medium shadow-sm"

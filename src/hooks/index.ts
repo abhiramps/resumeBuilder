@@ -14,3 +14,9 @@ export {
   useTemplateFontSizes,
   useTemplateSpacing,
 } from './useTemplateStyles';
+export {
+  useATSValidation,
+  useATSScore,
+  useATSIssues,
+  useATSCompliance,
+} from './useATSValidation';

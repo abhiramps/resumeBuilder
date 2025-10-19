@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { TemplateType } from '../../types/resume.types';
 import { TEMPLATE_CONFIGS } from '../../types/template.types';
 import { Check, ChevronDown, X } from 'lucide-react';
+import { TemplateThumbnail } from '../Templates/TemplateThumbnail';
 
 interface TemplateSelectorProps {
     currentTemplate: TemplateType;
@@ -133,10 +134,10 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({
                                                 key={template.id}
                                                 onClick={() => handleTemplateSelect(template.id)}
                                                 className={`relative border-2 rounded-lg p-4 cursor-pointer transition-all duration-200 ${isSelected
-                                                        ? 'border-blue-500 bg-blue-50'
-                                                        : isCurrent
-                                                            ? 'border-green-500 bg-green-50'
-                                                            : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                                                    ? 'border-blue-500 bg-blue-50'
+                                                    : isCurrent
+                                                        ? 'border-green-500 bg-green-50'
+                                                        : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
                                                     }`}
                                             >
                                                 {/* Current Badge */}
@@ -154,30 +155,8 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({
                                                 )}
 
                                                 {/* Template Preview */}
-                                                <div
-                                                    className="h-32 rounded-lg mb-3 flex items-center justify-center text-sm font-medium"
-                                                    style={{
-                                                        backgroundColor: config.styles.colors.background,
-                                                        border: `1px solid ${config.styles.colors.primary}`,
-                                                    }}
-                                                >
-                                                    <div className="text-center p-4">
-                                                        <div
-                                                            className="font-bold mb-1"
-                                                            style={{
-                                                                color: config.styles.colors.primary,
-                                                                fontSize: '14px',
-                                                            }}
-                                                        >
-                                                            {template.name} Template
-                                                        </div>
-                                                        <div
-                                                            className="text-xs"
-                                                            style={{ color: config.styles.colors.secondary }}
-                                                        >
-                                                            Preview
-                                                        </div>
-                                                    </div>
+                                                <div className="h-40 rounded-lg mb-3 overflow-hidden border-2 border-gray-200 bg-white shadow-sm">
+                                                    <TemplateThumbnail templateType={template.id} className="w-full h-full" />
                                                 </div>
 
                                                 {/* Template Info */}
@@ -188,10 +167,10 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({
                                                             <span className="text-xs font-semibold text-gray-600">ATS:</span>
                                                             <span
                                                                 className={`text-xs font-bold ${template.atsScore >= 95
-                                                                        ? 'text-green-600'
-                                                                        : template.atsScore >= 90
-                                                                            ? 'text-blue-600'
-                                                                            : 'text-yellow-600'
+                                                                    ? 'text-green-600'
+                                                                    : template.atsScore >= 90
+                                                                        ? 'text-blue-600'
+                                                                        : 'text-yellow-600'
                                                                     }`}
                                                             >
                                                                 {template.atsScore}/100
@@ -245,8 +224,8 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({
                                         onClick={handleConfirm}
                                         disabled={!selectedTemplate || selectedTemplate === currentTemplate}
                                         className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${selectedTemplate && selectedTemplate !== currentTemplate
-                                                ? 'bg-blue-600 text-white hover:bg-blue-700'
-                                                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                            ? 'bg-blue-600 text-white hover:bg-blue-700'
+                                            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                                             }`}
                                     >
                                         Apply Template
