@@ -1,80 +1,19 @@
 import React from "react";
 import { useResume } from "../../contexts/ResumeContext";
-import { Plus, Eye, EyeOff } from "lucide-react";
-import { SummaryEditor, ExperienceEditor, ProjectsEditor, SkillsEditor, EducationEditor, CertificationsEditor } from "../Editor";
+import { SummaryEditor, ExperienceEditor, ProjectsEditor, SkillsEditor, EducationEditor, CertificationsEditor, SectionManager } from "../Editor";
 
 const Sidebar: React.FC = () => {
   const { resume, dispatch } = useResume();
 
-  const handleSectionToggle = (sectionId: string) => {
-    const section = (resume.sections || []).find((s) => s.id === sectionId);
-    if (section) {
-      dispatch({
-        type: "UPDATE_SECTION",
-        payload: {
-          id: sectionId,
-          updates: { enabled: !section.enabled },
-        },
-      });
-    }
-  };
-
-  const handleAddSection = () => {
-    // TODO: Implement add section functionality
-    console.log("Adding new section...");
-  };
-
   return (
     <div className="h-full flex flex-col">
-      {/* Section Toggles */}
-      <div className="p-6 border-b border-gray-200 bg-gray-50/50">
-        <h3 className="text-sm font-semibold text-gray-900 mb-4 flex items-center">
-          <div className="w-2 h-2 bg-primary rounded-full mr-2"></div>
-          Sections
-        </h3>
-        <div className="space-y-1">
-          {(resume.sections || [])
-            .sort((a, b) => a.order - b.order)
-            .map((section) => (
-              <div
-                key={section.id}
-                className={`flex items-center justify-between p-3 rounded-lg transition-all duration-200 ${section.enabled
-                  ? "bg-white border border-green-200 shadow-sm"
-                  : "bg-gray-50 border border-gray-200 hover:bg-white"
-                  }`}
-              >
-                <span className={`text-sm font-medium ${section.enabled ? "text-gray-900" : "text-gray-500"
-                  }`}>
-                  {section.title}
-                </span>
-                <button
-                  onClick={() => handleSectionToggle(section.id)}
-                  className={`p-1.5 rounded-md transition-colors ${section.enabled
-                    ? "text-green-600 hover:bg-green-50 bg-green-50/50"
-                    : "text-gray-400 hover:bg-gray-100"
-                    }`}
-                >
-                  {section.enabled ? (
-                    <Eye className="h-4 w-4" />
-                  ) : (
-                    <EyeOff className="h-4 w-4" />
-                  )}
-                </button>
-              </div>
-            ))}
-        </div>
-
-        <button
-          onClick={handleAddSection}
-          className="w-full mt-4 flex items-center justify-center space-x-2 p-3 border-2 border-dashed border-gray-300 rounded-lg text-sm text-gray-500 hover:border-primary hover:text-primary hover:bg-primary-50/50 transition-all duration-200"
-        >
-          <Plus className="h-4 w-4" />
-          <span>Add Section</span>
-        </button>
+      {/* Section Manager */}
+      <div className="p-6 border-b border-gray-200 bg-gray-50/50 max-h-[40%] overflow-y-auto">
+        <SectionManager />
       </div>
 
       {/* Section Editors */}
-      <div className="flex-1 overflow-y-auto custom-scrollbar">
+      <div className="flex-1 overflow-y-auto custom-scrollbar min-h-0">
         <div className="p-6">
           <h3 className="text-sm font-semibold text-gray-900 mb-4 flex items-center">
             <div className="w-2 h-2 bg-primary rounded-full mr-2"></div>

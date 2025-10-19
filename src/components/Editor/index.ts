@@ -26,3 +26,6 @@ export type { EducationEditorProps } from "./EducationEditor";
 
 export { CertificationsEditor } from "./CertificationsEditor";
 export type { CertificationsEditorProps } from "./CertificationsEditor";
+
+export { SectionManager } from "./SectionManager";
+export type { SectionManagerProps } from "./SectionManager";

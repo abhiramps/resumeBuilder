@@ -214,7 +214,7 @@ export type ResumeAction =
 // Context types
 export interface ResumeContextType {
   resume: Resume;
-  dispatch: React.Dispatch<ResumeAction>;
+  dispatch: React.Dispatch<any>; // Using any to support all action types from actions.types.ts
   atsValidation: ATSValidation;
   isLoading: boolean;
   error: string | null;
