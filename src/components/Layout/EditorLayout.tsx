@@ -3,7 +3,7 @@ import { ResumeProvider } from "../../contexts/ResumeContext";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import Preview from "./Preview";
-import LayoutControls from "./LayoutControls";
+import { LayoutControls } from "./LayoutControls";
 import Footer from "./Footer";
 
 /**

@@ -1,398 +1,489 @@
-import React from "react";
-import { useResume } from "../../contexts/ResumeContext";
-import { LayoutSettings } from "../../types/resume.types";
+import React, { useState } from 'react';
+import { useResumeContext } from '../../contexts/ResumeContext';
+import { Ruler, Space, LineChart, RotateCcw, Link2, Unlink, Type, Palette } from 'lucide-react';
 
-const LayoutControls: React.FC = () => {
-  const { resume, dispatch } = useResume();
+type Unit = 'inches' | 'mm';
 
-  const handleMarginChange = (
-    side: keyof LayoutSettings["pageMargins"],
-    value: number
-  ) => {
-    dispatch({
-      type: "UPDATE_LAYOUT",
-      payload: {
-        pageMargins: {
-          ...(resume.layout?.pageMargins || { top: 1, right: 1, bottom: 1, left: 1 }),
-          [side]: value,
+const MARGIN_PRESETS = {
+  narrow: { top: 0.5, right: 0.5, bottom: 0.5, left: 0.5 },
+  normal: { top: 0.75, right: 0.75, bottom: 0.75, left: 0.75 },
+  wide: { top: 1.0, right: 1.0, bottom: 1.0, left: 1.0 },
+};
+
+const DEFAULT_LAYOUT = {
+  pageMargins: { top: 0.75, right: 0.75, bottom: 0.75, left: 0.75 },
+  sectionSpacing: 16,
+  lineHeight: 1.5,
+  fontSize: {
+    name: 24,
+    title: 12,
+    sectionHeader: 12,
+    body: 11,
+  },
+  fontFamily: 'Arial',
+  colors: {
+    primary: '#2c3e50',
+    secondary: '#555555',
+    text: '#333333',
+  },
+};
+
+const ATS_SAFE_FONTS = [
+  'Arial',
+  'Helvetica',
+  'Times New Roman',
+  'Georgia',
+  'Calibri',
+];
+
+export const LayoutControls: React.FC = () => {
+  const { resume, dispatch } = useResumeContext();
+  const [unit, setUnit] = useState<Unit>('inches');
+  const [linkedMargins, setLinkedMargins] = useState(true);
+
+  const { pageMargins, sectionSpacing, lineHeight, fontSize, fontFamily, colors } = resume.layout;
+
+  // Convert inches to mm and vice versa
+  const convertToDisplay = (inches: number): number => {
+    return unit === 'inches' ? inches : inches * 25.4;
+  };
+
+  const convertFromDisplay = (value: number): number => {
+    return unit === 'inches' ? value : value / 25.4;
+  };
+
+  const handleMarginChange = (side: keyof typeof pageMargins, value: number) => {
+    const inchValue = convertFromDisplay(value);
+
+    if (linkedMargins) {
+      dispatch({
+        type: 'UPDATE_MARGINS',
+        payload: {
+          top: inchValue,
+          right: inchValue,
+          bottom: inchValue,
+          left: inchValue,
         },
-      },
-    });
+      });
+    } else {
+      dispatch({
+        type: 'UPDATE_MARGINS',
+        payload: { [side]: inchValue },
+      });
+    }
   };
 
   const handleSpacingChange = (value: number) => {
     dispatch({
-      type: "UPDATE_LAYOUT",
-      payload: {
-        sectionSpacing: value,
-      },
+      type: 'UPDATE_SPACING',
+      payload: { sectionSpacing: value },
     });
   };
 
   const handleLineHeightChange = (value: number) => {
     dispatch({
-      type: "UPDATE_LAYOUT",
-      payload: {
-        lineHeight: value,
-      },
+      type: 'UPDATE_SPACING',
+      payload: { lineHeight: value },
     });
   };
 
-  const handleFontSizeChange = (
-    type: keyof LayoutSettings["fontSize"],
-    value: number
-  ) => {
+  const applyPreset = (preset: keyof typeof MARGIN_PRESETS) => {
     dispatch({
-      type: "UPDATE_LAYOUT",
-      payload: {
-        fontSize: {
-          ...(resume.layout?.fontSize || { name: 22, title: 12, sectionHeader: 12, body: 10 }),
-          [type]: value,
-        },
-      },
+      type: 'UPDATE_MARGINS',
+      payload: MARGIN_PRESETS[preset],
     });
   };
 
-  const handleFontFamilyChange = (fontFamily: string) => {
+  const handleFontSizeChange = (field: keyof typeof fontSize, value: number) => {
     dispatch({
-      type: "UPDATE_LAYOUT",
-      payload: {
-        fontFamily,
-      },
+      type: 'UPDATE_FONT_SIZES',
+      payload: { [field]: value },
     });
   };
 
-  const handleColorChange = (
-    type: keyof LayoutSettings["colors"],
-    value: string
-  ) => {
+  const handleFontFamilyChange = (value: string) => {
     dispatch({
-      type: "UPDATE_LAYOUT",
-      payload: {
-        colors: {
-          ...(resume.layout?.colors || { primary: "#2c3e50", secondary: "#555555", text: "#333333" }),
-          [type]: value,
-        },
-      },
+      type: 'UPDATE_FONT_FAMILY',
+      payload: value,
     });
   };
 
-  const atsSafeFonts = [
-    "Arial",
-    "Helvetica",
-    "Times New Roman",
-    "Georgia",
-    "Calibri",
-  ];
+  const handleColorChange = (field: keyof typeof colors, value: string) => {
+    dispatch({
+      type: 'UPDATE_COLORS',
+      payload: { [field]: value },
+    });
+  };
+
+  const resetToDefaults = () => {
+    dispatch({
+      type: 'UPDATE_MARGINS',
+      payload: DEFAULT_LAYOUT.pageMargins,
+    });
+    dispatch({
+      type: 'UPDATE_SPACING',
+      payload: {
+        sectionSpacing: DEFAULT_LAYOUT.sectionSpacing,
+        lineHeight: DEFAULT_LAYOUT.lineHeight,
+      },
+    });
+    dispatch({
+      type: 'UPDATE_FONT_SIZES',
+      payload: DEFAULT_LAYOUT.fontSize,
+    });
+    dispatch({
+      type: 'UPDATE_FONT_FAMILY',
+      payload: DEFAULT_LAYOUT.fontFamily,
+    });
+    dispatch({
+      type: 'UPDATE_COLORS',
+      payload: DEFAULT_LAYOUT.colors,
+    });
+  };
+
+  const getMinMax = () => {
+    if (unit === 'inches') {
+      return { min: 0.1, max: 2.0, step: 0.05 };
+    }
+    return { min: 2.54, max: 50.8, step: 1.27 };
+  };
+
+  const marginLimits = getMinMax();
 
   return (
-    <div className="h-full overflow-y-auto custom-scrollbar">
-      <div className="p-6">
-        <h3 className="text-sm font-semibold text-gray-900 mb-6 flex items-center">
-          <div className="w-2 h-2 bg-primary rounded-full mr-2"></div>
-          Layout Controls
-        </h3>
+    <div className="space-y-6 p-4 bg-white rounded-lg shadow-sm border border-gray-200">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Ruler className="w-5 h-5 text-gray-600" />
+          <h3 className="text-lg font-semibold text-gray-800">Layout Controls</h3>
+        </div>
+        <button
+          onClick={resetToDefaults}
+          className="flex items-center gap-1 px-3 py-1.5 text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded transition-colors"
+          title="Reset to defaults"
+        >
+          <RotateCcw className="w-4 h-4" />
+          Reset
+        </button>
+      </div>
 
-        {/* Page Margins */}
-        <div className="mb-8 bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
-          <h4 className="text-sm font-semibold text-gray-900 mb-4 flex items-center">
-            <div className="w-1.5 h-1.5 bg-primary rounded-full mr-2"></div>
-            Page Margins (inches)
-          </h4>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-xs font-medium text-gray-700 mb-2 flex justify-between">
-                <span>Top</span>
-                <span className="text-primary font-semibold">{resume.layout?.pageMargins?.top || 1}"</span>
-              </label>
-              <input
-                type="range"
-                min="0.1"
-                max="2"
-                step="0.1"
-                value={resume.layout?.pageMargins?.top || 1}
-                onChange={(e) =>
-                  handleMarginChange("top", parseFloat(e.target.value))
-                }
-                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
-              />
-            </div>
+      {/* Unit Toggle */}
+      <div className="flex items-center gap-2">
+        <span className="text-sm text-gray-600">Unit:</span>
+        <div className="flex bg-gray-100 rounded-md p-1">
+          <button
+            onClick={() => setUnit('inches')}
+            className={`px-3 py-1 text-sm rounded transition-colors ${unit === 'inches'
+              ? 'bg-white text-gray-800 shadow-sm'
+              : 'text-gray-600 hover:text-gray-800'
+              }`}
+          >
+            Inches
+          </button>
+          <button
+            onClick={() => setUnit('mm')}
+            className={`px-3 py-1 text-sm rounded transition-colors ${unit === 'mm'
+              ? 'bg-white text-gray-800 shadow-sm'
+              : 'text-gray-600 hover:text-gray-800'
+              }`}
+          >
+            mm
+          </button>
+        </div>
+      </div>
 
-            <div>
-              <label className="block text-xs font-medium text-gray-700 mb-2 flex justify-between">
-                <span>Right</span>
-                <span className="text-primary font-semibold">{resume.layout?.pageMargins?.right || 1}"</span>
-              </label>
-              <input
-                type="range"
-                min="0.1"
-                max="2"
-                step="0.1"
-                value={resume.layout?.pageMargins?.right || 1}
-                onChange={(e) =>
-                  handleMarginChange("right", parseFloat(e.target.value))
-                }
-                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-medium text-gray-700 mb-2 flex justify-between">
-                <span>Bottom</span>
-                <span className="text-primary font-semibold">{resume.layout?.pageMargins?.bottom || 1}"</span>
-              </label>
-              <input
-                type="range"
-                min="0.1"
-                max="2"
-                step="0.1"
-                value={resume.layout?.pageMargins?.bottom || 1}
-                onChange={(e) =>
-                  handleMarginChange("bottom", parseFloat(e.target.value))
-                }
-                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-medium text-gray-700 mb-2 flex justify-between">
-                <span>Left</span>
-                <span className="text-primary font-semibold">{resume.layout?.pageMargins?.left || 1}"</span>
-              </label>
-              <input
-                type="range"
-                min="0.1"
-                max="2"
-                step="0.1"
-                value={resume.layout?.pageMargins?.left || 1}
-                onChange={(e) =>
-                  handleMarginChange("left", parseFloat(e.target.value))
-                }
-                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
-              />
-            </div>
-          </div>
+      {/* Page Margins */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h4 className="text-sm font-medium text-gray-700">Page Margins</h4>
+          <button
+            onClick={() => setLinkedMargins(!linkedMargins)}
+            className={`flex items-center gap-1 px-2 py-1 text-xs rounded transition-colors ${linkedMargins
+              ? 'bg-blue-50 text-blue-600'
+              : 'bg-gray-100 text-gray-600'
+              }`}
+            title={linkedMargins ? 'Unlink margins' : 'Link margins'}
+          >
+            {linkedMargins ? (
+              <>
+                <Link2 className="w-3 h-3" />
+                Linked
+              </>
+            ) : (
+              <>
+                <Unlink className="w-3 h-3" />
+                Unlinked
+              </>
+            )}
+          </button>
         </div>
 
-        {/* Spacing */}
-        <div className="mb-8 bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
-          <h4 className="text-sm font-semibold text-gray-900 mb-4 flex items-center">
-            <div className="w-1.5 h-1.5 bg-primary rounded-full mr-2"></div>
-            Spacing
-          </h4>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-xs font-medium text-gray-700 mb-2 flex justify-between">
-                <span>Section Spacing</span>
-                <span className="text-primary font-semibold">{resume.layout?.sectionSpacing || 16}px</span>
-              </label>
-              <input
-                type="range"
-                min="5"
-                max="30"
-                step="1"
-                value={resume.layout?.sectionSpacing || 16}
-                onChange={(e) => handleSpacingChange(parseInt(e.target.value))}
-                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-medium text-gray-700 mb-2 flex justify-between">
-                <span>Line Height</span>
-                <span className="text-primary font-semibold">{resume.layout?.lineHeight || 1.4}</span>
-              </label>
-              <input
-                type="range"
-                min="1.0"
-                max="2.0"
-                step="0.1"
-                value={resume.layout?.lineHeight || 1.4}
-                onChange={(e) =>
-                  handleLineHeightChange(parseFloat(e.target.value))
-                }
-                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
-              />
-            </div>
-          </div>
+        {/* Margin Presets */}
+        <div className="flex gap-2">
+          <button
+            onClick={() => applyPreset('narrow')}
+            className="flex-1 px-3 py-2 text-xs bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded transition-colors"
+          >
+            Narrow
+          </button>
+          <button
+            onClick={() => applyPreset('normal')}
+            className="flex-1 px-3 py-2 text-xs bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded transition-colors"
+          >
+            Normal
+          </button>
+          <button
+            onClick={() => applyPreset('wide')}
+            className="flex-1 px-3 py-2 text-xs bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded transition-colors"
+          >
+            Wide
+          </button>
         </div>
 
-        {/* Typography */}
-        <div className="mb-8 bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
-          <h4 className="text-sm font-semibold text-gray-900 mb-4 flex items-center">
-            <div className="w-1.5 h-1.5 bg-primary rounded-full mr-2"></div>
-            Typography
-          </h4>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-xs font-medium text-gray-700 mb-2">
-                Font Family
-              </label>
-              <select
-                value={resume.layout?.fontFamily || "Arial"}
-                onChange={(e) => handleFontFamilyChange(e.target.value)}
-                className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-200 focus:border-primary transition-all duration-200"
-              >
-                {atsSafeFonts.map((font) => (
-                  <option key={font} value={font}>
-                    {font}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-xs font-medium text-gray-700 mb-2 flex justify-between">
-                <span>Name Size</span>
-                <span className="text-primary font-semibold">{resume.layout?.fontSize?.name || 22}pt</span>
-              </label>
-              <input
-                type="range"
-                min="16"
-                max="32"
-                step="1"
-                value={resume.layout?.fontSize?.name || 22}
-                onChange={(e) =>
-                  handleFontSizeChange("name", parseInt(e.target.value))
-                }
-                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-medium text-gray-700 mb-2 flex justify-between">
-                <span>Title Size</span>
-                <span className="text-primary font-semibold">{resume.layout?.fontSize?.title || 12}pt</span>
-              </label>
-              <input
-                type="range"
-                min="8"
-                max="16"
-                step="1"
-                value={resume.layout?.fontSize?.title || 12}
-                onChange={(e) =>
-                  handleFontSizeChange("title", parseInt(e.target.value))
-                }
-                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-medium text-gray-700 mb-2 flex justify-between">
-                <span>Section Header</span>
-                <span className="text-primary font-semibold">{resume.layout?.fontSize?.sectionHeader || 12}pt</span>
-              </label>
-              <input
-                type="range"
-                min="8"
-                max="16"
-                step="1"
-                value={resume.layout?.fontSize?.sectionHeader || 12}
-                onChange={(e) =>
-                  handleFontSizeChange(
-                    "sectionHeader",
-                    parseInt(e.target.value)
-                  )
-                }
-                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-medium text-gray-700 mb-2 flex justify-between">
-                <span>Body Text</span>
-                <span className="text-primary font-semibold">{resume.layout?.fontSize?.body || 10}pt</span>
-              </label>
-              <input
-                type="range"
-                min="8"
-                max="14"
-                step="1"
-                value={resume.layout?.fontSize?.body || 10}
-                onChange={(e) =>
-                  handleFontSizeChange("body", parseInt(e.target.value))
-                }
-                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Colors */}
-        <div className="mb-8 bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
-          <h4 className="text-sm font-semibold text-gray-900 mb-4 flex items-center">
-            <div className="w-1.5 h-1.5 bg-primary rounded-full mr-2"></div>
-            Colors
-          </h4>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-xs font-medium text-gray-700 mb-2">
-                Primary Color
-              </label>
-              <div className="flex items-center space-x-3">
-                <input
-                  type="color"
-                  value={resume.layout?.colors?.primary || "#2c3e50"}
-                  onChange={(e) => handleColorChange("primary", e.target.value)}
-                  className="w-10 h-10 border-2 border-gray-300 rounded-lg cursor-pointer"
-                />
-                <input
-                  type="text"
-                  value={resume.layout?.colors?.primary || "#2c3e50"}
-                  onChange={(e) => handleColorChange("primary", e.target.value)}
-                  className="flex-1 px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-200 focus:border-primary transition-all duration-200"
-                />
+        {/* Individual Margin Controls */}
+        <div className="space-y-3">
+          {(['top', 'right', 'bottom', 'left'] as const).map((side) => (
+            <div key={side} className="space-y-1">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-medium text-gray-600 capitalize">
+                  {side}
+                </label>
+                <span className="text-xs text-gray-500">
+                  {convertToDisplay(pageMargins[side]).toFixed(unit === 'inches' ? 2 : 1)}
+                  {unit === 'inches' ? '"' : 'mm'}
+                </span>
               </div>
+              <input
+                type="range"
+                min={marginLimits.min}
+                max={marginLimits.max}
+                step={marginLimits.step}
+                value={convertToDisplay(pageMargins[side])}
+                onChange={(e) => handleMarginChange(side, parseFloat(e.target.value))}
+                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+              />
             </div>
+          ))}
+        </div>
+      </div>
 
-            <div>
-              <label className="block text-xs font-medium text-gray-700 mb-2">
-                Secondary Color
-              </label>
-              <div className="flex items-center space-x-3">
-                <input
-                  type="color"
-                  value={resume.layout?.colors?.secondary || "#555555"}
-                  onChange={(e) =>
-                    handleColorChange("secondary", e.target.value)
-                  }
-                  className="w-10 h-10 border-2 border-gray-300 rounded-lg cursor-pointer"
-                />
-                <input
-                  type="text"
-                  value={resume.layout?.colors?.secondary || "#555555"}
-                  onChange={(e) =>
-                    handleColorChange("secondary", e.target.value)
-                  }
-                  className="flex-1 px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-200 focus:border-primary transition-all duration-200"
-                />
-              </div>
-            </div>
+      {/* Section Spacing */}
+      <div className="space-y-3">
+        <div className="flex items-center gap-2">
+          <Space className="w-4 h-4 text-gray-600" />
+          <h4 className="text-sm font-medium text-gray-700">Section Spacing</h4>
+        </div>
+        <div className="space-y-1">
+          <div className="flex items-center justify-between">
+            <span className="text-xs text-gray-600">Space between sections</span>
+            <span className="text-xs text-gray-500">{sectionSpacing}px</span>
+          </div>
+          <input
+            type="range"
+            min={5}
+            max={30}
+            step={1}
+            value={sectionSpacing}
+            onChange={(e) => handleSpacingChange(parseInt(e.target.value))}
+            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+          />
+        </div>
+      </div>
 
-            <div>
-              <label className="block text-xs font-medium text-gray-700 mb-2">
-                Text Color
-              </label>
-              <div className="flex items-center space-x-3">
-                <input
-                  type="color"
-                  value={resume.layout?.colors?.text || "#333333"}
-                  onChange={(e) => handleColorChange("text", e.target.value)}
-                  className="w-10 h-10 border-2 border-gray-300 rounded-lg cursor-pointer"
-                />
-                <input
-                  type="text"
-                  value={resume.layout?.colors?.text || "#333333"}
-                  onChange={(e) => handleColorChange("text", e.target.value)}
-                  className="flex-1 px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-200 focus:border-primary transition-all duration-200"
-                />
-              </div>
+      {/* Line Height */}
+      <div className="space-y-3">
+        <div className="flex items-center gap-2">
+          <LineChart className="w-4 h-4 text-gray-600" />
+          <h4 className="text-sm font-medium text-gray-700">Line Height</h4>
+        </div>
+        <div className="space-y-1">
+          <div className="flex items-center justify-between">
+            <span className="text-xs text-gray-600">Text line spacing</span>
+            <span className="text-xs text-gray-500">{lineHeight.toFixed(1)}</span>
+          </div>
+          <input
+            type="range"
+            min={1.0}
+            max={2.0}
+            step={0.1}
+            value={lineHeight}
+            onChange={(e) => handleLineHeightChange(parseFloat(e.target.value))}
+            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+          />
+        </div>
+      </div>
+
+      {/* Typography */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2">
+          <Type className="w-4 h-4 text-gray-600" />
+          <h4 className="text-sm font-medium text-gray-700">Typography</h4>
+        </div>
+
+        {/* Font Family */}
+        <div className="space-y-2">
+          <label className="text-xs font-medium text-gray-600">Font Family</label>
+          <select
+            value={fontFamily}
+            onChange={(e) => handleFontFamilyChange(e.target.value)}
+            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            {ATS_SAFE_FONTS.map((font) => (
+              <option key={font} value={font}>
+                {font}
+              </option>
+            ))}
+          </select>
+          <p className="text-xs text-gray-500">ATS-safe fonts only</p>
+        </div>
+
+        {/* Font Sizes */}
+        <div className="space-y-3">
+          <div className="space-y-1">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-medium text-gray-600">Name Size</label>
+              <span className="text-xs text-gray-500">{fontSize.name}pt</span>
             </div>
+            <input
+              type="range"
+              min={18}
+              max={32}
+              step={1}
+              value={fontSize.name}
+              onChange={(e) => handleFontSizeChange('name', parseInt(e.target.value))}
+              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+            />
+          </div>
+
+          <div className="space-y-1">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-medium text-gray-600">Title Size</label>
+              <span className="text-xs text-gray-500">{fontSize.title}pt</span>
+            </div>
+            <input
+              type="range"
+              min={10}
+              max={16}
+              step={1}
+              value={fontSize.title}
+              onChange={(e) => handleFontSizeChange('title', parseInt(e.target.value))}
+              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+            />
+          </div>
+
+          <div className="space-y-1">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-medium text-gray-600">Section Header</label>
+              <span className="text-xs text-gray-500">{fontSize.sectionHeader}pt</span>
+            </div>
+            <input
+              type="range"
+              min={10}
+              max={16}
+              step={1}
+              value={fontSize.sectionHeader}
+              onChange={(e) => handleFontSizeChange('sectionHeader', parseInt(e.target.value))}
+              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+            />
+          </div>
+
+          <div className="space-y-1">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-medium text-gray-600">Body Text</label>
+              <span className="text-xs text-gray-500">{fontSize.body}pt</span>
+            </div>
+            <input
+              type="range"
+              min={9}
+              max={14}
+              step={1}
+              value={fontSize.body}
+              onChange={(e) => handleFontSizeChange('body', parseInt(e.target.value))}
+              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+            />
           </div>
         </div>
+      </div>
+
+      {/* Colors */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2">
+          <Palette className="w-4 h-4 text-gray-600" />
+          <h4 className="text-sm font-medium text-gray-700">Colors</h4>
+        </div>
+
+        {/* Primary Color */}
+        <div className="space-y-2">
+          <label className="text-xs font-medium text-gray-600">Primary Color</label>
+          <div className="flex items-center gap-2">
+            <input
+              type="color"
+              value={colors.primary}
+              onChange={(e) => handleColorChange('primary', e.target.value)}
+              className="w-12 h-10 rounded border border-gray-300 cursor-pointer"
+            />
+            <input
+              type="text"
+              value={colors.primary}
+              onChange={(e) => handleColorChange('primary', e.target.value)}
+              className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="#2c3e50"
+            />
+          </div>
+          <p className="text-xs text-gray-500">Used for headers and name</p>
+        </div>
+
+        {/* Secondary Color */}
+        <div className="space-y-2">
+          <label className="text-xs font-medium text-gray-600">Secondary Color</label>
+          <div className="flex items-center gap-2">
+            <input
+              type="color"
+              value={colors.secondary}
+              onChange={(e) => handleColorChange('secondary', e.target.value)}
+              className="w-12 h-10 rounded border border-gray-300 cursor-pointer"
+            />
+            <input
+              type="text"
+              value={colors.secondary}
+              onChange={(e) => handleColorChange('secondary', e.target.value)}
+              className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="#555555"
+            />
+          </div>
+          <p className="text-xs text-gray-500">Used for subtitles and dates</p>
+        </div>
+
+        {/* Text Color */}
+        <div className="space-y-2">
+          <label className="text-xs font-medium text-gray-600">Text Color</label>
+          <div className="flex items-center gap-2">
+            <input
+              type="color"
+              value={colors.text}
+              onChange={(e) => handleColorChange('text', e.target.value)}
+              className="w-12 h-10 rounded border border-gray-300 cursor-pointer"
+            />
+            <input
+              type="text"
+              value={colors.text}
+              onChange={(e) => handleColorChange('text', e.target.value)}
+              className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="#333333"
+            />
+          </div>
+          <p className="text-xs text-gray-500">Used for body text</p>
+        </div>
+      </div>
+
+      {/* Visual Feedback */}
+      <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+        <p className="text-xs text-blue-800">
+          <strong>Tip:</strong> Adjust margins to fit more content or create breathing room.
+          Keep margins between 0.5" - 1.0" for optimal ATS compatibility.
+        </p>
       </div>
     </div>
   );
 };
-
-export default LayoutControls;
