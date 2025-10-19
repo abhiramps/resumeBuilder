@@ -9,13 +9,13 @@ import {
   Resume,
   ResumeContextType,
   ATSValidation,
-  ATSIssue,
   ResumeSection,
   TemplateType,
 } from "../types/resume.types";
 import { AppAction } from "../types/actions.types";
 import { createDefaultResume } from "../constants/defaultResume";
 import { useAutoSave } from "../hooks/useAutoSave";
+import { validateATS } from "../utils/atsValidator";
 
 // Initial state
 const initialState: Resume = createDefaultResume();
@@ -736,93 +736,7 @@ const resumeReducer = (state: Resume, action: AppAction): Resume => {
   }
 };
 
-// ATS Validation function (simplified for now)
-const validateATS = (resume: Resume): ATSValidation => {
-  const issues: ATSIssue[] = [];
-  let score = 100;
-
-  // Check for common ATS issues
-  if (!resume.personalInfo?.fullName?.trim()) {
-    issues.push({
-      id: "missing-name",
-      type: "error",
-      message: "Full name is required",
-      section: "Personal Information",
-    });
-    score -= 20;
-  }
-
-  if (!resume.personalInfo?.email?.trim()) {
-    issues.push({
-      id: "missing-email",
-      type: "error",
-      message: "Email address is required",
-      section: "Personal Information",
-    });
-    score -= 15;
-  }
-
-  if (!resume.personalInfo?.phone?.trim()) {
-    issues.push({
-      id: "missing-phone",
-      type: "warning",
-      message: "Phone number is recommended",
-      section: "Personal Information",
-    });
-    score -= 5;
-  }
-
-  // Check for experience section
-  const experienceSection = (resume.sections || []).find(
-    (s) => s.type === "experience"
-  );
-  if (!experienceSection || !experienceSection.enabled) {
-    issues.push({
-      id: "no-experience",
-      type: "warning",
-      message: "Work experience section is recommended",
-      section: "Work Experience",
-    });
-    score -= 10;
-  }
-
-  // Check for skills section
-  const skillsSection = (resume.sections || []).find((s) => s.type === "skills");
-  if (!skillsSection || !skillsSection.enabled) {
-    issues.push({
-      id: "no-skills",
-      type: "warning",
-      message: "Skills section is recommended",
-      section: "Skills",
-    });
-    score -= 10;
-  }
-
-  // Check font family for ATS compliance
-  const atsSafeFonts = [
-    "Arial",
-    "Helvetica",
-    "Times New Roman",
-    "Georgia",
-    "Calibri",
-  ];
-  if (!atsSafeFonts.includes(resume.layout?.fontFamily || "Arial")) {
-    issues.push({
-      id: "unsafe-font",
-      type: "warning",
-      message: "Font may not be ATS-compliant",
-      section: "Layout",
-      suggestion: "Use Arial, Helvetica, Times New Roman, Georgia, or Calibri",
-    });
-    score -= 5;
-  }
-
-  return {
-    score: Math.max(0, score),
-    issues,
-    lastValidated: new Date().toISOString(),
-  };
-};
+// ATS Validation is now handled by the comprehensive validator in utils/atsValidator.ts
 
 // Context creation
 const ResumeContext = createContext<ResumeContextType | undefined>(undefined);
