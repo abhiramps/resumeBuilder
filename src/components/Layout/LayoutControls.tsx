@@ -36,6 +36,30 @@ const ATS_SAFE_FONTS = [
   'Calibri',
 ];
 
+const FONT_SIZE_PRESETS = {
+  small: { name: 20, title: 11, sectionHeader: 11, body: 9 },
+  medium: { name: 24, title: 12, sectionHeader: 12, body: 11 },
+  large: { name: 28, title: 14, sectionHeader: 13, body: 12 },
+};
+
+const COLOR_PRESETS = {
+  professional: {
+    primary: '#2c3e50',
+    secondary: '#555555',
+    text: '#333333',
+  },
+  modern: {
+    primary: '#1a73e8',
+    secondary: '#5f6368',
+    text: '#202124',
+  },
+  vibrant: {
+    primary: '#d32f2f',
+    secondary: '#757575',
+    text: '#212121',
+  },
+};
+
 export const LayoutControls: React.FC = () => {
   const { resume, dispatch } = useResumeContext();
   const [unit, setUnit] = useState<Unit>('inches');
@@ -114,6 +138,46 @@ export const LayoutControls: React.FC = () => {
       payload: { [field]: value },
     });
   };
+
+  const applyFontSizePreset = (preset: keyof typeof FONT_SIZE_PRESETS) => {
+    dispatch({
+      type: 'UPDATE_FONT_SIZES',
+      payload: FONT_SIZE_PRESETS[preset],
+    });
+  };
+
+  const applyColorPreset = (preset: keyof typeof COLOR_PRESETS) => {
+    dispatch({
+      type: 'UPDATE_COLORS',
+      payload: COLOR_PRESETS[preset],
+    });
+  };
+
+  // Calculate contrast ratio between two colors
+  const getContrastRatio = (color1: string, color2: string): number => {
+    const getLuminance = (hex: string): number => {
+      const rgb = parseInt(hex.slice(1), 16);
+      const r = ((rgb >> 16) & 0xff) / 255;
+      const g = ((rgb >> 8) & 0xff) / 255;
+      const b = (rgb & 0xff) / 255;
+
+      const [rs, gs, bs] = [r, g, b].map(c =>
+        c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4)
+      );
+
+      return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;
+    };
+
+    const l1 = getLuminance(color1);
+    const l2 = getLuminance(color2);
+    const lighter = Math.max(l1, l2);
+    const darker = Math.min(l1, l2);
+
+    return (lighter + 0.05) / (darker + 0.05);
+  };
+
+  const contrastRatio = getContrastRatio(colors.text, '#ffffff');
+  const meetsWCAG = contrastRatio >= 4.5;
 
   const resetToDefaults = () => {
     dispatch({
@@ -321,6 +385,31 @@ export const LayoutControls: React.FC = () => {
           <h4 className="text-sm font-medium text-gray-700">Typography</h4>
         </div>
 
+        {/* Font Size Presets */}
+        <div className="space-y-2">
+          <label className="text-xs font-medium text-gray-600">Size Presets</label>
+          <div className="flex gap-2">
+            <button
+              onClick={() => applyFontSizePreset('small')}
+              className="flex-1 px-3 py-2 text-xs bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded transition-colors"
+            >
+              Small
+            </button>
+            <button
+              onClick={() => applyFontSizePreset('medium')}
+              className="flex-1 px-3 py-2 text-xs bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded transition-colors"
+            >
+              Medium
+            </button>
+            <button
+              onClick={() => applyFontSizePreset('large')}
+              className="flex-1 px-3 py-2 text-xs bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded transition-colors"
+            >
+              Large
+            </button>
+          </div>
+        </div>
+
         {/* Font Family */}
         <div className="space-y-2">
           <label className="text-xs font-medium text-gray-600">Font Family</label>
@@ -328,14 +417,17 @@ export const LayoutControls: React.FC = () => {
             value={fontFamily}
             onChange={(e) => handleFontFamilyChange(e.target.value)}
             className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            style={{ fontFamily }}
           >
             {ATS_SAFE_FONTS.map((font) => (
-              <option key={font} value={font}>
+              <option key={font} value={font} style={{ fontFamily: font }}>
                 {font}
               </option>
             ))}
           </select>
-          <p className="text-xs text-gray-500">ATS-safe fonts only</p>
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-green-600">✓ ATS-safe</span>
+          </div>
         </div>
 
         {/* Font Sizes */}
@@ -413,6 +505,34 @@ export const LayoutControls: React.FC = () => {
           <h4 className="text-sm font-medium text-gray-700">Colors</h4>
         </div>
 
+        {/* Color Presets */}
+        <div className="space-y-2">
+          <label className="text-xs font-medium text-gray-600">Color Schemes</label>
+          <div className="flex gap-2">
+            <button
+              onClick={() => applyColorPreset('professional')}
+              className="flex-1 px-3 py-2 text-xs bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded transition-colors"
+              title="Professional: Navy & Gray"
+            >
+              Professional
+            </button>
+            <button
+              onClick={() => applyColorPreset('modern')}
+              className="flex-1 px-3 py-2 text-xs bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded transition-colors"
+              title="Modern: Blue & Gray"
+            >
+              Modern
+            </button>
+            <button
+              onClick={() => applyColorPreset('vibrant')}
+              className="flex-1 px-3 py-2 text-xs bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded transition-colors"
+              title="Vibrant: Red & Gray"
+            >
+              Vibrant
+            </button>
+          </div>
+        </div>
+
         {/* Primary Color */}
         <div className="space-y-2">
           <label className="text-xs font-medium text-gray-600">Primary Color</label>
@@ -474,6 +594,28 @@ export const LayoutControls: React.FC = () => {
             />
           </div>
           <p className="text-xs text-gray-500">Used for body text</p>
+        </div>
+
+        {/* Contrast Checker */}
+        <div className="p-3 bg-gray-50 border border-gray-200 rounded-lg">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-medium text-gray-700">Contrast Ratio</span>
+            <span className="text-xs font-mono text-gray-600">{contrastRatio.toFixed(2)}:1</span>
+          </div>
+          <div className="flex items-center gap-2">
+            {meetsWCAG ? (
+              <>
+                <span className="text-xs text-green-600">✓ WCAG AA Compliant</span>
+              </>
+            ) : (
+              <>
+                <span className="text-xs text-orange-600">⚠ Low Contrast</span>
+              </>
+            )}
+          </div>
+          <p className="text-xs text-gray-500 mt-1">
+            Minimum 4.5:1 recommended for readability
+          </p>
         </div>
       </div>
 
