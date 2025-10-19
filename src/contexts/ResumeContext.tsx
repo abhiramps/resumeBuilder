@@ -854,21 +854,31 @@ export const ResumeProvider: React.FC<ResumeProviderProps> = ({ children }) => {
     setAtsValidation(validation);
   }, [resume.personalInfo, resume.sections, resume.layout]);
 
-  // Restore data on mount
+  // Initialize with default data and optionally restore saved data
   useEffect(() => {
-    const restoreData = async () => {
+    const initializeData = async () => {
       try {
-        const restoredResume = await autoSave.restoreData();
-        if (restoredResume) {
-          dispatch({ type: "SET_RESUME", payload: restoredResume });
-        }
+        // First, clear any potentially corrupted localStorage data (temporary fix)
+        localStorage.removeItem('resumeDraft');
+        localStorage.removeItem('resumeBackup');
+        console.log("Cleared localStorage for fresh start");
+
+        // Always start with default resume for now
+        console.log("Using default resume data with sample content");
+        dispatch({ type: "SET_RESUME", payload: initialState });
+
+        // TODO: Re-enable restore functionality after testing
+        // const restoredResume = await autoSave.restoreData();
+        // if (restoredResume && restoredResume.personalInfo && restoredResume.sections) {
+        //   dispatch({ type: "SET_RESUME", payload: restoredResume });
+        // }
       } catch (err) {
-        console.error("Failed to restore resume:", err);
-        setError("Failed to restore saved resume");
+        console.error("Failed to initialize resume:", err);
+        dispatch({ type: "SET_RESUME", payload: initialState });
       }
     };
 
-    restoreData();
+    initializeData();
   }, []); // Remove autoSave dependency to prevent infinite loop
 
   // Handle auto-save errors - removed to prevent infinite loops
