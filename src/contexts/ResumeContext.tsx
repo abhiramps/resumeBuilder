@@ -837,10 +837,10 @@ export const ResumeProvider: React.FC<ResumeProviderProps> = ({ children }) => {
   const [atsValidation, setAtsValidation] =
     React.useState<ATSValidation>(initialATSValidation);
   const [isLoading] = React.useState(false);
-  const [error, setError] = React.useState<string | null>(null);
+  const [error] = React.useState<string | null>(null);
 
   // Auto-save hook
-  const autoSave = useAutoSave(resume, {
+  useAutoSave(resume, {
     interval: 30000, // 30 seconds
     debounceDelay: 1000, // 1 second
     saveOnUnload: true,

@@ -74,21 +74,21 @@ export const templateUtils = {
    */
   formatDate: (date: string, format: 'month-year' | 'full' | 'year' = 'month-year'): string => {
     if (!date) return '';
-    
+
     try {
       const dateObj = new Date(date);
-      
+
       switch (format) {
         case 'month-year':
-          return dateObj.toLocaleDateString('en-US', { 
-            month: 'short', 
-            year: 'numeric' 
+          return dateObj.toLocaleDateString('en-US', {
+            month: 'short',
+            year: 'numeric'
           });
         case 'full':
-          return dateObj.toLocaleDateString('en-US', { 
-            month: 'long', 
+          return dateObj.toLocaleDateString('en-US', {
+            month: 'long',
             day: 'numeric',
-            year: 'numeric' 
+            year: 'numeric'
           });
         case 'year':
           return dateObj.getFullYear().toString();
@@ -108,10 +108,10 @@ export const templateUtils = {
    */
   formatPhoneNumber: (phone: string): string => {
     if (!phone) return '';
-    
+
     // Remove all non-digit characters
     const digits = phone.replace(/\D/g, '');
-    
+
     // Format based on length
     if (digits.length === 10) {
       return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
@@ -129,7 +129,7 @@ export const templateUtils = {
    * @param className - CSS class for the list
    * @returns JSX element with bullet points
    */
-  renderBulletPoints: (items: string[], className: string = ""): JSX.Element => {
+  renderBulletPoints: (items: string[], className: string = ""): React.ReactElement => {
     if (!items || items.length === 0) {
       return <></>;
     }
@@ -152,16 +152,16 @@ export const templateUtils = {
    */
   formatUrl: (url: string): string => {
     if (!url) return '';
-    
+
     try {
       const urlObj = new URL(url);
       let hostname = urlObj.hostname;
-      
+
       // Remove www. prefix
       if (hostname.startsWith('www.')) {
         hostname = hostname.slice(4);
       }
-      
+
       return hostname + urlObj.pathname + urlObj.search;
     } catch (error) {
       // If URL parsing fails, return original string

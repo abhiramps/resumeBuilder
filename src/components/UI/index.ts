@@ -25,16 +25,3 @@ export { ColorPicker } from "./ColorPicker";
 export type { ColorPickerProps } from "./ColorPicker";
 
 export { SaveStatusIndicator } from "./SaveStatusIndicator";
-
-// Re-export all types for convenience
-export type { InputProps } from "./Input";
-
-export type { TextareaProps } from "./Textarea";
-
-export type { ButtonProps, ButtonVariant, ButtonSize } from "./Button";
-
-export type { SelectProps, SelectOption } from "./Select";
-
-export type { RangeSliderProps } from "./RangeSlider";
-
-export type { ColorPickerProps } from "./ColorPicker";

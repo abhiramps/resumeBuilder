@@ -275,7 +275,7 @@ export const ResumePreview = forwardRef<HTMLDivElement, ResumePreviewProps>(
                     {category.replace(/([A-Z])/g, ' $1').trim()}:
                   </span>
                   <span style={{ marginLeft: "8px" }}>
-                    {skillNames.join(", ")}
+                    {(skillNames as string[]).join(", ")}
                   </span>
                 </div>
               ))}

@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import { forwardRef } from "react";
 import { PreviewContainer } from "../Preview/PreviewContainer";
 
 /**
@@ -16,7 +16,7 @@ interface PreviewProps {
  * within the three-panel layout structure.
  */
 const Preview = forwardRef<HTMLDivElement, PreviewProps>(
-  ({ className = "" }, ref) => {
+  ({ className = "" }) => {
     return (
       <div className={`layout-preview ${className}`}>
         <PreviewContainer

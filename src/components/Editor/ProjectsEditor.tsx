@@ -8,8 +8,7 @@ import {
     checkATSCompliance,
     ProjectValidationErrors,
     TECH_STACK_SUGGESTIONS,
-    filterTechStackSuggestions,
-    validateURL
+    filterTechStackSuggestions
 } from "../../utils/projectValidation";
 
 /**

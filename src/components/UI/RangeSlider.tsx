@@ -122,25 +122,23 @@ export const RangeSlider = forwardRef<HTMLInputElement, RangeSliderProps>(
               ${className}
             `}
             style={{
-              background: `linear-gradient(to right, ${
-                hasError ? "#ef4444" : "#3b82f6"
-              } 0%, ${
-                hasError ? "#ef4444" : "#3b82f6"
-              } ${percentage}%, #e5e7eb ${percentage}%, #e5e7eb 100%)`,
+              background: `linear-gradient(to right, ${hasError ? "#ef4444" : "#3b82f6"
+                } 0%, ${hasError ? "#ef4444" : "#3b82f6"
+                } ${percentage}%, #e5e7eb ${percentage}%, #e5e7eb 100%)`,
             }}
             aria-invalid={hasError}
             aria-describedby={
               error
                 ? `${sliderId}-error`
                 : helperText
-                ? `${sliderId}-helper`
-                : undefined
+                  ? `${sliderId}-helper`
+                  : undefined
             }
             {...props}
           />
 
           {/* Custom slider thumb styling */}
-          <style jsx>{`
+          <style>{`
             input[type="range"]::-webkit-slider-thumb {
               appearance: none;
               height: 20px;

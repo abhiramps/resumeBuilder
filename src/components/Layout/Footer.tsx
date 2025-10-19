@@ -100,7 +100,7 @@ const Footer: React.FC = () => {
             {/* View Details Button */}
             {atsValidation.issues.length > 0 && (
               <Button
-                variant="outline"
+                variant="secondary"
                 size="sm"
                 onClick={handleViewDetails}
                 className="text-sm font-medium border-gray-300 hover:border-primary hover:text-primary"

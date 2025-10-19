@@ -7,14 +7,11 @@ import {
     hasValidationErrors,
     checkSkillsATSCompliance,
     SkillsValidationErrors,
-    SKILL_SUGGESTIONS,
     filterSkillSuggestions,
-    validateSkillName,
     generateId,
     parseSkillsInput,
     getPopularSkillsForCategory,
     CATEGORY_TEMPLATES,
-    DEFAULT_SKILL_CATEGORIES,
     convertSkillsToCategories
 } from "../../utils/skillsValidation";
 

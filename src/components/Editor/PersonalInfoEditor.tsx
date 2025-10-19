@@ -31,7 +31,7 @@ interface ValidationErrors {
   linkedin?: string;
   github?: string;
   portfolio?: string;
-  customLinks?: { [key: string]: string };
+  customLinks?: { [key: string]: string | undefined };
 }
 
 /**
@@ -303,9 +303,8 @@ export const PersonalInfoEditor: React.FC<PersonalInfoEditorProps> = ({
    */
   const CollapseIcon = () => (
     <svg
-      className={`w-5 h-5 transition-transform duration-200 ${
-        isCollapsed ? "rotate-180" : ""
-      }`}
+      className={`w-5 h-5 transition-transform duration-200 ${isCollapsed ? "rotate-180" : ""
+        }`}
       fill="none"
       stroke="currentColor"
       viewBox="0 0 24 24"

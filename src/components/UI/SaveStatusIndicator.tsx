@@ -10,7 +10,7 @@ import { AutoSaveResult } from "../../hooks/useAutoSave";
 export const SaveStatusIndicator: React.FC<{
   autoSaveResult: AutoSaveResult;
 }> = ({ autoSaveResult }) => {
-  const { saveStatus, lastSaved, error } = autoSaveResult;
+  const { saveStatus, lastSaved } = autoSaveResult;
 
   if (saveStatus === "saving") {
     return (
