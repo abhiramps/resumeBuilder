@@ -27,7 +27,7 @@ export const ModernTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
         const accentColor = layout.colors?.primary || '#3b82f6';
 
         const containerStyles: React.CSSProperties = {
-            fontFamily: 'Arial, Helvetica, sans-serif',
+            fontFamily: layout.fontFamily || 'Arial, Helvetica, sans-serif',
             fontSize: `${layout.fontSize.body}pt`,
             lineHeight: layout.lineHeight,
             color: layout.colors?.text || '#1f2937',
