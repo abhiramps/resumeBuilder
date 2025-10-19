@@ -7,6 +7,11 @@
 export { TemplateBase, templateUtils } from "./TemplateBase";
 export type { TemplateBaseProps } from "./TemplateBase";
 
+// Template components
+export { ClassicTemplate } from "./ClassicTemplate";
+export { ModernTemplate } from "./ModernTemplate";
+export { MinimalTemplate } from "./MinimalTemplate";
+
 // Template configurations and types
 export { TEMPLATE_CONFIGS } from "../../types/template.types";
 export type { TemplateConfig } from "../../types/template.types";
