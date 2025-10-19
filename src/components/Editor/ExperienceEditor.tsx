@@ -547,7 +547,6 @@ export const ExperienceEditor: React.FC<ExperienceEditorProps> = ({
     className = "",
 }) => {
     const { resume, dispatch } = useResumeContext();
-    const [isCollapsed, setIsCollapsed] = useState(false);
     const [editingEntryId, setEditingEntryId] = useState<string | null>(null);
 
     // Find the experience section
@@ -683,43 +682,37 @@ export const ExperienceEditor: React.FC<ExperienceEditorProps> = ({
             debouncedUpdate(updatedExperiences);
         }
     };
-
-    /**
-     * Collapse/expand icon
-     */
-    const CollapseIcon = () => (
-        <svg
-            className={`w-5 h-5 transition-transform duration-200 ${isCollapsed ? "rotate-180" : ""
-                }`}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-        >
-            <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 9l-7 7-7-7"
-            />
-        </svg>
-    );
-
     // Don't render if no experience section exists
     if (!experienceSection) {
         return null;
     }
 
     return (
-        <div className={`bg-white rounded-lg border border-gray-200 ${className}`}>
-            {/* Header */}
-            <div
-                className="flex items-center justify-between p-4 border-b border-gray-200 cursor-pointer hover:bg-gray-50"
-                onClick={() => setIsCollapsed(!isCollapsed)}
-            >
-                <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+        <div className={className}>
+            <div className="space-y-4">
+                <div className="flex items-center justify-between mb-4">
+                    <p className="text-sm text-gray-500">
+                        {experiences.length} {experiences.length === 1 ? "entry" : "entries"}
+                    </p>
+                    <Button
+                        variant="primary"
+                        size="sm"
+                        onClick={addExperience}
+                        leftIcon={
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                            </svg>
+                        }
+                    >
+                        Add Experience
+                    </Button>
+                </div>
+
+                {/* Experience Entries */}
+                {experiences.length === 0 ? (
+                    <div className="text-center py-12 text-gray-500">
                         <svg
-                            className="w-5 h-5 text-blue-600"
+                            className="w-12 h-12 mx-auto mb-4 text-gray-300"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -731,85 +724,35 @@ export const ExperienceEditor: React.FC<ExperienceEditorProps> = ({
                                 d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0V6a2 2 0 012 2v6a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2V6"
                             />
                         </svg>
-                    </div>
-                    <div>
-                        <h3 className="text-lg font-semibold text-gray-900">
-                            Work Experience
-                        </h3>
-                        <p className="text-sm text-gray-500">
-                            {experiences.length} {experiences.length === 1 ? "entry" : "entries"}
+                        <h4 className="text-lg font-medium text-gray-900 mb-2">No work experience added</h4>
+                        <p className="text-gray-500 mb-4">
+                            Add your work experience to showcase your professional background.
                         </p>
-                    </div>
-                </div>
-                <div className="flex items-center space-x-2">
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            addExperience();
-                        }}
-                        leftIcon={
+                        <Button onClick={addExperience} leftIcon={
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                             </svg>
-                        }
-                    >
-                        Add Experience
-                    </Button>
-                    <CollapseIcon />
-                </div>
+                        }>
+                            Add Your First Experience
+                        </Button>
+                    </div>
+                ) : (
+                    experiences.map((experience) => (
+                        <ExperienceEntry
+                            key={experience.id}
+                            experience={experience}
+                            isEditing={editingEntryId === experience.id}
+                            onUpdate={updateExperience}
+                            onDelete={deleteExperience}
+                            onDuplicate={duplicateExperience}
+                            onToggleEdit={toggleEditEntry}
+                            onMoveUp={moveExperienceUp}
+                            onMoveDown={moveExperienceDown}
+                        />
+                    ))
+                )}
             </div>
-
-            {/* Experience Entries */}
-            {!isCollapsed && (
-                <div className="p-6 space-y-6">
-                    {experiences.length === 0 ? (
-                        <div className="text-center py-12 text-gray-500">
-                            <svg
-                                className="w-12 h-12 mx-auto mb-4 text-gray-300"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0V6a2 2 0 012 2v6a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2V6"
-                                />
-                            </svg>
-                            <h4 className="text-lg font-medium text-gray-900 mb-2">No work experience added</h4>
-                            <p className="text-gray-500 mb-4">
-                                Add your work experience to showcase your professional background.
-                            </p>
-                            <Button onClick={addExperience} leftIcon={
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                                </svg>
-                            }>
-                                Add Your First Experience
-                            </Button>
-                        </div>
-                    ) : (
-                        experiences.map((experience) => (
-                            <ExperienceEntry
-                                key={experience.id}
-                                experience={experience}
-
-                                isEditing={editingEntryId === experience.id}
-                                onUpdate={updateExperience}
-                                onDelete={deleteExperience}
-                                onDuplicate={duplicateExperience}
-                                onToggleEdit={toggleEditEntry}
-                                onMoveUp={moveExperienceUp}
-                                onMoveDown={moveExperienceDown}
-                            />
-                        ))
-                    )}
-                </div>
-            )}
-        </div>
+        </div >
     );
 };
 
