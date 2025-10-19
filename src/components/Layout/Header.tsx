@@ -2,7 +2,7 @@ import React from "react";
 import { useResume } from "../../contexts/ResumeContext";
 import { TemplateType } from "../../types/resume.types";
 import { Download, Save, FileText } from "lucide-react";
-import { Select } from "../UI";
+import { TemplateSelector } from "../UI";
 
 const Header: React.FC = () => {
   const { resume, dispatch } = useResume();
@@ -20,14 +20,6 @@ const Header: React.FC = () => {
     // TODO: Implement PDF export functionality
     console.log("Exporting PDF...", resume);
   };
-
-  // Template options for the Select component
-  const templateOptions = [
-    { value: "classic", label: "Classic" },
-    { value: "modern", label: "Modern" },
-    { value: "minimal", label: "Minimal" },
-    { value: "abhiram", label: "Abhiram" },
-  ];
 
   return (
     <header className="sticky top-0 z-30 bg-white border-b border-gray-200 shadow-sm backdrop-blur-sm bg-white/95">
@@ -50,24 +42,10 @@ const Header: React.FC = () => {
           </div>
 
           {/* Template Selector */}
-          <div className="flex items-center space-x-4 bg-gray-50 px-4 py-2 rounded-lg">
-            <div className="hidden sm:block">
-              <label className="text-sm font-medium text-gray-700">
-                Template:
-              </label>
-            </div>
-            <div className="w-32 sm:w-40">
-              <Select
-                options={templateOptions}
-                value={resume.template}
-                onChange={(value) =>
-                  handleTemplateChange(value as TemplateType)
-                }
-                placeholder="Template"
-                className="text-sm border-0 bg-white shadow-sm"
-              />
-            </div>
-          </div>
+          <TemplateSelector
+            currentTemplate={resume.template}
+            onTemplateChange={handleTemplateChange}
+          />
 
           {/* Action Buttons */}
           <div className="flex items-center space-x-2 sm:space-x-3">

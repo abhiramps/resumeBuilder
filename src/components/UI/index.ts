@@ -25,3 +25,5 @@ export { ColorPicker } from "./ColorPicker";
 export type { ColorPickerProps } from "./ColorPicker";
 
 export { SaveStatusIndicator } from "./SaveStatusIndicator";
+
+export { TemplateSelector } from "./TemplateSelector";

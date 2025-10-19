@@ -11,6 +11,7 @@ export type { TemplateBaseProps } from "./TemplateBase";
 export { ClassicTemplate } from "./ClassicTemplate";
 export { ModernTemplate } from "./ModernTemplate";
 export { MinimalTemplate } from "./MinimalTemplate";
+export { AbhiramTemplate } from "./AbhiramTemplate";
 
 // Template configurations and types
 export { TEMPLATE_CONFIGS } from "../../types/template.types";
