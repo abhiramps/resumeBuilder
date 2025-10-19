@@ -23,3 +23,6 @@ export type { SkillsEditorProps } from "./SkillsEditor";
 
 export { EducationEditor } from "./EducationEditor";
 export type { EducationEditorProps } from "./EducationEditor";
+
+export { CertificationsEditor } from "./CertificationsEditor";
+export type { CertificationsEditorProps } from "./CertificationsEditor";

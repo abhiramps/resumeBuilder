@@ -1,7 +1,7 @@
 import React from "react";
 import { useResume } from "../../contexts/ResumeContext";
 import { Plus, Eye, EyeOff } from "lucide-react";
-import { SummaryEditor, ExperienceEditor, ProjectsEditor, SkillsEditor, EducationEditor } from "../Editor";
+import { SummaryEditor, ExperienceEditor, ProjectsEditor, SkillsEditor, EducationEditor, CertificationsEditor } from "../Editor";
 
 const Sidebar: React.FC = () => {
   const { resume, dispatch } = useResume();
@@ -203,6 +203,11 @@ const Sidebar: React.FC = () => {
           {/* Education Editor */}
           <div className="mb-8">
             <EducationEditor />
+          </div>
+
+          {/* Certifications Editor */}
+          <div className="mb-8">
+            <CertificationsEditor />
           </div>
 
           {/* TODO: Add other section editors */}

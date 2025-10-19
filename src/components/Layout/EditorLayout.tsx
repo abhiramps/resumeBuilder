@@ -193,8 +193,8 @@ export const MobileEditorLayout: React.FC<EditorLayoutProps> = ({
                 setActivePanel(activePanel === "sidebar" ? null : "sidebar")
               }
               className={`flex items-center space-x-2 px-4 py-2 rounded-md transition-colors ${activePanel === "sidebar"
-                  ? "bg-primary text-white"
-                  : "text-gray-600 hover:bg-gray-100"
+                ? "bg-primary text-white"
+                : "text-gray-600 hover:bg-gray-100"
                 }`}
             >
               <svg
@@ -218,8 +218,8 @@ export const MobileEditorLayout: React.FC<EditorLayoutProps> = ({
                 setActivePanel(activePanel === "controls" ? null : "controls")
               }
               className={`flex items-center space-x-2 px-4 py-2 rounded-md transition-colors ${activePanel === "controls"
-                  ? "bg-primary text-white"
-                  : "text-gray-600 hover:bg-gray-100"
+                ? "bg-primary text-white"
+                : "text-gray-600 hover:bg-gray-100"
                 }`}
             >
               <svg
