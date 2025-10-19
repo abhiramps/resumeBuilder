@@ -21,3 +21,5 @@ export type { ProjectsEditorProps } from "./ProjectsEditor";
 export { SkillsEditor } from "./SkillsEditor";
 export type { SkillsEditorProps } from "./SkillsEditor";
 
+export { EducationEditor } from "./EducationEditor";
+export type { EducationEditorProps } from "./EducationEditor";
