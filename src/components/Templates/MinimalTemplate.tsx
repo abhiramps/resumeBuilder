@@ -24,11 +24,16 @@ export const MinimalTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
             .filter(section => section.enabled)
             .sort((a, b) => a.order - b.order);
 
+        // Use layout colors or fall back to minimal black/white
+        const primaryColor = layout.colors?.primary || '#000000';
+        const secondaryColor = layout.colors?.secondary || '#000000';
+        const textColor = layout.colors?.text || '#000000';
+
         const containerStyles: React.CSSProperties = {
-            fontFamily: 'Arial, Helvetica, sans-serif',
+            fontFamily: layout.fontFamily || 'Arial, Helvetica, sans-serif',
             fontSize: `${layout.fontSize.body}pt`,
             lineHeight: layout.lineHeight,
-            color: '#000000',
+            color: textColor,
             backgroundColor: 'white',
             width: printMode ? '8.5in' : '100%',
             maxWidth: '8.5in',
@@ -45,7 +50,7 @@ export const MinimalTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
         const nameStyles: React.CSSProperties = {
             fontSize: `${layout.fontSize.name}pt`,
             fontWeight: 'bold',
-            color: '#000000',
+            color: primaryColor,
             margin: 0,
             lineHeight: 1.1,
             display: 'inline',
@@ -53,7 +58,7 @@ export const MinimalTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
 
         const titleStyles: React.CSSProperties = {
             fontSize: `${layout.fontSize.title}pt`,
-            color: '#000000',
+            color: primaryColor,
             margin: 0,
             display: 'inline',
             marginLeft: '12px',
@@ -61,14 +66,14 @@ export const MinimalTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
 
         const contactStyles: React.CSSProperties = {
             fontSize: `${layout.fontSize.body - 1}pt`,
-            color: '#000000',
+            color: primaryColor,
             marginTop: '4px',
         };
 
         const sectionHeaderStyles: React.CSSProperties = {
             fontSize: `${layout.fontSize.sectionHeader}pt`,
             fontWeight: 'bold',
-            color: '#000000',
+            color: primaryColor,
             textTransform: 'uppercase',
             marginBottom: '6px',
             marginTop: `${layout.sectionSpacing}px`,

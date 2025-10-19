@@ -25,12 +25,17 @@ export const ClassicTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
             .filter(section => section.enabled)
             .sort((a, b) => a.order - b.order);
 
+        // Use layout colors or fall back to classic black/white
+        const primaryColor = layout.colors?.primary || '#000000';
+        const secondaryColor = layout.colors?.secondary || '#333333';
+        const textColor = layout.colors?.text || '#000000';
+
         // Classic template uses Times New Roman with conservative styling
         const containerStyles: React.CSSProperties = {
-            fontFamily: 'Times New Roman, serif',
+            fontFamily: layout.fontFamily || 'Times New Roman, serif',
             fontSize: `${layout.fontSize.body}pt`,
             lineHeight: layout.lineHeight,
-            color: '#000000',
+            color: textColor,
             backgroundColor: 'white',
             width: printMode ? '8.5in' : '100%',
             maxWidth: '8.5in',
@@ -43,14 +48,14 @@ export const ClassicTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
         const headerStyles: React.CSSProperties = {
             textAlign: 'center',
             marginBottom: `${layout.sectionSpacing}px`,
-            borderBottom: '2px solid #000000',
+            borderBottom: `2px solid ${primaryColor}`,
             paddingBottom: '12px',
         };
 
         const nameStyles: React.CSSProperties = {
             fontSize: `${layout.fontSize.name}pt`,
             fontWeight: 'bold',
-            color: '#000000',
+            color: primaryColor,
             marginBottom: '6px',
             lineHeight: 1.2,
             textTransform: 'uppercase',
@@ -59,14 +64,14 @@ export const ClassicTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
 
         const titleStyles: React.CSSProperties = {
             fontSize: `${layout.fontSize.title}pt`,
-            color: '#333333',
+            color: secondaryColor,
             marginBottom: '8px',
             fontStyle: 'italic',
         };
 
         const contactStyles: React.CSSProperties = {
             fontSize: `${layout.fontSize.body - 1}pt`,
-            color: '#333333',
+            color: secondaryColor,
             display: 'flex',
             justifyContent: 'center',
             flexWrap: 'wrap',
@@ -76,9 +81,9 @@ export const ClassicTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
         const sectionHeaderStyles: React.CSSProperties = {
             fontSize: `${layout.fontSize.sectionHeader}pt`,
             fontWeight: 'bold',
-            color: '#000000',
+            color: primaryColor,
             textTransform: 'uppercase',
-            borderBottom: '1px solid #000000',
+            borderBottom: `1px solid ${primaryColor}`,
             paddingBottom: '4px',
             marginBottom: '12px',
             marginTop: `${layout.sectionSpacing}px`,
@@ -161,7 +166,7 @@ export const ClassicTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
                                     <h3 style={{
                                         fontSize: `${layout.fontSize.body + 1}pt`,
                                         fontWeight: 'bold',
-                                        color: '#000000',
+                                        color: primaryColor,
                                         margin: 0,
                                         lineHeight: 1.2,
                                     }}>
@@ -170,7 +175,7 @@ export const ClassicTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
                                     <p style={{
                                         fontSize: `${layout.fontSize.body}pt`,
                                         fontStyle: 'italic',
-                                        color: '#333333',
+                                        color: secondaryColor,
                                         margin: '2px 0',
                                     }}>
                                         {exp.company || 'Company Name'}{exp.location && ` • ${exp.location}`}
@@ -178,7 +183,7 @@ export const ClassicTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
                                 </div>
                                 <span style={{
                                     fontSize: `${layout.fontSize.body - 1}pt`,
-                                    color: '#333333',
+                                    color: secondaryColor,
                                     whiteSpace: 'nowrap',
                                     marginLeft: '12px',
                                 }}>
@@ -245,7 +250,7 @@ export const ClassicTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
                                     <h3 style={{
                                         fontSize: `${layout.fontSize.body + 1}pt`,
                                         fontWeight: 'bold',
-                                        color: '#000000',
+                                        color: primaryColor,
                                         margin: 0,
                                         lineHeight: 1.2,
                                     }}>
@@ -253,7 +258,7 @@ export const ClassicTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
                                     </h3>
                                     <p style={{
                                         fontSize: `${layout.fontSize.body}pt`,
-                                        color: '#333333',
+                                        color: secondaryColor,
                                         margin: '2px 0',
                                     }}>
                                         {edu.institution || 'Institution'}{edu.location && ` • ${edu.location}`}
@@ -261,7 +266,7 @@ export const ClassicTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
                                     {edu.gpa && (
                                         <p style={{
                                             fontSize: `${layout.fontSize.body - 1}pt`,
-                                            color: '#333333',
+                                            color: secondaryColor,
                                             margin: '2px 0',
                                         }}>
                                             GPA: {edu.gpa}
@@ -270,7 +275,7 @@ export const ClassicTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
                                     {edu.coursework && edu.coursework.length > 0 && (
                                         <p style={{
                                             fontSize: `${layout.fontSize.body - 1}pt`,
-                                            color: '#333333',
+                                            color: secondaryColor,
                                             margin: '2px 0',
                                         }}>
                                             <strong>Relevant Coursework:</strong> {edu.coursework.join(', ')}
@@ -279,7 +284,7 @@ export const ClassicTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
                                 </div>
                                 <span style={{
                                     fontSize: `${layout.fontSize.body - 1}pt`,
-                                    color: '#333333',
+                                    color: secondaryColor,
                                     whiteSpace: 'nowrap',
                                     marginLeft: '12px',
                                 }}>
@@ -320,7 +325,7 @@ export const ClassicTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
                         >
                             <span style={{
                                 fontWeight: 'bold',
-                                color: '#000000',
+                                color: primaryColor,
                                 textTransform: 'capitalize',
                                 fontSize: `${layout.fontSize.body}pt`,
                             }}>
@@ -363,7 +368,7 @@ export const ClassicTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
                                     <h3 style={{
                                         fontSize: `${layout.fontSize.body + 1}pt`,
                                         fontWeight: 'bold',
-                                        color: '#000000',
+                                        color: primaryColor,
                                         margin: 0,
                                         lineHeight: 1.2,
                                     }}>
@@ -371,7 +376,7 @@ export const ClassicTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
                                     </h3>
                                     <p style={{
                                         fontSize: `${layout.fontSize.body}pt`,
-                                        color: '#333333',
+                                        color: secondaryColor,
                                         margin: '2px 0',
                                     }}>
                                         {cert.issuer || 'Issuing Organization'}
@@ -379,7 +384,7 @@ export const ClassicTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
                                     {cert.credentialId && (
                                         <p style={{
                                             fontSize: `${layout.fontSize.body - 1}pt`,
-                                            color: '#333333',
+                                            color: secondaryColor,
                                             margin: '2px 0',
                                         }}>
                                             Credential ID: {cert.credentialId}
@@ -389,7 +394,7 @@ export const ClassicTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
                                 <div style={{ textAlign: 'right', marginLeft: '12px' }}>
                                     <span style={{
                                         fontSize: `${layout.fontSize.body - 1}pt`,
-                                        color: '#333333',
+                                        color: secondaryColor,
                                         whiteSpace: 'nowrap',
                                     }}>
                                         {templateHelpers.date.formatDate(cert.issueDate || '')}
@@ -397,7 +402,7 @@ export const ClassicTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
                                     {cert.expiryDate && (
                                         <div style={{
                                             fontSize: `${layout.fontSize.body - 1}pt`,
-                                            color: '#333333',
+                                            color: secondaryColor,
                                             whiteSpace: 'nowrap',
                                         }}>
                                             Expires: {templateHelpers.date.formatDate(cert.expiryDate)}
@@ -436,7 +441,7 @@ export const ClassicTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
                                 <h3 style={{
                                     fontSize: `${layout.fontSize.body + 1}pt`,
                                     fontWeight: 'bold',
-                                    color: '#000000',
+                                    color: primaryColor,
                                     margin: 0,
                                     lineHeight: 1.2,
                                     flex: 1,
@@ -445,7 +450,7 @@ export const ClassicTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
                                 </h3>
                                 <span style={{
                                     fontSize: `${layout.fontSize.body - 1}pt`,
-                                    color: '#333333',
+                                    color: secondaryColor,
                                     whiteSpace: 'nowrap',
                                     marginLeft: '12px',
                                 }}>
@@ -460,7 +465,7 @@ export const ClassicTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
                                 <p style={{
                                     fontSize: `${layout.fontSize.body}pt`,
                                     fontStyle: 'italic',
-                                    color: '#333333',
+                                    color: secondaryColor,
                                     margin: '2px 0',
                                 }}>
                                     <strong>Technologies:</strong> {project.techStack.join(', ')}
@@ -571,7 +576,7 @@ export const ClassicTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
                     <div style={{
                         textAlign: 'center',
                         padding: '40px 20px',
-                        color: '#666666',
+                        color: secondaryColor,
                         fontStyle: 'italic',
                     }}>
                         <p>No sections enabled. Enable sections from the sidebar to see your resume content.</p>

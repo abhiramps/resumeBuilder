@@ -25,16 +25,16 @@ export const AbhiramTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
             .filter(section => section.enabled)
             .sort((a, b) => a.order - b.order);
 
-        // Color scheme from original template
-        const primaryColor = '#2c3e50';
-        const secondaryColor = '#555';
-        const textColor = '#333';
-        const dateColor = '#666';
+        // Use layout colors or fall back to original template colors
+        const primaryColor = layout.colors?.primary || '#2c3e50';
+        const secondaryColor = layout.colors?.secondary || '#555';
+        const textColor = layout.colors?.text || '#333';
+        const dateColor = secondaryColor;
 
         const containerStyles: React.CSSProperties = {
-            fontFamily: 'Arial, Helvetica, sans-serif',
-            fontSize: '10pt',
-            lineHeight: 1.3,
+            fontFamily: layout.fontFamily || 'Arial, Helvetica, sans-serif',
+            fontSize: `${layout.fontSize?.body || 10}pt`,
+            lineHeight: layout.lineHeight || 1.3,
             color: textColor,
             backgroundColor: 'white',
             width: printMode ? '8.5in' : '100%',
@@ -47,13 +47,13 @@ export const AbhiramTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
 
         const headerStyles: React.CSSProperties = {
             textAlign: 'center',
-            marginBottom: '10px',
+            marginBottom: `${layout.sectionSpacing || 10}px`,
             paddingBottom: '8px',
             borderBottom: `2px solid ${primaryColor}`,
         };
 
         const nameStyles: React.CSSProperties = {
-            fontSize: '22pt',
+            fontSize: `${layout.fontSize?.name || 22}pt`,
             fontWeight: 'bold',
             color: primaryColor,
             marginBottom: '6px',
@@ -61,24 +61,24 @@ export const AbhiramTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
         };
 
         const roleStyles: React.CSSProperties = {
-            fontSize: '12pt',
+            fontSize: `${layout.fontSize?.title || 12}pt`,
             color: secondaryColor,
             fontWeight: 600,
             marginBottom: '8px',
         };
 
         const contactStyles: React.CSSProperties = {
-            fontSize: '9pt',
+            fontSize: `${(layout.fontSize?.body || 10) - 1}pt`,
             color: secondaryColor,
-            lineHeight: 1.5,
+            lineHeight: layout.lineHeight || 1.5,
         };
 
         const sectionStyles: React.CSSProperties = {
-            marginBottom: '10px',
+            marginBottom: `${layout.sectionSpacing || 10}px`,
         };
 
         const sectionTitleStyles: React.CSSProperties = {
-            fontSize: '12pt',
+            fontSize: `${layout.fontSize?.sectionHeader || 12}pt`,
             fontWeight: 'bold',
             color: primaryColor,
             textTransform: 'uppercase',
@@ -127,7 +127,7 @@ export const AbhiramTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
             return (
                 <div style={{
                     textAlign: 'justify',
-                    lineHeight: 1.35,
+                    lineHeight: layout.lineHeight || 1.35,
                 }}>
                     {content.summary}
                 </div>
@@ -145,7 +145,7 @@ export const AbhiramTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
             }, {} as Record<string, string[]>);
 
             return (
-                <div style={{ lineHeight: 1.4 }}>
+                <div style={{ lineHeight: layout.lineHeight || 1.4 }}>
                     {Object.entries(skillsByCategory).map(([category, skillNames]) => (
                         <div key={category} style={{ marginBottom: '3px' }}>
                             <strong style={{
@@ -184,7 +184,7 @@ export const AbhiramTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
                                     <div style={{
                                         fontWeight: 'bold',
                                         color: primaryColor,
-                                        fontSize: '10.5pt',
+                                        fontSize: `${(layout.fontSize?.body || 10) + 0.5}pt`,
                                     }}>
                                         {exp.jobTitle || 'Job Title'}
                                     </div>
@@ -199,7 +199,7 @@ export const AbhiramTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
                                 </div>
                                 <div style={{
                                     color: dateColor,
-                                    fontSize: '9pt',
+                                    fontSize: `${(layout.fontSize?.body || 10) - 1}pt`,
                                     whiteSpace: 'nowrap',
                                 }}>
                                     {templateHelpers.date.formatDateRange(
@@ -212,7 +212,7 @@ export const AbhiramTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
                             {exp.description && (
                                 <p style={{
                                     margin: '3px 0',
-                                    lineHeight: 1.3,
+                                    lineHeight: layout.lineHeight || 1.3,
                                 }}>
                                     {exp.description}
                                 </p>
@@ -225,7 +225,7 @@ export const AbhiramTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
                                     {exp.achievements.map((achievement, achIndex) => (
                                         <li key={achIndex} style={{
                                             marginBottom: '2px',
-                                            lineHeight: 1.3,
+                                            lineHeight: layout.lineHeight || 1.3,
                                         }}>
                                             {achievement}
                                         </li>
@@ -260,7 +260,7 @@ export const AbhiramTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
                                     <div style={{
                                         fontWeight: 'bold',
                                         color: primaryColor,
-                                        fontSize: '10.5pt',
+                                        fontSize: `${(layout.fontSize?.body || 10) + 0.5}pt`,
                                     }}>
                                         {project.name || 'Project Name'}
                                     </div>
@@ -276,7 +276,7 @@ export const AbhiramTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
                                 </div>
                                 <div style={{
                                     color: dateColor,
-                                    fontSize: '9pt',
+                                    fontSize: `${(layout.fontSize?.body || 10) - 1}pt`,
                                     whiteSpace: 'nowrap',
                                     marginLeft: '12px',
                                 }}>
@@ -290,7 +290,7 @@ export const AbhiramTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
                             {project.description && (
                                 <p style={{
                                     margin: '3px 0',
-                                    lineHeight: 1.3,
+                                    lineHeight: layout.lineHeight || 1.3,
                                 }}>
                                     {project.description}
                                 </p>
@@ -333,7 +333,7 @@ export const AbhiramTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
                                 </div>
                                 <div style={{
                                     color: dateColor,
-                                    fontSize: '9pt',
+                                    fontSize: `${(layout.fontSize?.body || 10) - 1}pt`,
                                     whiteSpace: 'nowrap',
                                 }}>
                                     {templateHelpers.date.formatDateRange(
@@ -346,7 +346,7 @@ export const AbhiramTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
                                 <div style={{
                                     marginTop: '2px',
                                     color: secondaryColor,
-                                    fontSize: '9.5pt',
+                                    fontSize: `${(layout.fontSize?.body || 10) - 0.5}pt`,
                                 }}>
                                     GPA: {edu.gpa}
                                 </div>
@@ -355,7 +355,7 @@ export const AbhiramTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
                                 <div style={{
                                     marginTop: '2px',
                                     color: secondaryColor,
-                                    fontSize: '9.5pt',
+                                    fontSize: `${(layout.fontSize?.body || 10) - 0.5}pt`,
                                 }}>
                                     Relevant Coursework: {edu.coursework.join(', ')}
                                 </div>
@@ -410,7 +410,7 @@ export const AbhiramTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
             return (
                 <div style={{
                     whiteSpace: 'pre-wrap',
-                    lineHeight: 1.3,
+                    lineHeight: layout.lineHeight || 1.3,
                 }}>
                     {content.custom.content}
                 </div>
