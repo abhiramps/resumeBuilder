@@ -124,11 +124,12 @@ export const TemplateImportExport: React.FC = () => {
             {showModal && (
                 <>
                     <div
-                        className="fixed inset-0 bg-black bg-opacity-30 z-40"
+                        className="fixed inset-0 bg-black bg-opacity-30"
+                        style={{ zIndex: 9998 }}
                         onClick={handleCancel}
                     />
 
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                    <div className="fixed inset-0 flex items-center justify-center p-4" style={{ zIndex: 9999 }}>
                         <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
                             {/* Header */}
                             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
@@ -151,8 +152,8 @@ export const TemplateImportExport: React.FC = () => {
                                 <button
                                     onClick={() => setActiveTab('export')}
                                     className={`flex-1 px-6 py-3 text-sm font-medium transition-colors ${activeTab === 'export'
-                                            ? 'text-blue-600 border-b-2 border-blue-600'
-                                            : 'text-gray-600 hover:text-gray-800'
+                                        ? 'text-blue-600 border-b-2 border-blue-600'
+                                        : 'text-gray-600 hover:text-gray-800'
                                         }`}
                                 >
                                     Export
@@ -160,8 +161,8 @@ export const TemplateImportExport: React.FC = () => {
                                 <button
                                     onClick={() => setActiveTab('import')}
                                     className={`flex-1 px-6 py-3 text-sm font-medium transition-colors ${activeTab === 'import'
-                                            ? 'text-blue-600 border-b-2 border-blue-600'
-                                            : 'text-gray-600 hover:text-gray-800'
+                                        ? 'text-blue-600 border-b-2 border-blue-600'
+                                        : 'text-gray-600 hover:text-gray-800'
                                         }`}
                                 >
                                     Import
