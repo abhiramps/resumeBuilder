@@ -4,6 +4,7 @@ export { DraggableSection } from './DraggableSection';
 export { ATSScorePanel } from './ATSScorePanel';
 export { EditorSidebar } from './EditorSidebar';
 export { SectionManager } from './SectionManager';
+export { KeywordOptimizer } from './KeywordOptimizer';
 
 // Re-export existing editors
 export { PersonalInfoEditor } from './PersonalInfoEditor';

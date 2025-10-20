@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { useResume } from "../../contexts/ResumeContext";
-import { SummaryEditor, ExperienceEditor, ProjectsEditor, SkillsEditor, EducationEditor, CertificationsEditor, SectionManager } from "../Editor";
+import { SummaryEditor, ExperienceEditor, ProjectsEditor, SkillsEditor, EducationEditor, CertificationsEditor, SectionManager, KeywordOptimizer } from "../Editor";
 
 const Sidebar: React.FC = () => {
   const { resume, dispatch } = useResume();
   const [expandedSections, setExpandedSections] = useState<Set<string>>(
-    new Set(["sectionManager", "personalInfo"])
+    new Set(["sectionManager", "personalInfo", "keywordOptimizer"])
   );
 
   const toggleSection = (sectionId: string) => {
@@ -25,6 +25,13 @@ const Sidebar: React.FC = () => {
 
   return (
     <div className="h-full flex flex-col overflow-y-auto custom-scrollbar">
+      {/* Keyword Optimizer - Collapsible */}
+      <div className="border-b border-gray-200">
+        <div className="px-4 py-4">
+          <KeywordOptimizer />
+        </div>
+      </div>
+
       {/* Section Manager - Collapsible */}
       <div className="border-b border-gray-200">
         <button
