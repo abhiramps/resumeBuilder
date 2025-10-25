@@ -176,79 +176,45 @@
 
 /* Print styles for PDF export */
 @media print {
-  /* Hide non-printable elements */
-  .no-print,
-  header,
-  footer,
-  .sidebar,
-  .controls,
-  button,
-  .zoom-controls,
-  .print-mode-toggle {
-    display: none !important;
-  }
-
   /* Page setup */
   @page {
     size: letter;
     margin: 0;
   }
 
-  /* Body and root */
-  html,
-  body,
-  #root {
-    width: 8.5in;
-    height: auto;
-    margin: 0;
-    padding: 0;
-    overflow: visible;
-    background: white;
-  }
-
-  /* Ensure colors print correctly */
+  /* Reset everything */
   * {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
     color-adjust: exact !important;
   }
 
-  /* Preview area adjustments for print */
-  .preview-area {
-    background: white !important;
-    padding: 0 !important;
+  /* Body and root - simple and clean */
+  html, body {
     margin: 0 !important;
-    border-radius: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: auto !important;
     overflow: visible !important;
+    background: white !important;
   }
 
-  .preview-wrapper {
-    display: block !important;
-    width: 8.5in !important;
-    min-height: auto !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    transform: none !important;
-  }
-
-  .preview-wrapper > div {
-    transform: none !important;
-    width: 8.5in !important;
-  }
-
-  /* Resume container */
+  /* Resume templates - ensure they're visible and properly sized */
   .abhiram-template,
   .classic-template,
   .modern-template,
   .minimal-template {
     width: 8.5in !important;
-    min-height: auto !important;
+    max-width: 8.5in !important;
+    min-height: 11in !important;
     margin: 0 !important;
-    padding: 0 !important;
     box-shadow: none !important;
     border: none !important;
     transform: none !important;
     background: white !important;
+    display: block !important;
+    visibility: visible !important;
+    page-break-inside: avoid !important;
   }
 
   /* Page breaks */

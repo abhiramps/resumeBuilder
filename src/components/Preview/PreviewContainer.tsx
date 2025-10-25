@@ -164,18 +164,18 @@ export const PreviewContainer: React.FC<PreviewContainerProps> = ({
       )}
 
       {/* Preview Area */}
-      <div className="preview-area bg-gray-100 rounded-lg p-6 overflow-auto print:p-0 print:bg-white print:rounded-none">
+      <div className="preview-area bg-gray-100 rounded-lg p-6 overflow-auto">
         <div
-          className="preview-wrapper flex justify-center print:block"
+          className="preview-wrapper flex justify-center"
           style={{ minHeight: "600px" }}
         >
           {/* Wrapper with zoom - NOT applied during print */}
-          <div style={printMode ? {} : containerStyles} className="print:transform-none print:scale-100">
+          <div style={printMode ? {} : containerStyles}>
             <ResumePreview
               ref={previewRef}
               resume={resume}
               printMode={true}
-              className="shadow-lg print:shadow-none"
+              className="shadow-lg"
             />
           </div>
         </div>

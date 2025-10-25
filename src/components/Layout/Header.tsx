@@ -35,7 +35,6 @@ const Header: React.FC = () => {
     documentTitle: generateFileName(),
     onBeforePrint: async () => {
       setIsExporting(true);
-      return Promise.resolve();
     },
     onAfterPrint: () => {
       setIsExporting(false);
@@ -49,27 +48,29 @@ const Header: React.FC = () => {
       @page {
         size: letter;
         margin: 0;
-        padding: 0;
       }
+      
       @media print {
         html, body {
-          width: 100%;
-          height: 100%;
-          margin: 0;
-          padding: 0;
+          margin: 0 !important;
+          padding: 0 !important;
+          width: 100% !important;
+          height: auto !important;
         }
+        
         body {
-          -webkit-print-color-adjust: exact;
-          print-color-adjust: exact;
-          color-adjust: exact;
-        }
-        * {
           -webkit-print-color-adjust: exact !important;
           print-color-adjust: exact !important;
         }
+        
+        /* Ensure all content is visible */
+        * {
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+          visibility: visible !important;
+        }
       }
     `,
-    suppressErrors: true,
   });
 
   const handleExportPDF = () => {
