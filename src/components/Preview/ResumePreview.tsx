@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, memo } from "react";
 import { Resume } from "../../types/resume.types";
 import { templateHelpers } from "../../utils/templateHelpers";
 import { ClassicTemplate, ModernTemplate, MinimalTemplate, AbhiramTemplate } from "../Templates";
@@ -28,7 +28,7 @@ export interface ResumePreviewProps {
  * 
  * Uses forwardRef for PDF generation compatibility
  */
-export const ResumePreview = forwardRef<HTMLDivElement, ResumePreviewProps>(
+const ResumePreviewComponent = forwardRef<HTMLDivElement, ResumePreviewProps>(
   (props, ref) => {
     const { resume, className = "", printMode = false } = props;
 
@@ -56,6 +56,9 @@ export const ResumePreview = forwardRef<HTMLDivElement, ResumePreviewProps>(
 );
 
 
-ResumePreview.displayName = "ResumePreview";
+ResumePreviewComponent.displayName = "ResumePreview";
+
+// Memoize the preview to prevent unnecessary re-renders
+export const ResumePreview = memo(ResumePreviewComponent);
 
 export default ResumePreview;

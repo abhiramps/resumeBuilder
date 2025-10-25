@@ -762,10 +762,14 @@ export const ResumeProvider: React.FC<ResumeProviderProps> = ({ children }) => {
     showStatus: true,
   });
 
-  // Validate ATS whenever resume changes
+  // Validate ATS whenever resume changes (debounced to avoid performance issues)
   useEffect(() => {
-    const validation = validateATS(resume);
-    setAtsValidation(validation);
+    const timer = setTimeout(() => {
+      const validation = validateATS(resume);
+      setAtsValidation(validation);
+    }, 500); // Debounce ATS validation by 500ms
+
+    return () => clearTimeout(timer);
   }, [resume.personalInfo, resume.sections, resume.layout]);
 
   // Initialize with default data and optionally restore saved data

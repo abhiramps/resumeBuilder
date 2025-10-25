@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import { Textarea, Button } from "../UI";
 import { useResumeContext } from "../../contexts/ResumeContext";
 
@@ -100,50 +100,72 @@ export const SummaryEditor: React.FC<SummaryEditorProps> = ({
     (section) => section.type === "summary"
   );
 
-  const currentSummary = summarySection?.content
+  const propsSummary = summarySection?.content
     ? (summarySection.content as { summary: string }).summary
     : "";
 
-  // Character and word counts
-  const charCount = currentSummary.length;
-  const wordCount = currentSummary.trim() ? currentSummary.trim().split(/\s+/).length : 0;
+  // Local state for immediate UI updates
+  const [localSummary, setLocalSummary] = useState(propsSummary);
+
+  // Sync local state when props change (e.g., loading saved data)
+  useEffect(() => {
+    setLocalSummary(propsSummary);
+  }, [summarySection?.id]); // Only sync when section changes
+
+  // Character and word counts (use local state)
+  const charCount = localSummary.length;
+  const wordCount = localSummary.trim() ? localSummary.trim().split(/\s+/).length : 0;
 
   // Validation states
   const isOptimalLength = charCount >= 150 && charCount <= 300;
-  const hasSpecialChars = /[^\w\s.,;:!?()-]/.test(currentSummary);
+  const hasSpecialChars = /[^\w\s.,;:!?()-]/.test(localSummary);
   const isValidFormat = !hasSpecialChars;
+
+  // Ref to store the debounce timer
+  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   /**
    * Debounced update function
    */
   const debouncedUpdate = useCallback(
-    (() => {
-      let timeoutId: ReturnType<typeof setTimeout>;
-      return (value: string) => {
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(() => {
-          if (summarySection) {
-            dispatch({
-              type: "UPDATE_SECTION",
-              payload: {
-                id: summarySection.id,
-                updates: {
-                  content: { summary: value },
-                },
+    (value: string) => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+      debounceTimerRef.current = setTimeout(() => {
+        if (summarySection) {
+          dispatch({
+            type: "UPDATE_SECTION",
+            payload: {
+              id: summarySection.id,
+              updates: {
+                content: { summary: value },
               },
-            });
-          }
-        }, 300);
-      };
-    })(),
+            },
+          });
+        }
+      }, 300);
+    },
     [dispatch, summarySection]
   );
+
+  // Cleanup debounce timer on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, []);
 
   /**
    * Handle summary text change
    */
   const handleSummaryChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
+    // Update local state immediately
+    setLocalSummary(value);
+    // Debounce parent update
     debouncedUpdate(value);
   };
 
@@ -151,6 +173,10 @@ export const SummaryEditor: React.FC<SummaryEditorProps> = ({
    * Insert sample summary
    */
   const insertSample = (sample: string) => {
+    // Update local state immediately
+    setLocalSummary(sample);
+
+    // Update parent
     if (summarySection) {
       dispatch({
         type: "UPDATE_SECTION",
@@ -173,9 +199,13 @@ export const SummaryEditor: React.FC<SummaryEditorProps> = ({
     if (textarea && summarySection) {
       const start = textarea.selectionStart;
       const end = textarea.selectionEnd;
-      const currentText = currentSummary;
+      const currentText = localSummary;
       const newText = currentText.substring(0, start) + keyword + currentText.substring(end);
 
+      // Update local state immediately
+      setLocalSummary(newText);
+
+      // Update parent
       dispatch({
         type: "UPDATE_SECTION",
         payload: {
@@ -218,7 +248,7 @@ export const SummaryEditor: React.FC<SummaryEditorProps> = ({
             <Textarea
               data-summary-editor
               label="Professional Summary"
-              value={currentSummary}
+              value={localSummary}
               onChange={handleSummaryChange}
               placeholder="Write a compelling 3-5 sentence summary highlighting your experience, key skills, and career objectives..."
               autoResize

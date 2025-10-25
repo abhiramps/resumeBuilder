@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import { Button, Input, Select } from "../UI";
 import { useResumeContext } from "../../contexts/ResumeContext";
 import { Education } from "../../types/resume.types";
@@ -179,24 +179,85 @@ const EducationEntry: React.FC<EducationEntryProps> = ({
 }) => {
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
+    // Local state for immediate UI updates
+    const [localEducation, setLocalEducation] = useState(education);
+    const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    // Track date selections separately for better UX
+    const [startMonth, setStartMonth] = useState<string | undefined>(undefined);
+    const [startYear, setStartYear] = useState<string | undefined>(undefined);
+    const [endMonth, setEndMonth] = useState<string | undefined>(undefined);
+    const [endYear, setEndYear] = useState<string | undefined>(undefined);
+
+    // Update local state when prop changes (e.g., when switching entries)
+    useEffect(() => {
+        setLocalEducation(education);
+        // Parse and set date selections
+        const [sYear, sMonth] = education.startDate ? education.startDate.split("-") : [undefined, undefined];
+        const [eYear, eMonth] = education.endDate ? education.endDate.split("-") : [undefined, undefined];
+        setStartMonth(sMonth);
+        setStartYear(sYear);
+        setEndMonth(eMonth);
+        setEndYear(eYear);
+    }, [education.id]);
+
+    // Cleanup on unmount
+    useEffect(() => {
+        return () => {
+            if (debounceTimerRef.current) {
+                clearTimeout(debounceTimerRef.current);
+            }
+        };
+    }, []);
+
     const handleFieldUpdate = (field: keyof Education, value: any) => {
-        onUpdate(education.id, { [field]: value });
+        // Update local state immediately for instant UI feedback
+        const updatedEducation = { ...localEducation, [field]: value };
+        setLocalEducation(updatedEducation);
+
+        // Debounce the parent update
+        if (debounceTimerRef.current) {
+            clearTimeout(debounceTimerRef.current);
+        }
+        debounceTimerRef.current = setTimeout(() => {
+            onUpdate(education.id, { [field]: value });
+        }, 300);
     };
 
-    const handleDateUpdate = (field: "startDate" | "endDate", month: string, year: string) => {
-        if (month && year) {
-            handleFieldUpdate(field, `${year}-${month}`);
+    const handleDateUpdate = (field: "startDate" | "endDate", month: string | undefined, year: string | undefined) => {
+        // Update the appropriate state variables
+        if (field === "startDate") {
+            if (month !== undefined) setStartMonth(month);
+            if (year !== undefined) setStartYear(year);
+
+            // Use the new values or keep existing ones
+            const finalMonth = month !== undefined ? month : startMonth;
+            const finalYear = year !== undefined ? year : startYear;
+
+            // Update if we have both parts
+            if (finalMonth && finalYear) {
+                const dateValue = `${finalYear}-${finalMonth}`;
+                handleFieldUpdate(field, dateValue);
+            }
+        } else {
+            if (month !== undefined) setEndMonth(month);
+            if (year !== undefined) setEndYear(year);
+
+            // Use the new values or keep existing ones
+            const finalMonth = month !== undefined ? month : endMonth;
+            const finalYear = year !== undefined ? year : endYear;
+
+            // Update if we have both parts
+            if (finalMonth && finalYear) {
+                const dateValue = `${finalYear}-${finalMonth}`;
+                handleFieldUpdate(field, dateValue);
+            }
         }
     };
 
-    const parseDate = (dateString: string) => {
-        if (!dateString) return { month: "", year: "" };
-        const [year, month] = dateString.split("-");
-        return { month: month || "", year: year || "" };
-    };
-
-    const startDate = parseDate(education.startDate);
-    const endDate = parseDate(education.endDate);
+    // Use the separate state variables for display
+    const startDate = { month: startMonth, year: startYear };
+    const endDate = { month: endMonth, year: endYear };
 
     const handleDeleteConfirm = () => {
         onDelete(education.id);
@@ -313,7 +374,7 @@ const EducationEntry: React.FC<EducationEntryProps> = ({
                     <div>
                         <Input
                             label="Degree/Certification"
-                            value={education.degree}
+                            value={localEducation.degree}
                             onChange={(e) => handleFieldUpdate("degree", e.target.value)}
                             required
                             placeholder="e.g., Bachelor of Science in Computer Science"
@@ -330,14 +391,14 @@ const EducationEntry: React.FC<EducationEntryProps> = ({
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <Input
                             label="University/Institution"
-                            value={education.institution}
+                            value={localEducation.institution}
                             onChange={(e) => handleFieldUpdate("institution", e.target.value)}
                             required
                             placeholder="e.g., Stanford University"
                         />
                         <Input
                             label="Location"
-                            value={education.location}
+                            value={localEducation.location}
                             onChange={(e) => handleFieldUpdate("location", e.target.value)}
                             placeholder="e.g., Stanford, CA"
                         />
@@ -383,7 +444,7 @@ const EducationEntry: React.FC<EducationEntryProps> = ({
                     {/* GPA */}
                     <Input
                         label="GPA (Optional)"
-                        value={education.gpa || ""}
+                        value={localEducation.gpa || ""}
                         onChange={(e) => handleFieldUpdate("gpa", e.target.value)}
                         placeholder="e.g., 3.8/4.0"
                         maxLength={10}
@@ -391,7 +452,7 @@ const EducationEntry: React.FC<EducationEntryProps> = ({
 
                     {/* Coursework */}
                     <CourseworkManager
-                        coursework={education.coursework || []}
+                        coursework={localEducation.coursework || []}
                         onUpdate={(coursework) => handleFieldUpdate("coursework", coursework)}
                     />
                 </div>
@@ -472,31 +533,42 @@ export const EducationEditor: React.FC<EducationEditorProps> = ({
         return Math.random().toString(36).substr(2, 9);
     };
 
+    // Ref to store the debounce timer
+    const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
     /**
      * Debounced update function
      */
     const debouncedUpdate = useCallback(
-        (() => {
-            let timeoutId: ReturnType<typeof setTimeout>;
-            return (updatedEducation: Education[]) => {
-                clearTimeout(timeoutId);
-                timeoutId = setTimeout(() => {
-                    if (educationSection) {
-                        dispatch({
-                            type: "UPDATE_SECTION",
-                            payload: {
-                                id: educationSection.id,
-                                updates: {
-                                    content: { education: updatedEducation },
-                                },
+        (updatedEducation: Education[]) => {
+            if (debounceTimerRef.current) {
+                clearTimeout(debounceTimerRef.current);
+            }
+            debounceTimerRef.current = setTimeout(() => {
+                if (educationSection) {
+                    dispatch({
+                        type: "UPDATE_SECTION",
+                        payload: {
+                            id: educationSection.id,
+                            updates: {
+                                content: { education: updatedEducation },
                             },
-                        });
-                    }
-                }, 300);
-            };
-        })(),
+                        },
+                    });
+                }
+            }, 300);
+        },
         [dispatch, educationSection]
     );
+
+    // Cleanup debounce timer on unmount
+    useEffect(() => {
+        return () => {
+            if (debounceTimerRef.current) {
+                clearTimeout(debounceTimerRef.current);
+            }
+        };
+    }, []);
 
     /**
      * Add new education entry

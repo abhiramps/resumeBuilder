@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, memo } from 'react';
 import { TemplateBaseProps } from './TemplateBase';
 import { templateHelpers } from '../../utils/templateHelpers';
 import { WorkExperience, Education, Skill, Certification, Project } from '../../types/resume.types';
@@ -18,7 +18,7 @@ import { WorkExperience, Education, Skill, Certification, Project } from '../../
  * ATS Compliance: 95/100
  * Best For: Traditional industries, conservative companies, senior roles
  */
-export const ClassicTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
+const ClassicTemplateComponent = forwardRef<HTMLDivElement, TemplateBaseProps>(
     (props, ref) => {
         const { resume, layout, className = '', printMode = false } = props;
         // Get enabled sections in order
@@ -588,6 +588,9 @@ export const ClassicTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
     }
 );
 
-ClassicTemplate.displayName = 'ClassicTemplate';
+ClassicTemplateComponent.displayName = 'ClassicTemplate';
+
+// Memoize the template to prevent unnecessary re-renders
+export const ClassicTemplate = memo(ClassicTemplateComponent);
 
 export default ClassicTemplate;

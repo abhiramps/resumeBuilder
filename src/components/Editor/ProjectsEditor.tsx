@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import { Button, Input, Select, Textarea } from "../UI";
 import { useResumeContext } from "../../contexts/ResumeContext";
 import { Project } from "../../types/resume.types";
@@ -252,38 +252,107 @@ const ProjectEntry: React.FC<ProjectEntryProps> = ({
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [validationErrors, setValidationErrors] = useState<ProjectValidationErrors>({});
 
+    // Local state for immediate UI updates
+    const [localProject, setLocalProject] = useState(project);
+    const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    // Track date selections separately for better UX
+    const [startMonth, setStartMonth] = useState<string | undefined>(undefined);
+    const [startYear, setStartYear] = useState<string | undefined>(undefined);
+    const [endMonth, setEndMonth] = useState<string | undefined>(undefined);
+    const [endYear, setEndYear] = useState<string | undefined>(undefined);
+
+    // Update local state when prop changes (e.g., when switching entries)
+    useEffect(() => {
+        setLocalProject(project);
+        // Parse and set date selections
+        const [sYear, sMonth] = project.startDate ? project.startDate.split("-") : [undefined, undefined];
+        const [eYear, eMonth] = project.endDate ? project.endDate.split("-") : [undefined, undefined];
+        setStartMonth(sMonth);
+        setStartYear(sYear);
+        setEndMonth(eMonth);
+        setEndYear(eYear);
+    }, [project.id]);
+
+    // Cleanup on unmount
+    useEffect(() => {
+        return () => {
+            if (debounceTimerRef.current) {
+                clearTimeout(debounceTimerRef.current);
+            }
+        };
+    }, []);
+
     const handleFieldUpdate = (field: keyof Project, value: any) => {
-        const updatedProject = { ...project, [field]: value };
-        onUpdate(project.id, { [field]: value });
+        // Update local state immediately for instant UI feedback
+        const updatedProject = { ...localProject, [field]: value };
+        setLocalProject(updatedProject);
 
         // Validate the updated project
         const errors = validateProject(updatedProject);
         setValidationErrors(errors);
+
+        // Debounce the parent update
+        if (debounceTimerRef.current) {
+            clearTimeout(debounceTimerRef.current);
+        }
+        debounceTimerRef.current = setTimeout(() => {
+            onUpdate(project.id, { [field]: value });
+        }, 300);
     };
 
-    const handleDateUpdate = (field: "startDate" | "endDate", month: string, year: string) => {
-        if (month && year) {
-            handleFieldUpdate(field, `${year}-${month}`);
-        } else if (!month && !year) {
-            handleFieldUpdate(field, "");
+    const handleDateUpdate = (field: "startDate" | "endDate", month: string | undefined, year: string | undefined) => {
+        // Update the appropriate state variables
+        if (field === "startDate") {
+            if (month !== undefined) setStartMonth(month);
+            if (year !== undefined) setStartYear(year);
+
+            // Use the new values or keep existing ones
+            const finalMonth = month !== undefined ? month : startMonth;
+            const finalYear = year !== undefined ? year : startYear;
+
+            // Update if we have both parts
+            if (finalMonth && finalYear) {
+                const dateValue = `${finalYear}-${finalMonth}`;
+                handleFieldUpdate(field, dateValue);
+            } else if (!finalMonth && !finalYear) {
+                handleFieldUpdate(field, "");
+            }
+        } else {
+            if (month !== undefined) setEndMonth(month);
+            if (year !== undefined) setEndYear(year);
+
+            // Use the new values or keep existing ones
+            const finalMonth = month !== undefined ? month : endMonth;
+            const finalYear = year !== undefined ? year : endYear;
+
+            // Update if we have both parts
+            if (finalMonth && finalYear) {
+                const dateValue = `${finalYear}-${finalMonth}`;
+                handleFieldUpdate(field, dateValue);
+            } else if (!finalMonth && !finalYear) {
+                handleFieldUpdate(field, "");
+            }
         }
     };
 
     const handleCurrentToggle = (current: boolean) => {
-        handleFieldUpdate("current", current);
-        if (current) {
-            handleFieldUpdate("endDate", "");
+        // Update local state immediately
+        const updated = { ...localProject, current, endDate: current ? "" : localProject.endDate };
+        setLocalProject(updated);
+
+        // Debounce parent update
+        if (debounceTimerRef.current) {
+            clearTimeout(debounceTimerRef.current);
         }
+        debounceTimerRef.current = setTimeout(() => {
+            onUpdate(project.id, { current, endDate: current ? "" : localProject.endDate });
+        }, 300);
     };
 
-    const parseDate = (dateString: string) => {
-        if (!dateString) return { month: "", year: "" };
-        const [year, month] = dateString.split("-");
-        return { month: month || "", year: year || "" };
-    };
-
-    const startDate = parseDate(project.startDate);
-    const endDate = parseDate(project.endDate);
+    // Use the separate state variables for display
+    const startDate = { month: startMonth, year: startYear };
+    const endDate = { month: endMonth, year: endYear };
 
     const handleDeleteConfirm = () => {
         onDelete(project.id);
@@ -430,7 +499,7 @@ const ProjectEntry: React.FC<ProjectEntryProps> = ({
                     <div className="space-y-4">
                         <Input
                             label="Project Name"
-                            value={project.name}
+                            value={localProject.name}
                             onChange={(e) => handleFieldUpdate("name", e.target.value)}
                             error={validationErrors.name}
                             required
@@ -439,7 +508,7 @@ const ProjectEntry: React.FC<ProjectEntryProps> = ({
 
                         <Textarea
                             label="Project Description"
-                            value={project.description}
+                            value={localProject.description}
                             onChange={(e) => handleFieldUpdate("description", e.target.value)}
                             error={validationErrors.description}
                             placeholder="Brief description of your project and its key features..."
@@ -451,7 +520,7 @@ const ProjectEntry: React.FC<ProjectEntryProps> = ({
 
                     {/* Tech Stack */}
                     <TechStackManager
-                        techStack={project.techStack}
+                        techStack={localProject.techStack}
                         onUpdate={(techStack) => handleFieldUpdate("techStack", techStack)}
                     />
                     {validationErrors.techStack && (
@@ -463,7 +532,7 @@ const ProjectEntry: React.FC<ProjectEntryProps> = ({
                         <Input
                             label="Project URL (Optional)"
                             type="url"
-                            value={project.url || ""}
+                            value={localProject.url || ""}
                             onChange={(e) => handleFieldUpdate("url", e.target.value)}
                             error={validationErrors.url}
                             placeholder="https://your-project.com"
@@ -472,7 +541,7 @@ const ProjectEntry: React.FC<ProjectEntryProps> = ({
                         <Input
                             label="GitHub Repository (Optional)"
                             type="url"
-                            value={project.githubUrl || ""}
+                            value={localProject.githubUrl || ""}
                             onChange={(e) => handleFieldUpdate("githubUrl", e.target.value)}
                             error={validationErrors.githubUrl}
                             placeholder="https://github.com/username/repository"
@@ -503,7 +572,7 @@ const ProjectEntry: React.FC<ProjectEntryProps> = ({
                                 placeholder="Year"
                             />
 
-                            {!project.current && (
+                            {!localProject.current && (
                                 <>
                                     <Select
                                         label="End Month"
@@ -526,7 +595,7 @@ const ProjectEntry: React.FC<ProjectEntryProps> = ({
                         <label className="flex items-center space-x-2">
                             <input
                                 type="checkbox"
-                                checked={project.current}
+                                checked={localProject.current}
                                 onChange={(e) => handleCurrentToggle(e.target.checked)}
                                 className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                             />
@@ -645,31 +714,42 @@ export const ProjectsEditor: React.FC<ProjectsEditorProps> = ({
         return Math.random().toString(36).substr(2, 9);
     };
 
+    // Ref to store the debounce timer
+    const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
     /**
      * Debounced update function
      */
     const debouncedUpdate = useCallback(
-        (() => {
-            let timeoutId: ReturnType<typeof setTimeout>;
-            return (updatedProjects: Project[]) => {
-                clearTimeout(timeoutId);
-                timeoutId = setTimeout(() => {
-                    if (projectsSection) {
-                        dispatch({
-                            type: "UPDATE_SECTION",
-                            payload: {
-                                id: projectsSection.id,
-                                updates: {
-                                    content: { projects: updatedProjects },
-                                },
+        (updatedProjects: Project[]) => {
+            if (debounceTimerRef.current) {
+                clearTimeout(debounceTimerRef.current);
+            }
+            debounceTimerRef.current = setTimeout(() => {
+                if (projectsSection) {
+                    dispatch({
+                        type: "UPDATE_SECTION",
+                        payload: {
+                            id: projectsSection.id,
+                            updates: {
+                                content: { projects: updatedProjects },
                             },
-                        });
-                    }
-                }, 300);
-            };
-        })(),
+                        },
+                    });
+                }
+            }, 300);
+        },
         [dispatch, projectsSection]
     );
+
+    // Cleanup debounce timer on unmount
+    useEffect(() => {
+        return () => {
+            if (debounceTimerRef.current) {
+                clearTimeout(debounceTimerRef.current);
+            }
+        };
+    }, []);
 
     /**
      * Add new project entry

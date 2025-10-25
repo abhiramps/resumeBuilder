@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Input, Button } from "../UI";
 import { useResumeContext } from "../../contexts/ResumeContext";
 import { PersonalInfo } from "../../types/resume.types";
@@ -181,6 +181,28 @@ export const PersonalInfoEditor: React.FC<PersonalInfoEditorProps> = ({
     return newErrors;
   };
 
+  // Debounce timer ref
+  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  /**
+   * Debounced dispatch to context (300ms delay)
+   */
+  const debouncedDispatch = useCallback(
+    (field: keyof PersonalInfo, value: string) => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+
+      debounceTimerRef.current = setTimeout(() => {
+        dispatch({
+          type: "UPDATE_PERSONAL_INFO",
+          payload: { [field]: value },
+        });
+      }, 300);
+    },
+    [dispatch]
+  );
+
   /**
    * Handle input change with real-time validation
    */
@@ -216,12 +238,18 @@ export const PersonalInfoEditor: React.FC<PersonalInfoEditorProps> = ({
       [field]: fieldError,
     }));
 
-    // Update context
-    dispatch({
-      type: "UPDATE_PERSONAL_INFO",
-      payload: { [field]: value },
-    });
+    // Debounced update to context
+    debouncedDispatch(field, value);
   };
+
+  // Cleanup debounce timer on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, []);
 
   /**
    * Add custom link

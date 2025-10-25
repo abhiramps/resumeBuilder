@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import { Button, Input, Select } from "../UI";
 import { useResumeContext } from "../../contexts/ResumeContext";
 import { Certification } from "../../types/resume.types";
@@ -66,26 +66,88 @@ const CertificationEntry: React.FC<CertificationEntryProps> = ({
     onMoveDown,
 }) => {
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+    // Local state for immediate UI updates
+    const [localCertification, setLocalCertification] = useState(certification);
     const [doesNotExpire, setDoesNotExpire] = useState(!certification.expiryDate);
+    const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    // Track date selections separately for better UX
+    const [issueMonth, setIssueMonth] = useState<string | undefined>(undefined);
+    const [issueYear, setIssueYear] = useState<string | undefined>(undefined);
+    const [expiryMonth, setExpiryMonth] = useState<string | undefined>(undefined);
+    const [expiryYear, setExpiryYear] = useState<string | undefined>(undefined);
+
+    // Update local state when prop changes (e.g., when switching entries)
+    useEffect(() => {
+        setLocalCertification(certification);
+        setDoesNotExpire(!certification.expiryDate);
+        // Parse and set date selections
+        const [iYear, iMonth] = certification.issueDate ? certification.issueDate.split("-") : [undefined, undefined];
+        const [eYear, eMonth] = certification.expiryDate ? certification.expiryDate.split("-") : [undefined, undefined];
+        setIssueMonth(iMonth);
+        setIssueYear(iYear);
+        setExpiryMonth(eMonth);
+        setExpiryYear(eYear);
+    }, [certification.id]);
+
+    // Cleanup on unmount
+    useEffect(() => {
+        return () => {
+            if (debounceTimerRef.current) {
+                clearTimeout(debounceTimerRef.current);
+            }
+        };
+    }, []);
 
     const handleFieldUpdate = (field: keyof Certification, value: any) => {
-        onUpdate(certification.id, { [field]: value });
+        // Update local state immediately for instant UI feedback
+        const updatedCertification = { ...localCertification, [field]: value };
+        setLocalCertification(updatedCertification);
+
+        // Debounce the parent update
+        if (debounceTimerRef.current) {
+            clearTimeout(debounceTimerRef.current);
+        }
+        debounceTimerRef.current = setTimeout(() => {
+            onUpdate(certification.id, { [field]: value });
+        }, 300);
     };
 
-    const handleDateUpdate = (field: "issueDate" | "expiryDate", month: string, year: string) => {
-        if (month && year) {
-            handleFieldUpdate(field, `${year}-${month}`);
+    const handleDateUpdate = (field: "issueDate" | "expiryDate", month: string | undefined, year: string | undefined) => {
+        // Update the appropriate state variables
+        if (field === "issueDate") {
+            if (month !== undefined) setIssueMonth(month);
+            if (year !== undefined) setIssueYear(year);
+
+            // Use the new values or keep existing ones
+            const finalMonth = month !== undefined ? month : issueMonth;
+            const finalYear = year !== undefined ? year : issueYear;
+
+            // Update if we have both parts
+            if (finalMonth && finalYear) {
+                const dateValue = `${finalYear}-${finalMonth}`;
+                handleFieldUpdate(field, dateValue);
+            }
+        } else {
+            if (month !== undefined) setExpiryMonth(month);
+            if (year !== undefined) setExpiryYear(year);
+
+            // Use the new values or keep existing ones
+            const finalMonth = month !== undefined ? month : expiryMonth;
+            const finalYear = year !== undefined ? year : expiryYear;
+
+            // Update if we have both parts
+            if (finalMonth && finalYear) {
+                const dateValue = `${finalYear}-${finalMonth}`;
+                handleFieldUpdate(field, dateValue);
+            }
         }
     };
 
-    const parseDate = (dateString: string) => {
-        if (!dateString) return { month: "", year: "" };
-        const [year, month] = dateString.split("-");
-        return { month: month || "", year: year || "" };
-    };
-
-    const issueDate = parseDate(certification.issueDate);
-    const expiryDate = parseDate(certification.expiryDate || "");
+    // Use the separate state variables for display
+    const issueDate = { month: issueMonth, year: issueYear };
+    const expiryDate = { month: expiryMonth, year: expiryYear };
 
     const handleDoesNotExpireToggle = (checked: boolean) => {
         setDoesNotExpire(checked);
@@ -181,7 +243,7 @@ const CertificationEntry: React.FC<CertificationEntryProps> = ({
             {isEditing && (
                 <div className="space-y-4 border-t border-gray-200 pt-4">
                     <div>
-                        <Input label="Certification Name" value={certification.name} onChange={(e) => handleFieldUpdate("name", e.target.value)} required placeholder="e.g., AWS Certified Solutions Architect" list="cert-suggestions" />
+                        <Input label="Certification Name" value={localCertification.name} onChange={(e) => handleFieldUpdate("name", e.target.value)} required placeholder="e.g., AWS Certified Solutions Architect" list="cert-suggestions" />
                         <datalist id="cert-suggestions">
                             {CERTIFICATION_SUGGESTIONS.map((cert, index) => (
                                 <option key={index} value={cert} />
@@ -189,7 +251,7 @@ const CertificationEntry: React.FC<CertificationEntryProps> = ({
                         </datalist>
                     </div>
 
-                    <Input label="Issuing Organization" value={certification.issuer} onChange={(e) => handleFieldUpdate("issuer", e.target.value)} required placeholder="e.g., Amazon Web Services" />
+                    <Input label="Issuing Organization" value={localCertification.issuer} onChange={(e) => handleFieldUpdate("issuer", e.target.value)} required placeholder="e.g., Amazon Web Services" />
 
                     <div className="space-y-4">
                         <h5 className="text-sm font-medium text-gray-700">Issue Date</h5>
@@ -215,11 +277,11 @@ const CertificationEntry: React.FC<CertificationEntryProps> = ({
                         )}
                     </div>
 
-                    <Input label="Credential ID (Optional)" value={certification.credentialId || ""} onChange={(e) => handleFieldUpdate("credentialId", e.target.value)} placeholder="e.g., ABC123XYZ" />
+                    <Input label="Credential ID (Optional)" value={localCertification.credentialId || ""} onChange={(e) => handleFieldUpdate("credentialId", e.target.value)} placeholder="e.g., ABC123XYZ" />
 
                     <div>
-                        <Input label="Credential URL (Optional)" value={certification.url || ""} onChange={(e) => handleFieldUpdate("url", e.target.value)} placeholder="https://..." type="url" />
-                        {certification.url && !validateURL(certification.url) && (
+                        <Input label="Credential URL (Optional)" value={localCertification.url || ""} onChange={(e) => handleFieldUpdate("url", e.target.value)} placeholder="https://..." type="url" />
+                        {localCertification.url && !validateURL(localCertification.url) && (
                             <p className="text-sm text-red-600 mt-1">Please enter a valid URL</p>
                         )}
                     </div>
@@ -268,26 +330,37 @@ export const CertificationsEditor: React.FC<CertificationsEditorProps> = ({ clas
 
     const generateId = (): string => Math.random().toString(36).substr(2, 9);
 
+    // Ref to store the debounce timer
+    const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
     const debouncedUpdate = useCallback(
-        (() => {
-            let timeoutId: ReturnType<typeof setTimeout>;
-            return (updatedCertifications: Certification[]) => {
-                clearTimeout(timeoutId);
-                timeoutId = setTimeout(() => {
-                    if (certificationsSection) {
-                        dispatch({
-                            type: "UPDATE_SECTION",
-                            payload: {
-                                id: certificationsSection.id,
-                                updates: { content: { certifications: updatedCertifications } },
-                            },
-                        });
-                    }
-                }, 300);
-            };
-        })(),
+        (updatedCertifications: Certification[]) => {
+            if (debounceTimerRef.current) {
+                clearTimeout(debounceTimerRef.current);
+            }
+            debounceTimerRef.current = setTimeout(() => {
+                if (certificationsSection) {
+                    dispatch({
+                        type: "UPDATE_SECTION",
+                        payload: {
+                            id: certificationsSection.id,
+                            updates: { content: { certifications: updatedCertifications } },
+                        },
+                    });
+                }
+            }, 300);
+        },
         [dispatch, certificationsSection]
     );
+
+    // Cleanup debounce timer on unmount
+    useEffect(() => {
+        return () => {
+            if (debounceTimerRef.current) {
+                clearTimeout(debounceTimerRef.current);
+            }
+        };
+    }, []);
 
     const addCertification = () => {
         const newCertification: Certification = {

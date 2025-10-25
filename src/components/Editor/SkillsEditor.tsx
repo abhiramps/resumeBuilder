@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import { Button, Input } from "../UI";
 import { useResumeContext } from "../../contexts/ResumeContext";
 import { Skill, SkillCategory } from "../../types/resume.types";
@@ -550,42 +550,53 @@ export const SkillsEditor: React.FC<SkillsEditorProps> = ({
         return [];
     });
 
+    // Ref to store the debounce timer
+    const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
     /**
      * Debounced update function
      */
     const debouncedUpdate = useCallback(
-        (() => {
-            let timeoutId: ReturnType<typeof setTimeout>;
-            return (updatedCategories: SkillCategory[]) => {
-                clearTimeout(timeoutId);
-                timeoutId = setTimeout(() => {
-                    // Convert categories back to flat skills array
-                    const flatSkills: Skill[] = [];
-                    updatedCategories.forEach(category => {
-                        category.skills.forEach(skill => {
-                            flatSkills.push({
-                                ...skill,
-                                category: skill.category // Keep original category for compatibility
-                            });
+        (updatedCategories: SkillCategory[]) => {
+            if (debounceTimerRef.current) {
+                clearTimeout(debounceTimerRef.current);
+            }
+            debounceTimerRef.current = setTimeout(() => {
+                // Convert categories back to flat skills array
+                const flatSkills: Skill[] = [];
+                updatedCategories.forEach(category => {
+                    category.skills.forEach(skill => {
+                        flatSkills.push({
+                            ...skill,
+                            category: skill.category // Keep original category for compatibility
                         });
                     });
+                });
 
-                    if (skillsSection) {
-                        dispatch({
-                            type: "UPDATE_SECTION",
-                            payload: {
-                                id: skillsSection.id,
-                                updates: {
-                                    content: { skills: flatSkills },
-                                },
+                if (skillsSection) {
+                    dispatch({
+                        type: "UPDATE_SECTION",
+                        payload: {
+                            id: skillsSection.id,
+                            updates: {
+                                content: { skills: flatSkills },
                             },
-                        });
-                    }
-                }, 300);
-            };
-        })(),
+                        },
+                    });
+                }
+            }, 300);
+        },
         [dispatch, skillsSection]
     );
+
+    // Cleanup debounce timer on unmount
+    useEffect(() => {
+        return () => {
+            if (debounceTimerRef.current) {
+                clearTimeout(debounceTimerRef.current);
+            }
+        };
+    }, []);
 
     /**
      * Update skill categories and sync with context

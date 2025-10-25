@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import { Button, Input, Select, Textarea } from "../UI";
 import { useResumeContext } from "../../contexts/ResumeContext";
 import { WorkExperience } from "../../types/resume.types";
@@ -215,36 +215,103 @@ const ExperienceEntry: React.FC<ExperienceEntryProps> = ({
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [validationErrors, setValidationErrors] = useState<ExperienceValidationErrors>({});
 
+    // Local state for immediate UI updates
+    const [localExperience, setLocalExperience] = useState(experience);
+    const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    // Track date selections separately for better UX
+    const [startMonth, setStartMonth] = useState<string | undefined>(undefined);
+    const [startYear, setStartYear] = useState<string | undefined>(undefined);
+    const [endMonth, setEndMonth] = useState<string | undefined>(undefined);
+    const [endYear, setEndYear] = useState<string | undefined>(undefined);
+
+    // Update local state when prop changes (e.g., when switching entries)
+    useEffect(() => {
+        setLocalExperience(experience);
+        // Parse and set date selections
+        const [sYear, sMonth] = experience.startDate ? experience.startDate.split("-") : [undefined, undefined];
+        const [eYear, eMonth] = experience.endDate ? experience.endDate.split("-") : [undefined, undefined];
+        setStartMonth(sMonth);
+        setStartYear(sYear);
+        setEndMonth(eMonth);
+        setEndYear(eYear);
+    }, [experience.id]); // Only update when switching to a different experience
+
     const handleFieldUpdate = (field: keyof WorkExperience, value: any) => {
-        const updatedExperience = { ...experience, [field]: value };
-        onUpdate(experience.id, { [field]: value });
+        // Update local state immediately for instant UI feedback
+        const updatedExperience = { ...localExperience, [field]: value };
+        setLocalExperience(updatedExperience);
 
         // Validate the updated experience
         const errors = validateExperience(updatedExperience);
         setValidationErrors(errors);
+
+        // Debounce the parent update
+        if (debounceTimerRef.current) {
+            clearTimeout(debounceTimerRef.current);
+        }
+        debounceTimerRef.current = setTimeout(() => {
+            onUpdate(experience.id, { [field]: value });
+        }, 300);
     };
 
-    const handleDateUpdate = (field: "startDate" | "endDate", month: string, year: string) => {
-        if (month && year) {
-            handleFieldUpdate(field, `${year}-${month}`);
+    // Cleanup on unmount
+    useEffect(() => {
+        return () => {
+            if (debounceTimerRef.current) {
+                clearTimeout(debounceTimerRef.current);
+            }
+        };
+    }, []);
+
+    const handleDateUpdate = (field: "startDate" | "endDate", month: string | undefined, year: string | undefined) => {
+        // Update the appropriate state variables
+        if (field === "startDate") {
+            if (month !== undefined) setStartMonth(month);
+            if (year !== undefined) setStartYear(year);
+
+            // Use the new values or keep existing ones
+            const finalMonth = month !== undefined ? month : startMonth;
+            const finalYear = year !== undefined ? year : startYear;
+
+            // Update if we have both parts
+            if (finalMonth && finalYear) {
+                const dateValue = `${finalYear}-${finalMonth}`;
+                handleFieldUpdate(field, dateValue);
+            }
+        } else {
+            if (month !== undefined) setEndMonth(month);
+            if (year !== undefined) setEndYear(year);
+
+            // Use the new values or keep existing ones
+            const finalMonth = month !== undefined ? month : endMonth;
+            const finalYear = year !== undefined ? year : endYear;
+
+            // Update if we have both parts
+            if (finalMonth && finalYear) {
+                const dateValue = `${finalYear}-${finalMonth}`;
+                handleFieldUpdate(field, dateValue);
+            }
         }
     };
 
     const handleCurrentToggle = (current: boolean) => {
-        handleFieldUpdate("current", current);
-        if (current) {
-            handleFieldUpdate("endDate", "");
+        // Update local state immediately
+        const updated = { ...localExperience, current, endDate: current ? "" : localExperience.endDate };
+        setLocalExperience(updated);
+
+        // Debounce parent update
+        if (debounceTimerRef.current) {
+            clearTimeout(debounceTimerRef.current);
         }
+        debounceTimerRef.current = setTimeout(() => {
+            onUpdate(experience.id, { current, endDate: current ? "" : localExperience.endDate });
+        }, 300);
     };
 
-    const parseDate = (dateString: string) => {
-        if (!dateString) return { month: "", year: "" };
-        const [year, month] = dateString.split("-");
-        return { month: month || "", year: year || "" };
-    };
-
-    const startDate = parseDate(experience.startDate);
-    const endDate = parseDate(experience.endDate);
+    // Use the separate state variables for display
+    const startDate = { month: startMonth, year: startYear };
+    const endDate = { month: endMonth, year: endYear };
 
     const handleDeleteConfirm = () => {
         onDelete(experience.id);
@@ -386,7 +453,7 @@ const ExperienceEntry: React.FC<ExperienceEntryProps> = ({
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <Input
                             label="Job Title"
-                            value={experience.jobTitle}
+                            value={localExperience.jobTitle}
                             onChange={(e) => handleFieldUpdate("jobTitle", e.target.value)}
                             error={validationErrors.jobTitle}
                             required
@@ -394,7 +461,7 @@ const ExperienceEntry: React.FC<ExperienceEntryProps> = ({
                         />
                         <Input
                             label="Company"
-                            value={experience.company}
+                            value={localExperience.company}
                             onChange={(e) => handleFieldUpdate("company", e.target.value)}
                             error={validationErrors.company}
                             required
@@ -404,7 +471,7 @@ const ExperienceEntry: React.FC<ExperienceEntryProps> = ({
 
                     <Input
                         label="Location"
-                        value={experience.location}
+                        value={localExperience.location}
                         onChange={(e) => handleFieldUpdate("location", e.target.value)}
                         error={validationErrors.location}
                         placeholder="e.g., San Francisco, CA"
@@ -435,7 +502,7 @@ const ExperienceEntry: React.FC<ExperienceEntryProps> = ({
                                 required
                             />
 
-                            {!experience.current && (
+                            {!localExperience.current && (
                                 <>
                                     <Select
                                         label="End Month"
@@ -458,7 +525,7 @@ const ExperienceEntry: React.FC<ExperienceEntryProps> = ({
                         <label className="flex items-center space-x-2">
                             <input
                                 type="checkbox"
-                                checked={experience.current}
+                                checked={localExperience.current}
                                 onChange={(e) => handleCurrentToggle(e.target.checked)}
                                 className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                             />
@@ -469,7 +536,7 @@ const ExperienceEntry: React.FC<ExperienceEntryProps> = ({
                     {/* Description */}
                     <Textarea
                         label="Job Description (Optional)"
-                        value={experience.description}
+                        value={localExperience.description}
                         onChange={(e) => handleFieldUpdate("description", e.target.value)}
                         error={validationErrors.description}
                         placeholder="Brief description of your role and responsibilities..."
@@ -480,7 +547,7 @@ const ExperienceEntry: React.FC<ExperienceEntryProps> = ({
 
                     {/* Bullet Points */}
                     <BulletPointManager
-                        bulletPoints={experience.achievements}
+                        bulletPoints={localExperience.achievements}
                         onUpdate={(bulletPoints) => handleFieldUpdate("achievements", bulletPoints)}
                     />
                 </div>
@@ -565,31 +632,42 @@ export const ExperienceEditor: React.FC<ExperienceEditorProps> = ({
         return Math.random().toString(36).substr(2, 9);
     };
 
+    // Ref to store the debounce timer
+    const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
     /**
      * Debounced update function
      */
     const debouncedUpdate = useCallback(
-        (() => {
-            let timeoutId: ReturnType<typeof setTimeout>;
-            return (updatedExperiences: WorkExperience[]) => {
-                clearTimeout(timeoutId);
-                timeoutId = setTimeout(() => {
-                    if (experienceSection) {
-                        dispatch({
-                            type: "UPDATE_SECTION",
-                            payload: {
-                                id: experienceSection.id,
-                                updates: {
-                                    content: { experiences: updatedExperiences },
-                                },
+        (updatedExperiences: WorkExperience[]) => {
+            if (debounceTimerRef.current) {
+                clearTimeout(debounceTimerRef.current);
+            }
+            debounceTimerRef.current = setTimeout(() => {
+                if (experienceSection) {
+                    dispatch({
+                        type: "UPDATE_SECTION",
+                        payload: {
+                            id: experienceSection.id,
+                            updates: {
+                                content: { experiences: updatedExperiences },
                             },
-                        });
-                    }
-                }, 300);
-            };
-        })(),
+                        },
+                    });
+                }
+            }, 300);
+        },
         [dispatch, experienceSection]
     );
+
+    // Cleanup debounce timer on unmount
+    useEffect(() => {
+        return () => {
+            if (debounceTimerRef.current) {
+                clearTimeout(debounceTimerRef.current);
+            }
+        };
+    }, []);
 
     /**
      * Add new experience entry

@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, memo } from 'react';
 import { TemplateBaseProps } from './TemplateBase';
 import { templateHelpers } from '../../utils/templateHelpers';
 import { WorkExperience, Education, Skill, Certification, Project } from '../../types/resume.types';
@@ -19,7 +19,7 @@ import { WorkExperience, Education, Skill, Certification, Project } from '../../
  * ATS Compliance: 95/100
  * Best For: Backend engineers, technical roles, professional presentation
  */
-export const AbhiramTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
+const AbhiramTemplateComponent = forwardRef<HTMLDivElement, TemplateBaseProps>(
     (props, ref) => {
         const { resume, layout, className = '', printMode = false } = props;
         const enabledSections = resume.sections
@@ -92,7 +92,7 @@ export const AbhiramTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
         const renderContactInfo = () => {
             const contactParts: string[] = [];
 
-           
+
             if (resume.personalInfo?.email) {
                 contactParts.push(resume.personalInfo.email);
             }
@@ -102,7 +102,7 @@ export const AbhiramTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
             if (resume.personalInfo?.location) {
                 contactParts.push(resume.personalInfo.location);
             }
-            
+
 
             const firstLine = contactParts.join(' | ');
 
@@ -500,6 +500,9 @@ export const AbhiramTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
     }
 );
 
-AbhiramTemplate.displayName = 'AbhiramTemplate';
+AbhiramTemplateComponent.displayName = 'AbhiramTemplate';
+
+// Memoize the template to prevent unnecessary re-renders
+export const AbhiramTemplate = memo(AbhiramTemplateComponent);
 
 export default AbhiramTemplate;

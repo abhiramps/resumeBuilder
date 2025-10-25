@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useRef, useEffect } from 'react';
 import { ResumeSection } from '../../types/resume.types';
 import { useResumeContext } from '../../contexts/ResumeContext';
 
@@ -8,6 +8,7 @@ interface CustomSectionEditorProps {
 
 export const CustomSectionEditor: React.FC<CustomSectionEditorProps> = ({ section }) => {
     const { dispatch } = useResumeContext();
+    const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     if (section.type !== 'custom') return null;
 
@@ -15,26 +16,38 @@ export const CustomSectionEditor: React.FC<CustomSectionEditorProps> = ({ sectio
     const title = customContent?.title || '';
     const content = customContent?.content || '';
 
+    // Cleanup debounce timer on unmount
+    useEffect(() => {
+        return () => {
+            if (debounceTimerRef.current) {
+                clearTimeout(debounceTimerRef.current);
+            }
+        };
+    }, []);
+
+    const debouncedDispatch = useCallback((newTitle: string, newContent: string) => {
+        if (debounceTimerRef.current) {
+            clearTimeout(debounceTimerRef.current);
+        }
+
+        debounceTimerRef.current = setTimeout(() => {
+            dispatch({
+                type: 'UPDATE_CUSTOM_SECTION',
+                payload: {
+                    sectionId: section.id,
+                    title: newTitle,
+                    content: newContent,
+                },
+            });
+        }, 300);
+    }, [dispatch, section.id]);
+
     const handleTitleChange = (newTitle: string) => {
-        dispatch({
-            type: 'UPDATE_CUSTOM_SECTION',
-            payload: {
-                sectionId: section.id,
-                title: newTitle,
-                content: content,
-            },
-        });
+        debouncedDispatch(newTitle, content);
     };
 
     const handleContentChange = (newContent: string) => {
-        dispatch({
-            type: 'UPDATE_CUSTOM_SECTION',
-            payload: {
-                sectionId: section.id,
-                title: title,
-                content: newContent,
-            },
-        });
+        debouncedDispatch(title, newContent);
     };
 
     return (
