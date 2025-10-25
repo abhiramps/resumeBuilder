@@ -92,12 +92,17 @@ export const AbhiramTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
         const renderContactInfo = () => {
             const contactParts: string[] = [];
 
-            if (resume.personalInfo?.location) {
-                contactParts.push(resume.personalInfo.location);
-            }
+           
             if (resume.personalInfo?.email) {
                 contactParts.push(resume.personalInfo.email);
             }
+            if (resume.personalInfo?.phone) {
+                contactParts.push(resume.personalInfo.phone);
+            }
+            if (resume.personalInfo?.location) {
+                contactParts.push(resume.personalInfo.location);
+            }
+            
 
             const firstLine = contactParts.join(' | ');
 
