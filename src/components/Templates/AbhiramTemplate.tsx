@@ -20,7 +20,8 @@ import { WorkExperience, Education, Skill, Certification, Project } from '../../
  * Best For: Backend engineers, technical roles, professional presentation
  */
 export const AbhiramTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
-    ({ resume, layout, className = '', printMode = false }, ref) => {
+    (props, ref) => {
+        const { resume, layout, className = '', printMode = false } = props;
         const enabledSections = resume.sections
             .filter(section => section.enabled)
             .sort((a, b) => a.order - b.order);

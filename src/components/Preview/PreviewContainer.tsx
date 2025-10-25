@@ -1,6 +1,7 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { ResumePreview } from "./ResumePreview";
 import { useResumeContext } from "../../contexts/ResumeContext";
+import { usePDFExportContext } from "../../contexts/PDFExportContext";
 
 /**
  * Preview Container Component Props
@@ -30,9 +31,9 @@ export const PreviewContainer: React.FC<PreviewContainerProps> = ({
   showPrintMode = true,
 }) => {
   const { resume } = useResumeContext();
+  const { previewRef } = usePDFExportContext();
   const [zoom, setZoom] = useState(100);
   const [printMode, setPrintMode] = useState(false);
-  const previewRef = useRef<HTMLDivElement>(null);
 
   // Zoom levels
   const zoomLevels = [50, 75, 100, 125, 150, 200];
@@ -82,18 +83,19 @@ export const PreviewContainer: React.FC<PreviewContainerProps> = ({
     transform: `scale(${zoom / 100})`,
     transformOrigin: "top center",
     transition: "transform 0.2s ease-in-out",
+    // Don't apply transform during printing
   };
 
   return (
     <div className={`preview-container ${className}`}>
       {/* Controls Bar */}
       {(showZoomControls || showPrintMode) && (
-        <div className="flex items-center justify-between mb-4 p-3 bg-white rounded-lg border border-gray-200 shadow-sm">
+        <div className="flex items-center justify-between mb-4 p-3 bg-white rounded-lg border border-gray-200 shadow-sm print:hidden">
           {/* Zoom Controls */}
           {showZoomControls && (
             <div className="flex items-center space-x-2">
               <span className="text-sm font-medium text-gray-700">Zoom:</span>
-              
+
               {/* Zoom Out Button */}
               <button
                 onClick={zoomOut}
@@ -148,14 +150,12 @@ export const PreviewContainer: React.FC<PreviewContainerProps> = ({
               <span className="text-sm font-medium text-gray-700">Print Mode:</span>
               <button
                 onClick={togglePrintMode}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-                  printMode ? "bg-blue-600" : "bg-gray-200"
-                }`}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${printMode ? "bg-blue-600" : "bg-gray-200"
+                  }`}
               >
                 <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    printMode ? "translate-x-6" : "translate-x-1"
-                  }`}
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${printMode ? "translate-x-6" : "translate-x-1"
+                    }`}
                 />
               </button>
             </div>
@@ -164,24 +164,25 @@ export const PreviewContainer: React.FC<PreviewContainerProps> = ({
       )}
 
       {/* Preview Area */}
-      <div className="preview-area bg-gray-100 rounded-lg p-6 overflow-auto">
-        <div 
-          className="preview-wrapper flex justify-center"
+      <div className="preview-area bg-gray-100 rounded-lg p-6 overflow-auto print:p-0 print:bg-white print:rounded-none">
+        <div
+          className="preview-wrapper flex justify-center print:block"
           style={{ minHeight: "600px" }}
         >
-          <div style={containerStyles}>
+          {/* Wrapper with zoom - NOT applied during print */}
+          <div style={printMode ? {} : containerStyles} className="print:transform-none print:scale-100">
             <ResumePreview
               ref={previewRef}
               resume={resume}
-              printMode={printMode}
-              className="shadow-lg"
+              printMode={true}
+              className="shadow-lg print:shadow-none"
             />
           </div>
         </div>
       </div>
 
       {/* Preview Info */}
-      <div className="mt-4 text-center text-sm text-gray-500">
+      <div className="mt-4 text-center text-sm text-gray-500 no-print print:hidden">
         <p>
           Preview shows how your resume will appear when printed or exported as PDF.
           {printMode && " Print mode shows exact dimensions and styling."}

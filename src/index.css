@@ -174,22 +174,130 @@
   }
 }
 
-/* Print styles */
+/* Print styles for PDF export */
 @media print {
-  .no-print {
+  /* Hide non-printable elements */
+  .no-print,
+  header,
+  footer,
+  .sidebar,
+  .controls,
+  button,
+  .zoom-controls,
+  .print-mode-toggle {
     display: none !important;
   }
 
+  /* Page setup */
+  @page {
+    size: letter;
+    margin: 0;
+  }
+
+  /* Body and root */
+  html,
+  body,
+  #root {
+    width: 8.5in;
+    height: auto;
+    margin: 0;
+    padding: 0;
+    overflow: visible;
+    background: white;
+  }
+
+  /* Ensure colors print correctly */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
+  /* Preview area adjustments for print */
+  .preview-area {
+    background: white !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    overflow: visible !important;
+  }
+
+  .preview-wrapper {
+    display: block !important;
+    width: 8.5in !important;
+    min-height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transform: none !important;
+  }
+
+  .preview-wrapper > div {
+    transform: none !important;
+    width: 8.5in !important;
+  }
+
+  /* Resume container */
+  .abhiram-template,
+  .classic-template,
+  .modern-template,
+  .minimal-template {
+    width: 8.5in !important;
+    min-height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    transform: none !important;
+    background: white !important;
+  }
+
+  /* Page breaks */
   .print-break-before {
     page-break-before: always;
+    break-before: always;
   }
 
   .print-break-after {
     page-break-after: always;
+    break-after: always;
   }
 
   .print-break-inside-avoid {
     page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* Avoid breaking these elements */
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  p, li {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* Links */
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  /* Remove shadows and borders */
+  .shadow,
+  .shadow-sm,
+  .shadow-md,
+  .shadow-lg,
+  .shadow-xl {
+    box-shadow: none !important;
+  }
+
+  /* Ensure proper text rendering */
+  body {
+    font-smoothing: antialiased;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 

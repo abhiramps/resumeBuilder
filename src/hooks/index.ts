@@ -20,3 +20,5 @@ export {
   useATSIssues,
   useATSCompliance,
 } from './useATSValidation';
+export { usePDFExport } from './usePDFExport';
+export type { PDFExportOptions, UsePDFExportReturn } from './usePDFExport';

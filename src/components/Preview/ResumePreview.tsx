@@ -29,27 +29,28 @@ export interface ResumePreviewProps {
  * Uses forwardRef for PDF generation compatibility
  */
 export const ResumePreview = forwardRef<HTMLDivElement, ResumePreviewProps>(
-  ({ resume, className = "", printMode = false }, ref) => {
+  (props, ref) => {
+    const { resume, className = "", printMode = false } = props;
+
     // Render the appropriate template based on resume.template
     const templateProps = {
       resume,
       layout: resume.layout,
       printMode,
-      ref,
       className
     };
 
     switch (resume.template) {
       case "classic":
-        return <ClassicTemplate {...templateProps} />;
+        return <ClassicTemplate ref={ref} {...templateProps} />;
       case "modern":
-        return <ModernTemplate {...templateProps} />;
+        return <ModernTemplate ref={ref} {...templateProps} />;
       case "minimal":
-        return <MinimalTemplate {...templateProps} />;
+        return <MinimalTemplate ref={ref} {...templateProps} />;
       case "abhiram":
-        return <AbhiramTemplate {...templateProps} />;
+        return <AbhiramTemplate ref={ref} {...templateProps} />;
       default:
-        return <AbhiramTemplate {...templateProps} />;
+        return <AbhiramTemplate ref={ref} {...templateProps} />;
     }
   }
 );

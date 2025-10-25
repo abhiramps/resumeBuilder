@@ -19,7 +19,8 @@ import { WorkExperience, Education, Skill, Certification, Project } from '../../
  * Best For: Experienced candidates, single-page resumes, maximum content
  */
 export const MinimalTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
-    ({ resume, layout, className = '', printMode = false }, ref) => {
+    (props, ref) => {
+        const { resume, layout, className = '', printMode = false } = props;
         const enabledSections = resume.sections
             .filter(section => section.enabled)
             .sort((a, b) => a.order - b.order);

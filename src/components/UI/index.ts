@@ -29,3 +29,6 @@ export { SaveStatusIndicator } from "./SaveStatusIndicator";
 export { TemplateSelector } from "./TemplateSelector";
 
 export { Modal } from "./Modal";
+
+export { ExportModal } from "./ExportModal";
+export type { ExportModalProps, ExportOptions } from "./ExportModal";

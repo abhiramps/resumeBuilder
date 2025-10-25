@@ -19,7 +19,8 @@ import { WorkExperience, Education, Skill, Certification, Project } from '../../
  * Best For: Traditional industries, conservative companies, senior roles
  */
 export const ClassicTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
-    ({ resume, layout, className = '', printMode = false }, ref) => {
+    (props, ref) => {
+        const { resume, layout, className = '', printMode = false } = props;
         // Get enabled sections in order
         const enabledSections = resume.sections
             .filter(section => section.enabled)

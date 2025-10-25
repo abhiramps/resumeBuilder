@@ -19,7 +19,9 @@ import { WorkExperience, Education, Skill, Certification, Project } from '../../
  * Best For: Tech companies, startups, creative roles, modern industries
  */
 export const ModernTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
-    ({ resume, layout, className = '', printMode = false }, ref) => {
+    (props, ref) => {
+        const { resume, layout, className = '', printMode = false } = props;
+
         const enabledSections = resume.sections
             .filter(section => section.enabled)
             .sort((a, b) => a.order - b.order);

@@ -26,7 +26,8 @@ export interface TemplateBaseProps {
  * - ATS compliance helpers
  */
 export const TemplateBase = forwardRef<HTMLDivElement, TemplateBaseProps>(
-  ({ resume, layout, className = "", printMode = false }, ref) => {
+  (props, ref) => {
+    const { resume, layout, className = "", printMode = false } = props;
     // Base container styles that all templates should use
     const baseContainerStyles: React.CSSProperties = {
       fontFamily: layout.fontFamily,

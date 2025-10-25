@@ -1,25 +1,93 @@
-import React from "react";
+import React, { useState } from "react";
 import { useResume } from "../../contexts/ResumeContext";
 import { TemplateType } from "../../types/resume.types";
-import { Download, Save, FileText } from "lucide-react";
+import { Download, Save, FileText, Loader2 } from "lucide-react";
 import { TemplateSelector } from "../UI";
 import { TemplateImportExport } from "./TemplateImportExport";
+import { usePDFExportContext } from "../../contexts/PDFExportContext";
+import { useReactToPrint } from "react-to-print";
 
 const Header: React.FC = () => {
   const { resume, dispatch } = useResume();
+  const { previewRef } = usePDFExportContext();
+  const [isExporting, setIsExporting] = useState(false);
 
   const handleTemplateChange = (template: TemplateType) => {
     dispatch({ type: "SET_TEMPLATE", payload: template });
   };
 
   const handleSave = () => {
-    // TODO: Implement save functionality
-    console.log("Saving resume...", resume);
+    // Save to localStorage
+    localStorage.setItem('resumeDraft', JSON.stringify(resume));
+    console.log("Resume saved successfully");
   };
 
+  // Generate filename based on resume data
+  const generateFileName = (): string => {
+    const name = resume.personalInfo.fullName || 'Resume';
+    const date = new Date().toISOString().split('T')[0];
+    return `${name.replace(/\s+/g, '_')}_Resume_${date}`;
+  };
+
+  // PDF export handler using react-to-print (v3.x API)
+  const handlePrint = useReactToPrint({
+    contentRef: previewRef,
+    documentTitle: generateFileName(),
+    onBeforePrint: async () => {
+      setIsExporting(true);
+      return Promise.resolve();
+    },
+    onAfterPrint: () => {
+      setIsExporting(false);
+    },
+    onPrintError: (errorLocation, error) => {
+      console.error('PDF Export Error:', errorLocation, error);
+      setIsExporting(false);
+      alert('Failed to export PDF. Please try again.');
+    },
+    pageStyle: `
+      @page {
+        size: letter;
+        margin: 0;
+        padding: 0;
+      }
+      @media print {
+        html, body {
+          width: 100%;
+          height: 100%;
+          margin: 0;
+          padding: 0;
+        }
+        body {
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+          color-adjust: exact;
+        }
+        * {
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+        }
+      }
+    `,
+    suppressErrors: true,
+  });
+
   const handleExportPDF = () => {
-    // TODO: Implement PDF export functionality
-    console.log("Exporting PDF...", resume);
+    if (!previewRef.current) {
+      console.error('Preview ref is null');
+      alert('Preview not ready. Please wait a moment and try again.');
+      return;
+    }
+
+    // Verify content exists
+    if (previewRef.current.innerHTML.length === 0) {
+      console.error('Preview content is empty');
+      alert('Resume preview is empty. Please add content to your resume.');
+      return;
+    }
+
+    console.log('Exporting PDF - Preview ref available with', previewRef.current.children.length, 'children');
+    handlePrint();
   };
 
   return (
@@ -63,11 +131,21 @@ const Header: React.FC = () => {
 
             <button
               onClick={handleExportPDF}
-              className="flex items-center space-x-1 sm:space-x-2 px-3 sm:px-4 py-2.5 bg-primary text-white rounded-lg hover:bg-primary-700 transition-all duration-200 text-sm font-medium shadow-sm hover:shadow-md"
+              disabled={isExporting}
+              className="flex items-center space-x-1 sm:space-x-2 px-3 sm:px-4 py-2.5 bg-primary text-white rounded-lg hover:bg-primary-700 transition-all duration-200 text-sm font-medium shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
               title="Export PDF"
             >
-              <Download className="h-4 w-4" />
-              <span className="hidden sm:inline">Export PDF</span>
+              {isExporting ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span className="hidden sm:inline">Exporting...</span>
+                </>
+              ) : (
+                <>
+                  <Download className="h-4 w-4" />
+                  <span className="hidden sm:inline">Export PDF</span>
+                </>
+              )}
             </button>
           </div>
         </div>
