@@ -206,8 +206,8 @@
   .classic-template,
   .modern-template,
   .minimal-template {
-    width: 6.5in !important; /* 8.5in - 2in (1in left + 1in right margins) */
-    max-width: 6.5in !important;
+    width: 100% !important; /* Full width - @page margins control spacing */
+    max-width: 100% !important;
     min-height: auto !important;
     margin: 0 !important;
     padding: 0 !important; /* Remove padding - @page margins handle spacing */
