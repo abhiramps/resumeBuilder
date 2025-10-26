@@ -1,8 +1,7 @@
 import React from 'react';
 import { useResumeContext } from '../../contexts/ResumeContext';
-import { TemplateType } from '../../types/resume.types';
 import { Sparkles, RotateCcw } from 'lucide-react';
-import { TEMPLATE_PRESETS, applyTemplatePreset } from '../../utils/templateStyler';
+import { applyTemplatePreset } from '../../utils/templateStyler';
 
 /**
  * Template-Specific Customization Component
@@ -88,8 +87,8 @@ const ClassicOptions: React.FC = () => {
                     <button
                         onClick={toggleFontStyle}
                         className={`flex-1 px-3 py-2 text-xs rounded transition-colors ${isSerif
-                                ? 'bg-purple-600 text-white'
-                                : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                            ? 'bg-purple-600 text-white'
+                            : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
                             }`}
                     >
                         Serif
@@ -97,8 +96,8 @@ const ClassicOptions: React.FC = () => {
                     <button
                         onClick={toggleFontStyle}
                         className={`flex-1 px-3 py-2 text-xs rounded transition-colors ${!isSerif
-                                ? 'bg-purple-600 text-white'
-                                : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                            ? 'bg-purple-600 text-white'
+                            : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
                             }`}
                     >
                         Sans-serif
@@ -155,10 +154,7 @@ const ModernOptions: React.FC = () => {
         });
     };
 
-    const headerStyles = [
-        { name: 'Left Aligned', value: 'left' },
-        { name: 'Centered', value: 'center' },
-    ];
+
 
     return (
         <div className="space-y-3">
@@ -177,8 +173,8 @@ const ModernOptions: React.FC = () => {
                         >
                             <div
                                 className={`w-full aspect-square rounded-lg border-2 transition-all ${resume.layout.colors?.primary === color.value
-                                        ? 'border-gray-800 scale-110'
-                                        : 'border-gray-300 hover:border-gray-400'
+                                    ? 'border-gray-800 scale-110'
+                                    : 'border-gray-300 hover:border-gray-400'
                                     }`}
                                 style={{ backgroundColor: color.value }}
                             />
@@ -208,7 +204,7 @@ const ModernOptions: React.FC = () => {
  * Minimal Template Options
  */
 const MinimalOptions: React.FC = () => {
-    const { resume, dispatch } = useResumeContext();
+    const { dispatch } = useResumeContext();
 
     const densityLevels = [
         { name: 'Ultra Dense', spacing: 8, lineHeight: 1.15, fontSize: { name: 20, title: 11, sectionHeader: 10, body: 9 } },

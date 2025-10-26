@@ -1,5 +1,4 @@
 import { Resume, LayoutSettings, TemplateType } from '../types/resume.types';
-import { TemplateConfig } from '../types/template.types';
 
 /**
  * Template Importer/Exporter
@@ -70,7 +69,7 @@ export const downloadTemplate = (template: ExportedTemplate): void => {
   const json = exportTemplateAsJSON(template);
   const blob = new Blob([json], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
-  
+
   const link = document.createElement('a');
   link.href = url;
   link.download = `${template.name.replace(/\s+/g, '-').toLowerCase()}-template.json`;
@@ -295,7 +294,7 @@ export const downloadResumeData = (resume: Resume, filename?: string): void => {
   const json = exportResumeData(resume);
   const blob = new Blob([json], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
-  
+
   const link = document.createElement('a');
   link.href = url;
   link.download = filename || `resume-${new Date().toISOString().split('T')[0]}.json`;
@@ -311,7 +310,7 @@ export const downloadResumeData = (resume: Resume, filename?: string): void => {
 export const importResumeData = (jsonString: string): { isValid: boolean; resume?: Resume; error?: string } => {
   try {
     const parsed = JSON.parse(jsonString);
-    
+
     // Basic validation
     if (!parsed.id || !parsed.personalInfo || !parsed.sections || !parsed.layout) {
       return {

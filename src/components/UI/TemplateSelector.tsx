@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { TemplateType } from '../../types/resume.types';
-import { TEMPLATE_CONFIGS } from '../../types/template.types';
 import { Check, ChevronDown, X } from 'lucide-react';
 import { TemplateThumbnail } from '../Templates/TemplateThumbnail';
 
@@ -130,7 +129,6 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({
                                         {Object.values(TEMPLATE_INFO).map((template) => {
                                             const isSelected = selectedTemplate === template.id;
                                             const isCurrent = currentTemplate === template.id;
-                                            const config = TEMPLATE_CONFIGS[template.id];
 
                                             return (
                                                 <div

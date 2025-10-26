@@ -50,7 +50,7 @@ export const usePDFExport = (resume: Resume): UsePDFExportReturn => {
   // Generate filename based on resume data and current date
   const generateFileName = useCallback((customName?: string): string => {
     if (customName) return customName;
-    
+
     const name = resume.personalInfo.fullName || 'Resume';
     const date = new Date().toISOString().split('T')[0];
     return `${name.replace(/\s+/g, '_')}_Resume_${date}`;
@@ -104,7 +104,7 @@ export const usePDFExport = (resume: Resume): UsePDFExportReturn => {
   });
 
   // Export handler with options
-  const handleExport = useCallback((options?: PDFExportOptions) => {
+  const handleExport = useCallback((_options?: PDFExportOptions) => {
     if (!componentRef.current) {
       console.error('Component ref not available');
       setIsExporting(false);

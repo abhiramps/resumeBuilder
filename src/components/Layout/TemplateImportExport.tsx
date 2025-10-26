@@ -6,10 +6,8 @@ import {
     downloadTemplate,
     downloadResumeData,
     importTemplateFromFile,
-    importResumeDataFromFile,
     applyImportedTemplate,
     isValidTemplateFile,
-    getFileSizeString,
     ExportedTemplate,
     ImportValidationResult,
 } from '../../utils/templateImporter';

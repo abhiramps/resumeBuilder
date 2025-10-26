@@ -65,13 +65,15 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
     const hasError = !!error;
 
     // Combine refs
-    const combinedRef = (node: HTMLTextAreaElement) => {
+    const combinedRef = (node: HTMLTextAreaElement | null) => {
       if (typeof ref === "function") {
         ref(node);
-      } else if (ref) {
-        ref.current = node;
+      } else if (ref && node) {
+        (ref as React.MutableRefObject<HTMLTextAreaElement | null>).current = node;
       }
-      textareaRef.current = node;
+      if (node) {
+        (textareaRef as React.MutableRefObject<HTMLTextAreaElement | null>).current = node;
+      }
     };
 
     // Auto-resize functionality
@@ -106,15 +108,13 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
               block w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400
               focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent
               transition-colors duration-200 resize-none
-              ${
-                hasError
-                  ? "border-red-300 focus:ring-red-500 focus:border-red-500"
-                  : "border-gray-300 focus:ring-primary focus:border-primary"
+              ${hasError
+                ? "border-red-300 focus:ring-red-500 focus:border-red-500"
+                : "border-gray-300 focus:ring-primary focus:border-primary"
               }
-              ${
-                props.disabled
-                  ? "bg-gray-50 text-gray-500 cursor-not-allowed"
-                  : "bg-white text-gray-900"
+              ${props.disabled
+                ? "bg-gray-50 text-gray-500 cursor-not-allowed"
+                : "bg-white text-gray-900"
               }
               ${autoResize ? "overflow-hidden" : ""}
               ${className}
@@ -124,10 +124,10 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
               error
                 ? `${textareaId}-error`
                 : helperText
-                ? `${textareaId}-helper`
-                : showCharCount
-                ? `${textareaId}-count`
-                : undefined
+                  ? `${textareaId}-helper`
+                  : showCharCount
+                    ? `${textareaId}-count`
+                    : undefined
             }
             value={value}
             {...props}
@@ -156,9 +156,8 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           {showCharCount && maxLength && (
             <p
               id={`${textareaId}-count`}
-              className={`text-xs ${
-                isOverLimit ? "text-red-600" : "text-gray-500"
-              }`}
+              className={`text-xs ${isOverLimit ? "text-red-600" : "text-gray-500"
+                }`}
             >
               {currentLength}/{maxLength}
             </p>

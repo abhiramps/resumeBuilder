@@ -33,7 +33,6 @@ export const MinimalTemplate = forwardRef<HTMLDivElement, TemplateBaseProps>(
 
     // Use layout colors or fall back to minimal black/white
     const primaryColor = layout.colors?.primary || "#000000";
-    const secondaryColor = layout.colors?.secondary || "#000000";
     const textColor = layout.colors?.text || "#000000";
 
     const containerStyles: React.CSSProperties = {

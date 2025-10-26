@@ -76,7 +76,7 @@ export const mergeTemplateStyles = (
     primary: userLayout.colors?.primary ?? templateConfig.styles.colors.primary,
     secondary: userLayout.colors?.secondary ?? templateConfig.styles.colors.secondary,
     text: userLayout.colors?.text ?? templateConfig.styles.colors.text,
-    background: userLayout.colors?.background ?? templateConfig.styles.colors.background,
+    background: '#ffffff',
   };
 
   // Merge spacing - user settings override template defaults

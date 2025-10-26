@@ -545,8 +545,8 @@ const validateFormatting = (
  * Validate date formats
  */
 const validateDateFormats = (
-  resume: Resume,
-  issues: ValidationIssue[],
+  _resume: Resume,
+  _issues: ValidationIssue[],
   passedChecks: string[]
 ): void => {
   // This is a simplified check - in production, you'd validate actual date formats
@@ -567,19 +567,25 @@ const validateTextLength = (
   resume.sections.forEach(section => {
     if (!section.enabled) return;
 
-    if (section.type === 'summary' && section.content.summary) {
-      totalCharacters += section.content.summary.length;
+    if (section.type === 'summary') {
+      const content = section.content as { summary: string };
+      if (content.summary) {
+        totalCharacters += content.summary.length;
+      }
     }
 
-    if (section.type === 'experience' && section.content.experiences) {
-      section.content.experiences.forEach((exp: any) => {
-        totalCharacters += (exp.description || '').length;
-        if (exp.achievements) {
-          exp.achievements.forEach((ach: string) => {
-            totalCharacters += ach.length;
-          });
-        }
-      });
+    if (section.type === 'experience') {
+      const content = section.content as { experiences: any[] };
+      if (content.experiences) {
+        content.experiences.forEach((exp: any) => {
+          totalCharacters += (exp.description || '').length;
+          if (exp.achievements) {
+            exp.achievements.forEach((ach: string) => {
+              totalCharacters += ach.length;
+            });
+          }
+        });
+      }
     }
   });
 

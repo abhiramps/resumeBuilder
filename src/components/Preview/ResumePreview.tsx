@@ -1,6 +1,5 @@
-import React, { forwardRef, memo } from "react";
+import { forwardRef, memo } from "react";
 import { Resume } from "../../types/resume.types";
-import { templateHelpers } from "../../utils/templateHelpers";
 import { ClassicTemplate, ModernTemplate, MinimalTemplate, AbhiramTemplate } from "../Templates";
 
 /**

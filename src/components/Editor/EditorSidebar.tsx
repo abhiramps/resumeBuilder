@@ -32,17 +32,17 @@ export const EditorSidebar: React.FC = () => {
     const renderSectionContent = (section: ResumeSection) => {
         switch (section.type) {
             case 'summary':
-                return <SummaryEditor section={section} />;
+                return <SummaryEditor />;
             case 'experience':
-                return <ExperienceEditor section={section} />;
+                return <ExperienceEditor />;
             case 'projects':
-                return <ProjectsEditor section={section} />;
+                return <ProjectsEditor />;
             case 'skills':
-                return <SkillsEditor section={section} />;
+                return <SkillsEditor />;
             case 'education':
-                return <EducationEditor section={section} />;
+                return <EducationEditor />;
             case 'certifications':
-                return <CertificationsEditor section={section} />;
+                return <CertificationsEditor />;
             case 'custom':
                 return <CustomSectionEditor section={section} />;
             default:
