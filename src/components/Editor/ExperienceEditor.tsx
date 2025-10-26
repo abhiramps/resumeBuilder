@@ -112,33 +112,30 @@ const BulletPointManager: React.FC<BulletPointManagerProps> = ({
     };
 
     return (
-        <div className="space-y-3">
+        <div className="space-y-2">
             <div className="flex items-center justify-between">
-                <h5 className="text-sm font-medium text-gray-700">Responsibilities & Achievements</h5>
-                <Button
+                <h5 className="text-xs font-medium text-gray-700">Responsibilities & Achievements</h5>
+                <button
                     type="button"
-                    variant="ghost"
-                    size="sm"
                     onClick={addBulletPoint}
                     disabled={bulletPoints.length >= maxPoints}
-                    leftIcon={
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                        </svg>
-                    }
+                    className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded disabled:opacity-50 disabled:cursor-not-allowed"
                 >
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    </svg>
                     Add Point
-                </Button>
+                </button>
             </div>
 
             {bulletPoints.map((point, index) => (
-                <div key={index} className="flex items-start space-x-2">
-                    <div className="flex flex-col space-y-1 mt-2">
+                <div key={index} className="flex items-start gap-1.5">
+                    <div className="flex flex-col gap-0.5 mt-2">
                         <button
                             type="button"
                             onClick={() => moveBulletPoint(index, "up")}
                             disabled={index === 0}
-                            className="p-1 text-gray-400 hover:text-gray-600 disabled:opacity-30"
+                            className="p-0.5 text-gray-400 hover:text-gray-600 disabled:opacity-30"
                             title="Move up"
                         >
                             <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -149,7 +146,7 @@ const BulletPointManager: React.FC<BulletPointManagerProps> = ({
                             type="button"
                             onClick={() => moveBulletPoint(index, "down")}
                             disabled={index === bulletPoints.length - 1}
-                            className="p-1 text-gray-400 hover:text-gray-600 disabled:opacity-30"
+                            className="p-0.5 text-gray-400 hover:text-gray-600 disabled:opacity-30"
                             title="Move down"
                         >
                             <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -166,17 +163,17 @@ const BulletPointManager: React.FC<BulletPointManagerProps> = ({
                             rows={2}
                             maxLength={200}
                             showCharCount
-                            className="text-sm"
+                            className="text-xs"
                         />
                     </div>
 
                     <button
                         type="button"
                         onClick={() => removeBulletPoint(index)}
-                        className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-md mt-1"
+                        className="p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 rounded mt-1"
                         title="Remove bullet point"
                     >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                         </svg>
                     </button>
@@ -184,7 +181,7 @@ const BulletPointManager: React.FC<BulletPointManagerProps> = ({
             ))}
 
             {bulletPoints.length === 0 && (
-                <div className="text-center py-4 text-gray-500 text-sm border-2 border-dashed border-gray-200 rounded-lg">
+                <div className="text-center py-3 text-gray-500 text-xs border-2 border-dashed border-gray-200 rounded-lg">
                     No responsibilities added yet. Click "Add Point" to get started.
                 </div>
             )}
@@ -319,106 +316,105 @@ const ExperienceEntry: React.FC<ExperienceEntryProps> = ({
     };
 
     return (
-        <div className="bg-white border border-gray-200 rounded-lg p-6 space-y-4">
+        <div className="bg-white border border-gray-200 rounded-lg p-4 space-y-3">
             {/* Entry Header */}
-            <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="flex items-start justify-between gap-3">
+                <div className="flex items-start space-x-2 flex-1 min-w-0">
+                    <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0V6a2 2 0 012 2v6a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2V6" />
                         </svg>
                     </div>
-                    <div>
-                        <h4 className="text-lg font-semibold text-gray-900">
+                    <div className="flex-1 min-w-0">
+                        <h4 className="text-sm font-semibold text-gray-900 truncate">
                             {experience.jobTitle || "New Experience"}
                         </h4>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-xs text-gray-500 truncate">
                             {experience.company && `${experience.company}${experience.location ? ` • ${experience.location}` : ""}`}
                         </p>
                     </div>
                 </div>
 
-                <div className="flex items-center space-x-2">
-                    {/* Validation and ATS Status */}
-                    {isEditing && (
-                        <>
-                            {hasValidationErrors(validationErrors) ? (
-                                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                                    ⚠ Validation Issues
-                                </span>
-                            ) : (
-                                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                    ✓ Valid
-                                </span>
-                            )}
-                            {(() => {
-                                const atsCheck = checkATSCompliance(experience);
-                                return atsCheck.isCompliant ? (
-                                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                        ✓ ATS-Friendly
-                                    </span>
-                                ) : (
-                                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
-                                        ⚠ ATS Issues
-                                    </span>
-                                );
-                            })()}
-                        </>
-                    )}
-
+                <div className="flex items-center gap-1 flex-shrink-0">
                     {/* Move buttons */}
                     <button
                         type="button"
                         onClick={() => onMoveUp(experience.id)}
-                        className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md"
+                        className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded"
                         title="Move up"
                     >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
                         </svg>
                     </button>
                     <button
                         type="button"
                         onClick={() => onMoveDown(experience.id)}
-                        className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md"
+                        className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded"
                         title="Move down"
                     >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                         </svg>
                     </button>
 
                     {/* Action buttons */}
-                    <Button
-                        variant="ghost"
-                        size="sm"
+                    <button
+                        type="button"
                         onClick={() => onToggleEdit(experience.id)}
+                        className="px-2 py-1.5 text-xs font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded"
                     >
                         {isEditing ? "Save" : "Edit"}
-                    </Button>
-                    <Button
-                        variant="ghost"
-                        size="sm"
+                    </button>
+                    <button
+                        type="button"
                         onClick={() => onDuplicate(experience.id)}
+                        className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded"
                         title="Duplicate entry"
                     >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                         </svg>
-                    </Button>
-                    <Button
-                        variant="ghost"
-                        size="sm"
+                    </button>
+                    <button
+                        type="button"
                         onClick={() => setShowDeleteConfirm(true)}
-                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                        className="p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 rounded"
                         title="Delete entry"
                     >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                         </svg>
-                    </Button>
+                    </button>
                 </div>
             </div>
+
+            {/* Validation and ATS Status */}
+            {isEditing && (
+                <div className="flex flex-wrap gap-1.5">
+                    {hasValidationErrors(validationErrors) ? (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                            ⚠ Validation Issues
+                        </span>
+                    ) : (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            ✓ Valid
+                        </span>
+                    )}
+                    {(() => {
+                        const atsCheck = checkATSCompliance(experience);
+                        return atsCheck.isCompliant ? (
+                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                ✓ ATS-Friendly
+                            </span>
+                        ) : (
+                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+                                ⚠ ATS Issues
+                            </span>
+                        );
+                    })()}
+                </div>
+            )}
 
             {/* Delete Confirmation Modal */}
             {showDeleteConfirm && (
@@ -448,9 +444,9 @@ const ExperienceEntry: React.FC<ExperienceEntryProps> = ({
 
             {/* Entry Form */}
             {isEditing && (
-                <div className="space-y-4 border-t border-gray-200 pt-4">
+                <div className="space-y-3 border-t border-gray-200 pt-3">
                     {/* Basic Information */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 gap-3">
                         <Input
                             label="Job Title"
                             value={localExperience.jobTitle}
@@ -458,6 +454,7 @@ const ExperienceEntry: React.FC<ExperienceEntryProps> = ({
                             error={validationErrors.jobTitle}
                             required
                             placeholder="e.g., Senior Software Engineer"
+                            className="text-sm"
                         />
                         <Input
                             label="Company"
@@ -466,6 +463,7 @@ const ExperienceEntry: React.FC<ExperienceEntryProps> = ({
                             error={validationErrors.company}
                             required
                             placeholder="e.g., Tech Company Inc."
+                            className="text-sm"
                         />
                     </div>
 
@@ -475,16 +473,17 @@ const ExperienceEntry: React.FC<ExperienceEntryProps> = ({
                         onChange={(e) => handleFieldUpdate("location", e.target.value)}
                         error={validationErrors.location}
                         placeholder="e.g., San Francisco, CA"
+                        className="text-sm"
                     />
 
                     {/* Date Range */}
-                    <div className="space-y-4">
-                        <h5 className="text-sm font-medium text-gray-700">Employment Period</h5>
+                    <div className="space-y-2">
+                        <h5 className="text-xs font-medium text-gray-700">Employment Period</h5>
                         {validationErrors.dateRange && (
-                            <p className="text-sm text-red-600">{validationErrors.dateRange}</p>
+                            <p className="text-xs text-red-600">{validationErrors.dateRange}</p>
                         )}
 
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div className="grid grid-cols-4 gap-2">
                             <Select
                                 label="Start Month"
                                 options={MONTH_OPTIONS}
@@ -492,6 +491,7 @@ const ExperienceEntry: React.FC<ExperienceEntryProps> = ({
                                 onChange={(value) => handleDateUpdate("startDate", value, startDate.year)}
                                 placeholder="Month"
                                 required
+                                className="text-sm"
                             />
                             <Select
                                 label="Start Year"
@@ -500,6 +500,7 @@ const ExperienceEntry: React.FC<ExperienceEntryProps> = ({
                                 onChange={(value) => handleDateUpdate("startDate", startDate.month, value)}
                                 placeholder="Year"
                                 required
+                                className="text-sm"
                             />
 
                             {!localExperience.current && (
@@ -510,6 +511,7 @@ const ExperienceEntry: React.FC<ExperienceEntryProps> = ({
                                         value={endDate.month}
                                         onChange={(value) => handleDateUpdate("endDate", value, endDate.year)}
                                         placeholder="Month"
+                                        className="text-sm"
                                     />
                                     <Select
                                         label="End Year"
@@ -517,6 +519,7 @@ const ExperienceEntry: React.FC<ExperienceEntryProps> = ({
                                         value={endDate.year}
                                         onChange={(value) => handleDateUpdate("endDate", endDate.month, value)}
                                         placeholder="Year"
+                                        className="text-sm"
                                     />
                                 </>
                             )}
@@ -529,7 +532,7 @@ const ExperienceEntry: React.FC<ExperienceEntryProps> = ({
                                 onChange={(e) => handleCurrentToggle(e.target.checked)}
                                 className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                             />
-                            <span className="text-sm text-gray-700">I currently work here</span>
+                            <span className="text-xs text-gray-700">I currently work here</span>
                         </label>
                     </div>
 
@@ -543,6 +546,7 @@ const ExperienceEntry: React.FC<ExperienceEntryProps> = ({
                         rows={3}
                         maxLength={300}
                         showCharCount
+                        className="text-sm"
                     />
 
                     {/* Bullet Points */}
@@ -555,23 +559,23 @@ const ExperienceEntry: React.FC<ExperienceEntryProps> = ({
 
             {/* Summary View (when not editing) */}
             {!isEditing && (
-                <div className="space-y-3 border-t border-gray-200 pt-4">
+                <div className="space-y-2 border-t border-gray-200 pt-3">
                     {experience.description && (
-                        <p className="text-sm text-gray-600">{experience.description}</p>
+                        <p className="text-xs text-gray-600 leading-relaxed">{experience.description}</p>
                     )}
 
                     {experience.achievements.length > 0 && (
                         <div>
-                            <h5 className="text-sm font-medium text-gray-700 mb-2">Key Achievements:</h5>
+                            <h5 className="text-xs font-medium text-gray-700 mb-1.5">Key Achievements:</h5>
                             <ul className="space-y-1">
                                 {experience.achievements.slice(0, 3).map((achievement, index) => (
-                                    <li key={index} className="text-sm text-gray-600 flex items-start">
-                                        <span className="text-blue-600 mr-2">•</span>
-                                        <span>{achievement}</span>
+                                    <li key={index} className="text-xs text-gray-600 flex items-start">
+                                        <span className="text-blue-600 mr-1.5 flex-shrink-0">•</span>
+                                        <span className="leading-relaxed">{achievement}</span>
                                     </li>
                                 ))}
                                 {experience.achievements.length > 3 && (
-                                    <li className="text-sm text-gray-500 italic">
+                                    <li className="text-xs text-gray-500 italic ml-3">
                                         +{experience.achievements.length - 3} more achievements
                                     </li>
                                 )}
@@ -767,30 +771,27 @@ export const ExperienceEditor: React.FC<ExperienceEditorProps> = ({
 
     return (
         <div className={className}>
-            <div className="space-y-4">
-                <div className="flex items-center justify-between mb-4">
-                    <p className="text-sm text-gray-500">
+            <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                    <p className="text-xs text-gray-500">
                         {experiences.length} {experiences.length === 1 ? "entry" : "entries"}
                     </p>
-                    <Button
-                        variant="primary"
-                        size="sm"
+                    <button
                         onClick={addExperience}
-                        leftIcon={
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                            </svg>
-                        }
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-gray-700 hover:bg-gray-800 rounded-md transition-colors"
                     >
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                        </svg>
                         Add Experience
-                    </Button>
+                    </button>
                 </div>
 
                 {/* Experience Entries */}
                 {experiences.length === 0 ? (
-                    <div className="text-center py-12 text-gray-500">
+                    <div className="text-center py-8 text-gray-500 border-2 border-dashed border-gray-200 rounded-lg">
                         <svg
-                            className="w-12 h-12 mx-auto mb-4 text-gray-300"
+                            className="w-10 h-10 mx-auto mb-3 text-gray-300"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -802,17 +803,19 @@ export const ExperienceEditor: React.FC<ExperienceEditorProps> = ({
                                 d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0V6a2 2 0 012 2v6a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2V6"
                             />
                         </svg>
-                        <h4 className="text-lg font-medium text-gray-900 mb-2">No work experience added</h4>
-                        <p className="text-gray-500 mb-4">
+                        <h4 className="text-sm font-medium text-gray-900 mb-1">No work experience added</h4>
+                        <p className="text-xs text-gray-500 mb-3">
                             Add your work experience to showcase your professional background.
                         </p>
-                        <Button onClick={addExperience} leftIcon={
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <button
+                            onClick={addExperience}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-gray-700 hover:bg-gray-800 rounded-md transition-colors"
+                        >
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                             </svg>
-                        }>
                             Add Your First Experience
-                        </Button>
+                        </button>
                     </div>
                 ) : (
                     experiences.map((experience) => (
