@@ -150,22 +150,20 @@ const SkillTagInput: React.FC<SkillTagInputProps> = ({
     const popularSkills = getPopularSkillsForCategory(categoryName);
 
     return (
-        <div className="space-y-3">
+        <div className="space-y-2">
             <div className="flex items-center justify-between">
-                <h5 className="text-sm font-medium text-gray-700">Skills</h5>
-                <div className="flex items-center space-x-2">
+                <h5 className="text-xs font-medium text-gray-700">Skills</h5>
+                <div className="flex items-center gap-2">
                     <span className="text-xs text-gray-500">
                         {skills.length}/{maxSkills} skills
                     </span>
-                    <Button
+                    <button
                         type="button"
-                        variant="ghost"
-                        size="sm"
                         onClick={() => setShowBulkInput(!showBulkInput)}
-                        className="text-xs"
+                        className="px-2 py-1 text-xs font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded"
                     >
                         Bulk Add
-                    </Button>
+                    </button>
                 </div>
             </div>
 
@@ -200,20 +198,20 @@ const SkillTagInput: React.FC<SkillTagInputProps> = ({
             )}
 
             {/* Skill Tags */}
-            <div className="flex flex-wrap gap-2 p-3 border border-gray-300 rounded-md min-h-[42px] bg-white">
+            <div className="flex flex-wrap gap-1.5 p-2 border border-gray-300 rounded-md min-h-[36px] bg-white">
                 {skills.map((skill) => {
                     const levelInfo = SKILL_LEVELS.find(l => l.value === skill.level) || SKILL_LEVELS[1];
                     return (
                         <div
                             key={skill.id}
-                            className={`inline-flex items-center px-2 py-1 rounded-md text-sm ${levelInfo.color} group`}
+                            className={`inline-flex items-center px-1.5 py-0.5 rounded text-xs ${levelInfo.color} group`}
                         >
                             <span>{skill.name}</span>
                             {allowLevels && (
                                 <select
                                     value={skill.level}
                                     onChange={(e) => updateSkillLevel(skill.id, e.target.value as Skill["level"])}
-                                    className="ml-2 text-xs bg-transparent border-none outline-none cursor-pointer"
+                                    className="ml-1 text-xs bg-transparent border-none outline-none cursor-pointer"
                                     title="Skill level"
                                 >
                                     {SKILL_LEVELS.map(level => (
@@ -226,7 +224,7 @@ const SkillTagInput: React.FC<SkillTagInputProps> = ({
                             <button
                                 type="button"
                                 onClick={() => removeSkill(skill.id)}
-                                className="ml-2 text-current hover:text-red-600 opacity-70 group-hover:opacity-100"
+                                className="ml-1 text-current hover:text-red-600 opacity-70 group-hover:opacity-100"
                                 title="Remove skill"
                             >
                                 ×
@@ -253,8 +251,8 @@ const SkillTagInput: React.FC<SkillTagInputProps> = ({
                             // Delay hiding suggestions to allow clicking
                             setTimeout(() => setShowSuggestions(false), 200);
                         }}
-                        placeholder={skills.length === 0 ? "Add skills (e.g., React, Python, AWS)" : "Add more..."}
-                        className="flex-1 min-w-[120px] outline-none bg-transparent text-sm"
+                        placeholder={skills.length === 0 ? "Add skills (e.g., React, Python)" : "Add more..."}
+                        className="flex-1 min-w-[100px] outline-none bg-transparent text-xs"
                     />
                 )}
             </div>
@@ -298,7 +296,7 @@ const SkillTagInput: React.FC<SkillTagInputProps> = ({
             )}
 
             {skills.length === 0 && (
-                <p className="text-sm text-gray-500 text-center py-2">
+                <p className="text-xs text-gray-500 text-center py-1.5">
                     No skills added yet. Start typing to add skills or use popular suggestions above.
                 </p>
             )}
@@ -348,94 +346,93 @@ const SkillCategoryComponent: React.FC<SkillCategoryComponentProps> = ({
     };
 
     return (
-        <div className="bg-white border border-gray-200 rounded-lg p-6 space-y-4">
+        <div className="bg-white border border-gray-200 rounded-lg p-4 space-y-3">
             {/* Category Header */}
-            <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
-                        <svg className="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="flex items-start justify-between gap-3">
+                <div className="flex items-start space-x-2 flex-1 min-w-0">
+                    <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <svg className="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
                         </svg>
                     </div>
-                    <div>
-                        <h4 className="text-lg font-semibold text-gray-900">
+                    <div className="flex-1 min-w-0">
+                        <h4 className="text-sm font-semibold text-gray-900 truncate">
                             {category.categoryName || "New Category"}
                         </h4>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-xs text-gray-500">
                             {category.skills.length} {category.skills.length === 1 ? "skill" : "skills"}
                         </p>
                     </div>
                 </div>
 
-                <div className="flex items-center space-x-2">
-                    {/* Validation Status */}
-                    {isEditing && (
-                        <>
-                            {hasValidationErrors(validationErrors) ? (
-                                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                                    ⚠ Issues
-                                </span>
-                            ) : (
-                                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                    ✓ Valid
-                                </span>
-                            )}
-                        </>
-                    )}
-
+                <div className="flex items-center gap-1 flex-shrink-0">
                     {/* Move buttons */}
                     <button
                         type="button"
                         onClick={() => onMoveUp(categoryIndex)}
-                        className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md"
+                        className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded"
                         title="Move up"
                     >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
                         </svg>
                     </button>
                     <button
                         type="button"
                         onClick={() => onMoveDown(categoryIndex)}
-                        className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md"
+                        className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded"
                         title="Move down"
                     >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                         </svg>
                     </button>
 
                     {/* Action buttons */}
-                    <Button
-                        variant="ghost"
-                        size="sm"
+                    <button
+                        type="button"
                         onClick={() => onToggleEdit(categoryIndex)}
+                        className="px-2 py-1.5 text-xs font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded"
                     >
                         {isEditing ? "Save" : "Edit"}
-                    </Button>
-                    <Button
-                        variant="ghost"
-                        size="sm"
+                    </button>
+                    <button
+                        type="button"
                         onClick={() => onDuplicate(categoryIndex)}
+                        className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded"
                         title="Duplicate category"
                     >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                         </svg>
-                    </Button>
-                    <Button
-                        variant="ghost"
-                        size="sm"
+                    </button>
+                    <button
+                        type="button"
                         onClick={() => setShowDeleteConfirm(true)}
-                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                        className="p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 rounded"
                         title="Delete category"
                     >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                         </svg>
-                    </Button>
+                    </button>
                 </div>
             </div>
+
+            {/* Validation Status */}
+            {isEditing && (
+                <div className="flex flex-wrap gap-1.5">
+                    {hasValidationErrors(validationErrors) ? (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                            ⚠ Issues
+                        </span>
+                    ) : (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            ✓ Valid
+                        </span>
+                    )}
+                </div>
+            )}
 
             {/* Delete Confirmation Modal */}
             {showDeleteConfirm && (
@@ -465,7 +462,7 @@ const SkillCategoryComponent: React.FC<SkillCategoryComponentProps> = ({
 
             {/* Category Form */}
             {isEditing && (
-                <div className="space-y-4 border-t border-gray-200 pt-4">
+                <div className="space-y-3 border-t border-gray-200 pt-3">
                     <Input
                         label="Category Name"
                         value={category.categoryName}
@@ -473,6 +470,7 @@ const SkillCategoryComponent: React.FC<SkillCategoryComponentProps> = ({
                         error={validationErrors.categoryName}
                         required
                         placeholder="e.g., Programming Languages"
+                        className="text-sm"
                     />
 
                     <SkillTagInput
@@ -482,22 +480,22 @@ const SkillCategoryComponent: React.FC<SkillCategoryComponentProps> = ({
                     />
 
                     {validationErrors.general && (
-                        <p className="text-sm text-red-600">{validationErrors.general}</p>
+                        <p className="text-xs text-red-600">{validationErrors.general}</p>
                     )}
                 </div>
             )}
 
             {/* Summary View (when not editing) */}
             {!isEditing && (
-                <div className="space-y-3 border-t border-gray-200 pt-4">
+                <div className="space-y-2 border-t border-gray-200 pt-3">
                     {category.skills.length > 0 ? (
-                        <div className="flex flex-wrap gap-2">
+                        <div className="flex flex-wrap gap-1.5">
                             {category.skills.map((skill) => {
                                 const levelInfo = SKILL_LEVELS.find(l => l.value === skill.level) || SKILL_LEVELS[1];
                                 return (
                                     <span
                                         key={skill.id}
-                                        className={`inline-flex items-center px-2 py-1 rounded-md text-sm ${levelInfo.color}`}
+                                        className={`inline-flex items-center px-1.5 py-0.5 rounded text-xs ${levelInfo.color}`}
                                         title={`${skill.name} - ${levelInfo.label}`}
                                     >
                                         {skill.name}
@@ -506,7 +504,7 @@ const SkillCategoryComponent: React.FC<SkillCategoryComponentProps> = ({
                             })}
                         </div>
                     ) : (
-                        <p className="text-sm text-gray-500 italic">No skills added to this category yet.</p>
+                        <p className="text-xs text-gray-500 italic">No skills added to this category yet.</p>
                     )}
                 </div>
             )}
@@ -762,81 +760,48 @@ export const SkillsEditor: React.FC<SkillsEditorProps> = ({
     const atsCheck = checkSkillsATSCompliance(skillCategories);
 
     return (
-        <div className={`bg-white rounded-lg border border-gray-200 ${className}`}>
-            {/* Header */}
-            <div
-                className="flex items-center justify-between p-4 border-b border-gray-200 cursor-pointer hover:bg-gray-50"
-                onClick={() => setIsCollapsed(!isCollapsed)}
-            >
-                <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
-                        <svg
-                            className="w-5 h-5 text-indigo-600"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
-                            />
-                        </svg>
-                    </div>
-                    <div>
-                        <h3 className="text-lg font-semibold text-gray-900">
-                            Technical Skills
-                        </h3>
-                        <p className="text-sm text-gray-500">
+        <div className={className}>
+            <div className="space-y-3">
+                {/* Header Section */}
+                <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                        <p className="text-xs text-gray-500">
                             {skillCategories.length} {skillCategories.length === 1 ? "category" : "categories"}, {totalSkills} skills
                         </p>
+                        <button
+                            onClick={() => setShowTemplates(!showTemplates)}
+                            className="px-2 py-1 text-xs font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded"
+                        >
+                            Templates
+                        </button>
                     </div>
-                </div>
-                <div className="flex items-center space-x-2">
-                    {/* ATS Status */}
-                    {atsCheck.isCompliant ? (
-                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                            ✓ ATS-Friendly
-                        </span>
-                    ) : (
-                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
-                            ⚠ ATS Issues
-                        </span>
-                    )}
 
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            setShowTemplates(!showTemplates);
-                        }}
-                    >
-                        Templates
-                    </Button>
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            addCategory();
-                        }}
-                        leftIcon={
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="flex items-center justify-between gap-2">
+                        {/* ATS Status */}
+                        {atsCheck.isCompliant ? (
+                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                ✓ ATS-Friendly
+                            </span>
+                        ) : (
+                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+                                ⚠ ATS Issues
+                            </span>
+                        )}
+
+                        <button
+                            onClick={addCategory}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-gray-700 hover:bg-gray-800 rounded-md transition-colors"
+                        >
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                             </svg>
-                        }
-                    >
-                        Add Category
-                    </Button>
-                    <CollapseIcon />
+                            Add Category
+                        </button>
+                    </div>
                 </div>
-            </div>
 
-            {/* Skills Content */}
-            {!isCollapsed && (
-                <div className="p-6 space-y-6">
+                {/* Skills Content */}
+                <div className="space-y-3">
                     {/* Templates */}
                     {showTemplates && (
                         <div className="bg-blue-50 rounded-lg p-4 space-y-3">
@@ -876,9 +841,9 @@ export const SkillsEditor: React.FC<SkillsEditorProps> = ({
 
                     {/* Skill Categories */}
                     {skillCategories.length === 0 ? (
-                        <div className="text-center py-12 text-gray-500">
+                        <div className="text-center py-8 text-gray-500 border-2 border-dashed border-gray-200 rounded-lg">
                             <svg
-                                className="w-12 h-12 mx-auto mb-4 text-gray-300"
+                                className="w-10 h-10 mx-auto mb-3 text-gray-300"
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
@@ -890,21 +855,26 @@ export const SkillsEditor: React.FC<SkillsEditorProps> = ({
                                     d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
                                 />
                             </svg>
-                            <h4 className="text-lg font-medium text-gray-900 mb-2">No skill categories added</h4>
-                            <p className="text-gray-500 mb-4">
+                            <h4 className="text-sm font-medium text-gray-900 mb-1">No skill categories added</h4>
+                            <p className="text-xs text-gray-500 mb-3">
                                 Organize your technical skills into categories to showcase your expertise effectively.
                             </p>
-                            <div className="flex justify-center space-x-3">
-                                <Button onClick={() => setShowTemplates(true)} variant="secondary">
+                            <div className="flex justify-center gap-2">
+                                <button
+                                    onClick={() => setShowTemplates(true)}
+                                    className="px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 rounded-md"
+                                >
                                     Use Template
-                                </Button>
-                                <Button onClick={addCategory} leftIcon={
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                </button>
+                                <button
+                                    onClick={addCategory}
+                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-gray-700 hover:bg-gray-800 rounded-md transition-colors"
+                                >
+                                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                                     </svg>
-                                }>
                                     Add Your First Category
-                                </Button>
+                                </button>
                             </div>
                         </div>
                     ) : (
@@ -954,7 +924,7 @@ export const SkillsEditor: React.FC<SkillsEditorProps> = ({
                         </div>
                     )}
                 </div>
-            )}
+            </div>
         </div>
     );
 };

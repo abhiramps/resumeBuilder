@@ -83,8 +83,8 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
     // Filter options based on search term
     const filteredOptions = searchable
       ? options.filter((option) =>
-          option.label.toLowerCase().includes(searchTerm.toLowerCase())
-        )
+        option.label.toLowerCase().includes(searchTerm.toLowerCase())
+      )
       : options;
 
     // Get selected option
@@ -185,9 +185,9 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
         {label && (
           <label
             htmlFor={selectId}
-            className="block text-sm font-medium text-gray-700"
+            className="flex items-center text-xs font-medium text-gray-700"
           >
-            {label}
+            <span>{label}</span>
             {required && <span className="text-red-500 ml-1">*</span>}
           </label>
         )}
@@ -198,18 +198,16 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
             id={selectId}
             type="button"
             className={`
-              relative w-full px-3 py-2 text-left border rounded-md shadow-sm
+              relative w-full px-2 py-1.5 text-sm text-left border rounded-md shadow-sm
               focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent
               transition-colors duration-200
-              ${
-                hasError
-                  ? "border-red-300 focus:ring-red-500 focus:border-red-500"
-                  : "border-gray-300 focus:ring-primary focus:border-primary"
+              ${hasError
+                ? "border-red-300 focus:ring-red-500 focus:border-red-500"
+                : "border-gray-300 focus:ring-primary focus:border-primary"
               }
-              ${
-                disabled
-                  ? "bg-gray-50 text-gray-500 cursor-not-allowed"
-                  : "bg-white text-gray-900 cursor-pointer"
+              ${disabled
+                ? "bg-gray-50 text-gray-500 cursor-not-allowed"
+                : "bg-white text-gray-900 cursor-pointer"
               }
               ${className}
             `}
@@ -223,8 +221,8 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
               error
                 ? `${selectId}-error`
                 : helperText
-                ? `${selectId}-helper`
-                : undefined
+                  ? `${selectId}-helper`
+                  : undefined
             }
           >
             <span
@@ -234,9 +232,8 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
             </span>
             <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
               <svg
-                className={`h-5 w-5 text-gray-400 transition-transform duration-200 ${
-                  isOpen ? "rotate-180" : ""
-                }`}
+                className={`h-5 w-5 text-gray-400 transition-transform duration-200 ${isOpen ? "rotate-180" : ""
+                  }`}
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 20 20"
                 fill="currentColor"
@@ -282,13 +279,11 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
                       key={option.value}
                       className={`
                         px-3 py-2 text-sm cursor-pointer transition-colors duration-150
-                        ${
-                          index === focusedIndex
-                            ? "bg-primary text-white"
-                            : "text-gray-900 hover:bg-gray-100"
+                        ${index === focusedIndex
+                          ? "bg-primary text-white"
+                          : "text-gray-900 hover:bg-gray-100"
                         }
-                        ${
-                          option.disabled ? "opacity-50 cursor-not-allowed" : ""
+                        ${option.disabled ? "opacity-50 cursor-not-allowed" : ""
                         }
                       `}
                       onClick={() =>

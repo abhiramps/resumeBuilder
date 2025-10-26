@@ -124,20 +124,20 @@ const TechStackManager: React.FC<TechStackManagerProps> = ({
     };
 
     return (
-        <div className="space-y-3">
+        <div className="space-y-2">
             <div className="flex items-center justify-between">
-                <h5 className="text-sm font-medium text-gray-700">Tech Stack</h5>
+                <h5 className="text-xs font-medium text-gray-700">Tech Stack</h5>
                 <span className="text-xs text-gray-500">
                     {techStack.length}/{maxTags} technologies
                 </span>
             </div>
 
             {/* Tech Stack Tags */}
-            <div className="flex flex-wrap gap-2 p-3 border border-gray-300 rounded-md min-h-[42px] bg-white">
+            <div className="flex flex-wrap gap-1.5 p-2 border border-gray-300 rounded-md min-h-[36px] bg-white">
                 {techStack.map((tech, index) => (
                     <span
                         key={index}
-                        className="inline-flex items-center px-2 py-1 rounded-md text-sm bg-blue-100 text-blue-800"
+                        className="inline-flex items-center px-1.5 py-0.5 rounded text-xs bg-blue-100 text-blue-800"
                     >
                         {tech}
                         <button
@@ -167,8 +167,8 @@ const TechStackManager: React.FC<TechStackManagerProps> = ({
                             // Delay hiding suggestions to allow clicking
                             setTimeout(() => setShowSuggestions(false), 200);
                         }}
-                        placeholder={techStack.length === 0 ? "Add technologies (e.g., React, Node.js, Python)" : "Add more..."}
-                        className="flex-1 min-w-[120px] outline-none bg-transparent text-sm"
+                        placeholder={techStack.length === 0 ? "Add technologies (e.g., React, Node.js)" : "Add more..."}
+                        className="flex-1 min-w-[100px] outline-none bg-transparent text-xs"
                     />
                 )}
             </div>
@@ -222,7 +222,7 @@ const TechStackManager: React.FC<TechStackManagerProps> = ({
             </div>
 
             {techStack.length === 0 && (
-                <p className="text-sm text-gray-500 text-center py-2">
+                <p className="text-xs text-gray-500 text-center py-1.5">
                     No technologies added yet. Start typing to add technologies.
                 </p>
             )}
@@ -360,20 +360,20 @@ const ProjectEntry: React.FC<ProjectEntryProps> = ({
     };
 
     return (
-        <div className="bg-white border border-gray-200 rounded-lg p-6 space-y-4">
+        <div className="bg-white border border-gray-200 rounded-lg p-4 space-y-3">
             {/* Entry Header */}
-            <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                        <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="flex items-start justify-between gap-3">
+                <div className="flex items-start space-x-2 flex-1 min-w-0">
+                    <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                         </svg>
                     </div>
-                    <div>
-                        <h4 className="text-lg font-semibold text-gray-900">
+                    <div className="flex-1 min-w-0">
+                        <h4 className="text-sm font-semibold text-gray-900 truncate">
                             {project.name || "New Project"}
                         </h4>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-xs text-gray-500 truncate">
                             {project.techStack.length > 0 && (
                                 <>
                                     {project.techStack.slice(0, 3).join(", ")}
@@ -384,87 +384,86 @@ const ProjectEntry: React.FC<ProjectEntryProps> = ({
                     </div>
                 </div>
 
-                <div className="flex items-center space-x-2">
-                    {/* Validation and ATS Status */}
-                    {isEditing && (
-                        <>
-                            {hasValidationErrors(validationErrors) ? (
-                                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                                    ⚠ Validation Issues
-                                </span>
-                            ) : (
-                                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                    ✓ Valid
-                                </span>
-                            )}
-                            {(() => {
-                                const atsCheck = checkATSCompliance(project);
-                                return atsCheck.isCompliant ? (
-                                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                        ✓ ATS-Friendly
-                                    </span>
-                                ) : (
-                                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
-                                        ⚠ ATS Issues
-                                    </span>
-                                );
-                            })()}
-                        </>
-                    )}
-
+                <div className="flex items-center gap-1 flex-shrink-0">
                     {/* Move buttons */}
                     <button
                         type="button"
                         onClick={() => onMoveUp(project.id)}
-                        className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md"
+                        className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded"
                         title="Move up"
                     >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
                         </svg>
                     </button>
                     <button
                         type="button"
                         onClick={() => onMoveDown(project.id)}
-                        className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md"
+                        className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded"
                         title="Move down"
                     >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                         </svg>
                     </button>
 
                     {/* Action buttons */}
-                    <Button
-                        variant="ghost"
-                        size="sm"
+                    <button
+                        type="button"
                         onClick={() => onToggleEdit(project.id)}
+                        className="px-2 py-1.5 text-xs font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded"
                     >
                         {isEditing ? "Save" : "Edit"}
-                    </Button>
-                    <Button
-                        variant="ghost"
-                        size="sm"
+                    </button>
+                    <button
+                        type="button"
                         onClick={() => onDuplicate(project.id)}
+                        className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded"
                         title="Duplicate project"
                     >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                         </svg>
-                    </Button>
-                    <Button
-                        variant="ghost"
-                        size="sm"
+                    </button>
+                    <button
+                        type="button"
                         onClick={() => setShowDeleteConfirm(true)}
-                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                        className="p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 rounded"
                         title="Delete project"
                     >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                         </svg>
-                    </Button>
+                    </button>
                 </div>
             </div>
+
+            {/* Validation and ATS Status */}
+            {isEditing && (
+                <div className="flex flex-wrap gap-1.5">
+                    {hasValidationErrors(validationErrors) ? (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                            ⚠ Validation Issues
+                        </span>
+                    ) : (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            ✓ Valid
+                        </span>
+                    )}
+                    {(() => {
+                        const atsCheck = checkATSCompliance(project);
+                        return atsCheck.isCompliant ? (
+                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                ✓ ATS-Friendly
+                            </span>
+                        ) : (
+                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+                                ⚠ ATS Issues
+                            </span>
+                        );
+                    })()}
+                </div>
+            )}
 
             {/* Delete Confirmation Modal */}
             {showDeleteConfirm && (
@@ -494,9 +493,9 @@ const ProjectEntry: React.FC<ProjectEntryProps> = ({
 
             {/* Entry Form */}
             {isEditing && (
-                <div className="space-y-4 border-t border-gray-200 pt-4">
+                <div className="space-y-3 border-t border-gray-200 pt-3">
                     {/* Basic Information */}
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                         <Input
                             label="Project Name"
                             value={localProject.name}
@@ -504,6 +503,7 @@ const ProjectEntry: React.FC<ProjectEntryProps> = ({
                             error={validationErrors.name}
                             required
                             placeholder="e.g., E-commerce Platform"
+                            className="text-sm"
                         />
 
                         <Textarea
@@ -515,6 +515,7 @@ const ProjectEntry: React.FC<ProjectEntryProps> = ({
                             rows={3}
                             maxLength={300}
                             showCharCount
+                            className="text-sm"
                         />
                     </div>
 
@@ -524,11 +525,11 @@ const ProjectEntry: React.FC<ProjectEntryProps> = ({
                         onUpdate={(techStack) => handleFieldUpdate("techStack", techStack)}
                     />
                     {validationErrors.techStack && (
-                        <p className="text-sm text-red-600">{validationErrors.techStack}</p>
+                        <p className="text-xs text-red-600">{validationErrors.techStack}</p>
                     )}
 
                     {/* Project Links */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 gap-3">
                         <Input
                             label="Project URL (Optional)"
                             type="url"
@@ -536,7 +537,8 @@ const ProjectEntry: React.FC<ProjectEntryProps> = ({
                             onChange={(e) => handleFieldUpdate("url", e.target.value)}
                             error={validationErrors.url}
                             placeholder="https://your-project.com"
-                            helperText="Link to live demo or project website"
+                            helperText="Link to live demo"
+                            className="text-sm"
                         />
                         <Input
                             label="GitHub Repository (Optional)"
@@ -544,25 +546,27 @@ const ProjectEntry: React.FC<ProjectEntryProps> = ({
                             value={localProject.githubUrl || ""}
                             onChange={(e) => handleFieldUpdate("githubUrl", e.target.value)}
                             error={validationErrors.githubUrl}
-                            placeholder="https://github.com/username/repository"
-                            helperText="Link to GitHub repository"
+                            placeholder="https://github.com/..."
+                            helperText="Link to repository"
+                            className="text-sm"
                         />
                     </div>
 
                     {/* Date Range */}
-                    <div className="space-y-4">
-                        <h5 className="text-sm font-medium text-gray-700">Project Timeline (Optional)</h5>
+                    <div className="space-y-2">
+                        <h5 className="text-xs font-medium text-gray-700">Project Timeline (Optional)</h5>
                         {validationErrors.dateRange && (
-                            <p className="text-sm text-red-600">{validationErrors.dateRange}</p>
+                            <p className="text-xs text-red-600">{validationErrors.dateRange}</p>
                         )}
 
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div className="grid grid-cols-4 gap-2">
                             <Select
                                 label="Start Month"
                                 options={MONTH_OPTIONS}
                                 value={startDate.month}
                                 onChange={(value) => handleDateUpdate("startDate", value, startDate.year)}
                                 placeholder="Month"
+                                className="text-sm"
                             />
                             <Select
                                 label="Start Year"
@@ -570,6 +574,7 @@ const ProjectEntry: React.FC<ProjectEntryProps> = ({
                                 value={startDate.year}
                                 onChange={(value) => handleDateUpdate("startDate", startDate.month, value)}
                                 placeholder="Year"
+                                className="text-sm"
                             />
 
                             {!localProject.current && (
@@ -580,6 +585,7 @@ const ProjectEntry: React.FC<ProjectEntryProps> = ({
                                         value={endDate.month}
                                         onChange={(value) => handleDateUpdate("endDate", value, endDate.year)}
                                         placeholder="Month"
+                                        className="text-sm"
                                     />
                                     <Select
                                         label="End Year"
@@ -587,6 +593,7 @@ const ProjectEntry: React.FC<ProjectEntryProps> = ({
                                         value={endDate.year}
                                         onChange={(value) => handleDateUpdate("endDate", endDate.month, value)}
                                         placeholder="Year"
+                                        className="text-sm"
                                     />
                                 </>
                             )}
@@ -599,7 +606,7 @@ const ProjectEntry: React.FC<ProjectEntryProps> = ({
                                 onChange={(e) => handleCurrentToggle(e.target.checked)}
                                 className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                             />
-                            <span className="text-sm text-gray-700">This is an ongoing project</span>
+                            <span className="text-xs text-gray-700">This is an ongoing project</span>
                         </label>
                     </div>
                 </div>
@@ -607,19 +614,19 @@ const ProjectEntry: React.FC<ProjectEntryProps> = ({
 
             {/* Summary View (when not editing) */}
             {!isEditing && (
-                <div className="space-y-3 border-t border-gray-200 pt-4">
+                <div className="space-y-2 border-t border-gray-200 pt-3">
                     {project.description && (
-                        <p className="text-sm text-gray-600">{project.description}</p>
+                        <p className="text-xs text-gray-600 leading-relaxed">{project.description}</p>
                     )}
 
                     {project.techStack.length > 0 && (
                         <div>
-                            <h5 className="text-sm font-medium text-gray-700 mb-2">Technologies:</h5>
-                            <div className="flex flex-wrap gap-2">
+                            <h5 className="text-xs font-medium text-gray-700 mb-1.5">Technologies:</h5>
+                            <div className="flex flex-wrap gap-1">
                                 {project.techStack.map((tech, index) => (
                                     <span
                                         key={index}
-                                        className="inline-flex items-center px-2 py-1 rounded-md text-xs bg-blue-100 text-blue-800"
+                                        className="inline-flex items-center px-1.5 py-0.5 rounded text-xs bg-blue-100 text-blue-800"
                                     >
                                         {tech}
                                     </span>
@@ -629,7 +636,7 @@ const ProjectEntry: React.FC<ProjectEntryProps> = ({
                     )}
 
                     {(project.url || project.githubUrl) && (
-                        <div className="flex space-x-4 text-sm">
+                        <div className="flex gap-3 text-xs">
                             {project.url && (
                                 <a
                                     href={project.url}
@@ -637,7 +644,7 @@ const ProjectEntry: React.FC<ProjectEntryProps> = ({
                                     rel="noopener noreferrer"
                                     className="text-blue-600 hover:text-blue-800 flex items-center"
                                 >
-                                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                                     </svg>
                                     Live Demo
@@ -650,7 +657,7 @@ const ProjectEntry: React.FC<ProjectEntryProps> = ({
                                     rel="noopener noreferrer"
                                     className="text-gray-600 hover:text-gray-800 flex items-center"
                                 >
-                                    <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 24 24">
+                                    <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 24 24">
                                         <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
                                     </svg>
                                     GitHub
@@ -869,16 +876,28 @@ export const ProjectsEditor: React.FC<ProjectsEditorProps> = ({
     }
 
     return (
-        <div className={`bg-white rounded-lg border border-gray-200 ${className}`}>
-            {/* Header */}
-            <div
-                className="flex items-center justify-between p-4 border-b border-gray-200 cursor-pointer hover:bg-gray-50"
-                onClick={() => setIsCollapsed(!isCollapsed)}
-            >
-                <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+        <div className={className}>
+            <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                    <p className="text-xs text-gray-500">
+                        {projects.length} {projects.length === 1 ? "project" : "projects"}
+                    </p>
+                    <button
+                        onClick={addProject}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-gray-700 hover:bg-gray-800 rounded-md transition-colors"
+                    >
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                        </svg>
+                        Add Project
+                    </button>
+                </div>
+
+                {/* Project Entries */}
+                {projects.length === 0 ? (
+                    <div className="text-center py-8 text-gray-500 border-2 border-dashed border-gray-200 rounded-lg">
                         <svg
-                            className="w-5 h-5 text-green-600"
+                            className="w-10 h-10 mx-auto mb-3 text-gray-300"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -890,83 +909,36 @@ export const ProjectsEditor: React.FC<ProjectsEditorProps> = ({
                                 d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
                             />
                         </svg>
-                    </div>
-                    <div>
-                        <h3 className="text-lg font-semibold text-gray-900">
-                            Projects
-                        </h3>
-                        <p className="text-sm text-gray-500">
-                            {projects.length} {projects.length === 1 ? "project" : "projects"}
+                        <h4 className="text-sm font-medium text-gray-900 mb-1">No projects added</h4>
+                        <p className="text-xs text-gray-500 mb-3">
+                            Add your projects to showcase your technical skills and experience.
                         </p>
-                    </div>
-                </div>
-                <div className="flex items-center space-x-2">
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            addProject();
-                        }}
-                        leftIcon={
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <button
+                            onClick={addProject}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-gray-700 hover:bg-gray-800 rounded-md transition-colors"
+                        >
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                             </svg>
-                        }
-                    >
-                        Add Project
-                    </Button>
-                    <CollapseIcon />
-                </div>
+                            Add Your First Project
+                        </button>
+                    </div>
+                ) : (
+                    projects.map((project) => (
+                        <ProjectEntry
+                            key={project.id}
+                            project={project}
+                            isEditing={editingProjectId === project.id}
+                            onUpdate={updateProject}
+                            onDelete={deleteProject}
+                            onDuplicate={duplicateProject}
+                            onToggleEdit={toggleEditProject}
+                            onMoveUp={moveProjectUp}
+                            onMoveDown={moveProjectDown}
+                        />
+                    ))
+                )}
             </div>
-
-            {/* Project Entries */}
-            {!isCollapsed && (
-                <div className="p-6 space-y-6">
-                    {projects.length === 0 ? (
-                        <div className="text-center py-12 text-gray-500">
-                            <svg
-                                className="w-12 h-12 mx-auto mb-4 text-gray-300"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-                                />
-                            </svg>
-                            <h4 className="text-lg font-medium text-gray-900 mb-2">No projects added</h4>
-                            <p className="text-gray-500 mb-4">
-                                Add your projects to showcase your technical skills and experience.
-                            </p>
-                            <Button onClick={addProject} leftIcon={
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                                </svg>
-                            }>
-                                Add Your First Project
-                            </Button>
-                        </div>
-                    ) : (
-                        projects.map((project) => (
-                            <ProjectEntry
-                                key={project.id}
-                                project={project}
-                                isEditing={editingProjectId === project.id}
-                                onUpdate={updateProject}
-                                onDelete={deleteProject}
-                                onDuplicate={duplicateProject}
-                                onToggleEdit={toggleEditProject}
-                                onMoveUp={moveProjectUp}
-                                onMoveDown={moveProjectDown}
-                            />
-                        ))
-                    )}
-                </div>
-            )}
         </div>
     );
 };

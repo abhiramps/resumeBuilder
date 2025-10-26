@@ -61,9 +61,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <label
             htmlFor={inputId}
-            className="block text-sm font-medium text-gray-700"
+            className="flex items-center text-xs font-medium text-gray-700"
           >
-            {label}
+            <span>{label}</span>
             {required && <span className="text-red-500 ml-1">*</span>}
           </label>
         )}
@@ -79,20 +79,18 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             ref={ref}
             id={inputId}
             className={`
-              block w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400
+              block w-full px-2 py-1.5 text-sm border rounded-md shadow-sm placeholder-gray-400
               focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent
               transition-colors duration-200
               ${leftIcon ? "pl-10" : ""}
               ${rightIcon ? "pr-10" : ""}
-              ${
-                hasError
-                  ? "border-red-300 focus:ring-red-500 focus:border-red-500"
-                  : "border-gray-300 focus:ring-primary focus:border-primary"
+              ${hasError
+                ? "border-red-300 focus:ring-red-500 focus:border-red-500"
+                : "border-gray-300 focus:ring-primary focus:border-primary"
               }
-              ${
-                props.disabled
-                  ? "bg-gray-50 text-gray-500 cursor-not-allowed"
-                  : "bg-white text-gray-900"
+              ${props.disabled
+                ? "bg-gray-50 text-gray-500 cursor-not-allowed"
+                : "bg-white text-gray-900"
               }
               ${className}
             `}
@@ -101,8 +99,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               error
                 ? `${inputId}-error`
                 : helperText
-                ? `${inputId}-helper`
-                : undefined
+                  ? `${inputId}-helper`
+                  : undefined
             }
             {...props}
           />

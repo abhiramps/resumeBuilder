@@ -108,19 +108,22 @@ const CourseworkManager: React.FC<CourseworkManagerProps> = ({
     };
 
     return (
-        <div className="space-y-3">
+        <div className="space-y-2">
             <div className="flex items-center justify-between">
-                <h5 className="text-sm font-medium text-gray-700">Relevant Coursework</h5>
+                <h5 className="text-xs font-medium text-gray-700">Relevant Coursework (Optional)</h5>
+                <span className="text-xs text-gray-500">
+                    {coursework.length}/{maxCourses}
+                </span>
             </div>
 
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center gap-2">
                 <Input
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
                     onKeyPress={handleKeyPress}
                     placeholder="Enter course name and press Enter..."
                     disabled={coursework.length >= maxCourses}
-                    className="flex-1"
+                    className="flex-1 text-sm"
                 />
                 <Button
                     type="button"
@@ -134,21 +137,19 @@ const CourseworkManager: React.FC<CourseworkManagerProps> = ({
             </div>
 
             {coursework.length > 0 && (
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-1.5">
                     {coursework.map((course, index) => (
                         <span
                             key={index}
-                            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800"
+                            className="inline-flex items-center px-1.5 py-0.5 rounded text-xs bg-blue-100 text-blue-800"
                         >
                             {course}
                             <button
                                 type="button"
                                 onClick={() => removeCourse(index)}
-                                className="ml-2 text-blue-600 hover:text-blue-800"
+                                className="ml-1 text-blue-600 hover:text-blue-800"
                             >
-                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                </svg>
+                                ×
                             </button>
                         </span>
                     ))}
@@ -156,7 +157,7 @@ const CourseworkManager: React.FC<CourseworkManagerProps> = ({
             )}
 
             {coursework.length >= maxCourses && (
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-orange-600">
                     Maximum {maxCourses} courses reached.
                 </p>
             )}
@@ -265,79 +266,77 @@ const EducationEntry: React.FC<EducationEntryProps> = ({
     };
 
     return (
-        <div className="bg-white border border-gray-200 rounded-lg p-6 space-y-4">
+        <div className="bg-white border border-gray-200 rounded-lg p-4 space-y-3">
             {/* Entry Header */}
-            <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
-                        <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="flex items-start justify-between gap-3">
+                <div className="flex items-start space-x-2 flex-1 min-w-0">
+                    <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <svg className="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5z" />
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" />
                         </svg>
                     </div>
-                    <div>
-                        <h4 className="text-lg font-semibold text-gray-900">
+                    <div className="flex-1 min-w-0">
+                        <h4 className="text-sm font-semibold text-gray-900 truncate">
                             {education.degree || "New Education"}
                         </h4>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-xs text-gray-500 truncate">
                             {education.institution && `${education.institution}${education.location ? ` • ${education.location}` : ""}`}
                         </p>
                     </div>
                 </div>
 
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center gap-1 flex-shrink-0">
                     {/* Move buttons */}
                     <button
                         type="button"
                         onClick={() => onMoveUp(education.id)}
-                        className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md"
+                        className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded"
                         title="Move up"
                     >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
                         </svg>
                     </button>
                     <button
                         type="button"
                         onClick={() => onMoveDown(education.id)}
-                        className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md"
+                        className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded"
                         title="Move down"
                     >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                         </svg>
                     </button>
 
                     {/* Action buttons */}
-                    <Button
-                        variant="ghost"
-                        size="sm"
+                    <button
+                        type="button"
                         onClick={() => onToggleEdit(education.id)}
+                        className="px-2 py-1.5 text-xs font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded"
                     >
                         {isEditing ? "Save" : "Edit"}
-                    </Button>
-                    <Button
-                        variant="ghost"
-                        size="sm"
+                    </button>
+                    <button
+                        type="button"
                         onClick={() => onDuplicate(education.id)}
+                        className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded"
                         title="Duplicate entry"
                     >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                         </svg>
-                    </Button>
-                    <Button
-                        variant="ghost"
-                        size="sm"
+                    </button>
+                    <button
+                        type="button"
                         onClick={() => setShowDeleteConfirm(true)}
-                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                        className="p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 rounded"
                         title="Delete entry"
                     >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                         </svg>
-                    </Button>
+                    </button>
                 </div>
             </div>
 
@@ -369,7 +368,7 @@ const EducationEntry: React.FC<EducationEntryProps> = ({
 
             {/* Entry Form */}
             {isEditing && (
-                <div className="space-y-4 border-t border-gray-200 pt-4">
+                <div className="space-y-3 border-t border-gray-200 pt-3">
                     {/* Degree with suggestions */}
                     <div>
                         <Input
@@ -379,6 +378,7 @@ const EducationEntry: React.FC<EducationEntryProps> = ({
                             required
                             placeholder="e.g., Bachelor of Science in Computer Science"
                             list="degree-suggestions"
+                            className="text-sm"
                         />
                         <datalist id="degree-suggestions">
                             {DEGREE_SUGGESTIONS.map((degree, index) => (
@@ -388,56 +388,66 @@ const EducationEntry: React.FC<EducationEntryProps> = ({
                     </div>
 
                     {/* Institution and Location */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 gap-3">
                         <Input
                             label="University/Institution"
                             value={localEducation.institution}
                             onChange={(e) => handleFieldUpdate("institution", e.target.value)}
                             required
                             placeholder="e.g., Stanford University"
+                            className="text-sm"
                         />
                         <Input
                             label="Location"
                             value={localEducation.location}
                             onChange={(e) => handleFieldUpdate("location", e.target.value)}
                             placeholder="e.g., Stanford, CA"
+                            className="text-sm"
                         />
                     </div>
 
                     {/* Date Range */}
-                    <div className="space-y-4">
-                        <h5 className="text-sm font-medium text-gray-700">Study Period</h5>
+                    <div className="space-y-2">
+                        <h5 className="text-xs font-medium text-gray-700">Study Period</h5>
 
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            <Select
-                                label="Start Month"
-                                options={MONTH_OPTIONS}
-                                value={startDate.month}
-                                onChange={(value) => handleDateUpdate("startDate", value, startDate.year)}
-                                placeholder="Month"
-                            />
-                            <Select
-                                label="Start Year"
-                                options={YEAR_OPTIONS}
-                                value={startDate.year}
-                                onChange={(value) => handleDateUpdate("startDate", startDate.month, value)}
-                                placeholder="Year"
-                            />
+                        <div className="grid grid-cols-2 gap-3">
+                            <div className="grid grid-cols-2 gap-2">
+                                <Select
+                                    label="Start Month"
+                                    options={MONTH_OPTIONS}
+                                    value={startDate.month}
+                                    onChange={(value) => handleDateUpdate("startDate", value, startDate.year)}
+                                    placeholder="Month"
+                                    className="text-sm"
+                                />
+                                <Select
+                                    label="Start Year"
+                                    options={YEAR_OPTIONS}
+                                    value={startDate.year}
+                                    onChange={(value) => handleDateUpdate("startDate", startDate.month, value)}
+                                    placeholder="Year"
+                                    className="text-sm"
+                                />
+                            </div>
 
-                            <Select
-                                label="End Month"
-                                options={MONTH_OPTIONS}
-                                value={endDate.month}
-                                onChange={(value) => handleDateUpdate("endDate", value, endDate.year)}
-                                placeholder="Month"
-                            />
-                            <Select
-                                label="End Year (or Expected)"
-                                options={YEAR_OPTIONS}
-                                value={endDate.year}
-                                onChange={(value) => handleDateUpdate("endDate", endDate.month, value)}
-                                placeholder="Year"
-                            />
+                            <div className="grid grid-cols-2 gap-2">
+                                <Select
+                                    label="End Month"
+                                    options={MONTH_OPTIONS}
+                                    value={endDate.month}
+                                    onChange={(value) => handleDateUpdate("endDate", value, endDate.year)}
+                                    placeholder="Month"
+                                    className="text-sm"
+                                />
+                                <Select
+                                    label="End Year"
+                                    options={YEAR_OPTIONS}
+                                    value={endDate.year}
+                                    onChange={(value) => handleDateUpdate("endDate", endDate.month, value)}
+                                    placeholder="Year"
+                                    className="text-sm"
+                                />
+                            </div>
                         </div>
                     </div>
 
@@ -448,6 +458,7 @@ const EducationEntry: React.FC<EducationEntryProps> = ({
                         onChange={(e) => handleFieldUpdate("gpa", e.target.value)}
                         placeholder="e.g., 3.8/4.0"
                         maxLength={10}
+                        className="text-sm"
                     />
 
                     {/* Coursework */}
@@ -460,21 +471,21 @@ const EducationEntry: React.FC<EducationEntryProps> = ({
 
             {/* Summary View (when not editing) */}
             {!isEditing && (
-                <div className="space-y-3 border-t border-gray-200 pt-4">
+                <div className="space-y-2 border-t border-gray-200 pt-3">
                     {education.gpa && (
-                        <p className="text-sm text-gray-600">
+                        <p className="text-xs text-gray-600">
                             <span className="font-medium">GPA:</span> {education.gpa}
                         </p>
                     )}
 
                     {education.coursework && education.coursework.length > 0 && (
                         <div>
-                            <h5 className="text-sm font-medium text-gray-700 mb-2">Relevant Coursework:</h5>
-                            <div className="flex flex-wrap gap-2">
+                            <h5 className="text-xs font-medium text-gray-700 mb-1.5">Relevant Coursework:</h5>
+                            <div className="flex flex-wrap gap-1">
                                 {education.coursework.map((course, index) => (
                                     <span
                                         key={index}
-                                        className="inline-flex items-center px-2 py-1 rounded text-xs bg-gray-100 text-gray-700"
+                                        className="inline-flex items-center px-1.5 py-0.5 rounded text-xs bg-gray-100 text-gray-700"
                                     >
                                         {course}
                                     </span>
@@ -483,15 +494,13 @@ const EducationEntry: React.FC<EducationEntryProps> = ({
                         </div>
                     )}
 
-                    <div className="text-xs text-gray-500">
-                        {education.startDate && education.endDate && (
-                            <>
-                                {new Date(education.startDate + "-01").toLocaleDateString("en-US", { month: "long", year: "numeric" })}
-                                {" - "}
-                                {new Date(education.endDate + "-01").toLocaleDateString("en-US", { month: "long", year: "numeric" })}
-                            </>
-                        )}
-                    </div>
+                    {education.startDate && education.endDate && (
+                        <p className="text-xs text-gray-500">
+                            {new Date(education.startDate + "-01").toLocaleDateString("en-US", { month: "long", year: "numeric" })}
+                            {" - "}
+                            {new Date(education.endDate + "-01").toLocaleDateString("en-US", { month: "long", year: "numeric" })}
+                        </p>
+                    )}
                 </div>
             )}
         </div>
@@ -514,7 +523,6 @@ export const EducationEditor: React.FC<EducationEditorProps> = ({
     className = "",
 }) => {
     const { resume, dispatch } = useResumeContext();
-    const [isCollapsed, setIsCollapsed] = useState(false);
     const [editingEntryId, setEditingEntryId] = useState<string | null>(null);
 
     // Find the education section
@@ -661,42 +669,34 @@ export const EducationEditor: React.FC<EducationEditorProps> = ({
         }
     };
 
-    /**
-     * Collapse/expand icon
-     */
-    const CollapseIcon = () => (
-        <svg
-            className={`w-5 h-5 transition-transform duration-200 ${isCollapsed ? "rotate-180" : ""
-                }`}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-        >
-            <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 9l-7 7-7-7"
-            />
-        </svg>
-    );
-
     // Don't render if no education section exists
     if (!educationSection) {
         return null;
     }
 
     return (
-        <div className={`bg-white rounded-lg border border-gray-200 ${className}`}>
-            {/* Header */}
-            <div
-                className="flex items-center justify-between p-4 border-b border-gray-200 cursor-pointer hover:bg-gray-50"
-                onClick={() => setIsCollapsed(!isCollapsed)}
-            >
-                <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+        <div className={className}>
+            <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                    <p className="text-xs text-gray-500">
+                        {educationEntries.length} {educationEntries.length === 1 ? "entry" : "entries"}
+                    </p>
+                    <button
+                        onClick={addEducation}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-gray-700 hover:bg-gray-800 rounded-md transition-colors"
+                    >
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                        </svg>
+                        Add Education
+                    </button>
+                </div>
+
+                {/* Education Entries */}
+                {educationEntries.length === 0 ? (
+                    <div className="text-center py-8 text-gray-500 border-2 border-dashed border-gray-200 rounded-lg">
                         <svg
-                            className="w-5 h-5 text-purple-600"
+                            className="w-10 h-10 mx-auto mb-3 text-gray-300"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -704,81 +704,36 @@ export const EducationEditor: React.FC<EducationEditorProps> = ({
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5z" />
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
                         </svg>
-                    </div>
-                    <div>
-                        <h3 className="text-lg font-semibold text-gray-900">Education</h3>
-                        <p className="text-sm text-gray-500">
-                            {educationEntries.length} {educationEntries.length === 1 ? "entry" : "entries"}
+                        <h4 className="text-sm font-medium text-gray-900 mb-1">No education entries added</h4>
+                        <p className="text-xs text-gray-500 mb-3">
+                            Add your educational background to showcase your qualifications.
                         </p>
-                    </div>
-                </div>
-
-                <div className="flex items-center space-x-2">
-                    <Button
-                        variant="primary"
-                        size="sm"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            addEducation();
-                        }}
-                        leftIcon={
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <button
+                            onClick={addEducation}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-gray-700 hover:bg-gray-800 rounded-md transition-colors"
+                        >
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                             </svg>
-                        }
-                    >
-                        Add Education
-                    </Button>
-                    <button
-                        type="button"
-                        className="p-2 text-gray-400 hover:text-gray-600"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            setIsCollapsed(!isCollapsed);
-                        }}
-                    >
-                        <CollapseIcon />
-                    </button>
-                </div>
+                            Add Your First Education
+                        </button>
+                    </div>
+                ) : (
+                    educationEntries.map((education) => (
+                        <EducationEntry
+                            key={education.id}
+                            education={education}
+                            isEditing={editingEntryId === education.id}
+                            onUpdate={updateEducation}
+                            onDelete={deleteEducation}
+                            onDuplicate={duplicateEducation}
+                            onToggleEdit={toggleEditEntry}
+                            onMoveUp={moveEducationUp}
+                            onMoveDown={moveEducationDown}
+                        />
+                    ))
+                )}
             </div>
-
-            {/* Content */}
-            {!isCollapsed && (
-                <div className="p-4 space-y-4">
-                    {educationEntries.length === 0 ? (
-                        <div className="text-center py-12 text-gray-500">
-                            <svg
-                                className="w-16 h-16 mx-auto mb-4 text-gray-300"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5z" />
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
-                            </svg>
-                            <p className="text-lg font-medium mb-2">No education entries yet</p>
-                            <p className="text-sm mb-4">Add your educational background to get started</p>
-                            <Button variant="primary" onClick={addEducation}>
-                                Add Your First Education
-                            </Button>
-                        </div>
-                    ) : (
-                        educationEntries.map((education) => (
-                            <EducationEntry
-                                key={education.id}
-                                education={education}
-                                isEditing={editingEntryId === education.id}
-                                onUpdate={updateEducation}
-                                onDelete={deleteEducation}
-                                onDuplicate={duplicateEducation}
-                                onToggleEdit={toggleEditEntry}
-                                onMoveUp={moveEducationUp}
-                                onMoveDown={moveEducationDown}
-                            />
-                        ))
-                    )}
-                </div>
-            )}
         </div>
     );
 };
