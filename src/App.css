@@ -12,10 +12,10 @@
 @layer components {
   /* Print styles for PDF generation */
   @media print {
-    /* Reset page margins and setup */
+    /* Page margins are dynamically set by usePDFExport hook based on user settings */
     @page {
       size: letter;
-      margin: 0;
+      /* Margins injected dynamically via pageStyle prop */
     }
 
     /* Hide all non-resume elements */

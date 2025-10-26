@@ -1,4 +1,4 @@
-import { useRef, useCallback, useState } from 'react';
+import { useRef, useCallback, useState, useMemo } from 'react';
 import { useReactToPrint } from 'react-to-print';
 import { Resume } from '../types/resume.types';
 
@@ -20,12 +20,13 @@ export interface UsePDFExportReturn {
  * Uses react-to-print library for high-quality PDF generation with:
  * - Exact WYSIWYG rendering
  * - Letter size (8.5" x 11") format
+ * - User-defined page margins applied
  * - Automatic filename generation
  * - Loading state management
  * - Error handling
  * - Print-specific CSS optimization
  * 
- * @param resume - Resume data for filename generation
+ * @param resume - Resume data for filename generation and margin settings
  * @returns Object containing componentRef, handleExport function, and isExporting state
  * 
  * @example
@@ -55,25 +56,13 @@ export const usePDFExport = (resume: Resume): UsePDFExportReturn => {
     return `${name.replace(/\s+/g, '_')}_Resume_${date}`;
   }, [resume.personalInfo.fullName]);
 
-  // Handle print with react-to-print (v3.x API)
-  const handlePrint = useReactToPrint({
-    contentRef: componentRef,
-    documentTitle: generateFileName(),
-    onBeforePrint: async () => {
-      setIsExporting(true);
-    },
-    onAfterPrint: () => {
-      setIsExporting(false);
-    },
-    onPrintError: (errorLocation, error) => {
-      console.error('PDF Export Error:', errorLocation, error);
-      setIsExporting(false);
-    },
-    pageStyle: `
+  // Generate dynamic page style with user's margin settings
+  const pageStyle = useMemo(() => {
+    const margins = resume.layout.pageMargins;
+    return `
       @page {
         size: letter;
-        margin: 0;
-        padding: 0;
+        margin: ${margins.top}in ${margins.right}in ${margins.bottom}in ${margins.left}in;
       }
       @media print {
         html, body {
@@ -93,7 +82,24 @@ export const usePDFExport = (resume: Resume): UsePDFExportReturn => {
           color-adjust: exact !important;
         }
       }
-    `,
+    `;
+  }, [resume.layout.pageMargins]);
+
+  // Handle print with react-to-print (v3.x API)
+  const handlePrint = useReactToPrint({
+    contentRef: componentRef,
+    documentTitle: generateFileName(),
+    onBeforePrint: async () => {
+      setIsExporting(true);
+    },
+    onAfterPrint: () => {
+      setIsExporting(false);
+    },
+    onPrintError: (errorLocation, error) => {
+      console.error('PDF Export Error:', errorLocation, error);
+      setIsExporting(false);
+    },
+    pageStyle,
     suppressErrors: true,
   });
 

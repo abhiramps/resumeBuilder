@@ -18,18 +18,19 @@ const Header: React.FC = () => {
 
   const handleSave = () => {
     // Save to localStorage
-    localStorage.setItem('resumeDraft', JSON.stringify(resume));
+    localStorage.setItem("resumeDraft", JSON.stringify(resume));
     console.log("Resume saved successfully");
   };
 
   // Generate filename based on resume data
   const generateFileName = (): string => {
-    const name = resume.personalInfo.fullName || 'Resume';
-    const date = new Date().toISOString().split('T')[0];
-    return `${name.replace(/\s+/g, '_')}_Resume_${date}`;
+    const name = resume.personalInfo.fullName || "Resume";
+    const date = new Date().toISOString().split("T")[0];
+    return `${name.replace(/\s+/g, "_")}_Resume_${date}`;
   };
 
   // PDF export handler using react-to-print (v3.x API)
+  // Use dynamic margins from layout settings
   const handlePrint = useReactToPrint({
     contentRef: previewRef,
     documentTitle: generateFileName(),
@@ -40,14 +41,15 @@ const Header: React.FC = () => {
       setIsExporting(false);
     },
     onPrintError: (errorLocation, error) => {
-      console.error('PDF Export Error:', errorLocation, error);
+      console.error("PDF Export Error:", errorLocation, error);
       setIsExporting(false);
-      alert('Failed to export PDF. Please try again.');
+      alert("Failed to export PDF. Please try again.");
     },
     pageStyle: `
       @page {
         size: letter;
-        margin: 0;
+        /* Use dynamic margins from layout settings */
+        margin: ${resume.layout.pageMargins.top}in ${resume.layout.pageMargins.right}in ${resume.layout.pageMargins.bottom}in ${resume.layout.pageMargins.left}in;
       }
       
       @media print {
@@ -75,19 +77,23 @@ const Header: React.FC = () => {
 
   const handleExportPDF = () => {
     if (!previewRef.current) {
-      console.error('Preview ref is null');
-      alert('Preview not ready. Please wait a moment and try again.');
+      console.error("Preview ref is null");
+      alert("Preview not ready. Please wait a moment and try again.");
       return;
     }
 
     // Verify content exists
     if (previewRef.current.innerHTML.length === 0) {
-      console.error('Preview content is empty');
-      alert('Resume preview is empty. Please add content to your resume.');
+      console.error("Preview content is empty");
+      alert("Resume preview is empty. Please add content to your resume.");
       return;
     }
 
-    console.log('Exporting PDF - Preview ref available with', previewRef.current.children.length, 'children');
+    console.log(
+      "Exporting PDF - Preview ref available with",
+      previewRef.current.children.length,
+      "children"
+    );
     handlePrint();
   };
 
@@ -105,8 +111,12 @@ const Header: React.FC = () => {
                 <h1 className="text-xl font-bold text-gray-900 hidden sm:block">
                   ATS Resume Builder
                 </h1>
-                <h1 className="text-lg font-bold text-gray-900 sm:hidden">ARB</h1>
-                <p className="text-xs text-gray-500 hidden sm:block">Professional Resume Creator</p>
+                <h1 className="text-lg font-bold text-gray-900 sm:hidden">
+                  ARB
+                </h1>
+                <p className="text-xs text-gray-500 hidden sm:block">
+                  Professional Resume Creator
+                </p>
               </div>
             </div>
           </div>

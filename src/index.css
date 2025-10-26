@@ -176,10 +176,11 @@
 
 /* Print styles for PDF export */
 @media print {
-  /* Page setup */
+  /* Page setup - margins are dynamically set by usePDFExport hook */
+  /* This ensures user's custom margins are applied to ALL pages */
   @page {
     size: letter;
-    margin: 0;
+    /* Margins are injected dynamically via pageStyle prop in usePDFExport */
   }
 
   /* Reset everything */
@@ -190,7 +191,8 @@
   }
 
   /* Body and root - simple and clean */
-  html, body {
+  html,
+  body {
     margin: 0 !important;
     padding: 0 !important;
     width: 100% !important;
@@ -199,22 +201,24 @@
     background: white !important;
   }
 
-  /* Resume templates - ensure they're visible and properly sized */
+  /* Resume templates - remove padding, let @page margins handle it */
   .abhiram-template,
   .classic-template,
   .modern-template,
   .minimal-template {
-    width: 8.5in !important;
-    max-width: 8.5in !important;
-    min-height: 11in !important;
+    width: 6.5in !important; /* 8.5in - 2in (1in left + 1in right margins) */
+    max-width: 6.5in !important;
+    min-height: auto !important;
     margin: 0 !important;
+    padding: 0 !important; /* Remove padding - @page margins handle spacing */
     box-shadow: none !important;
     border: none !important;
     transform: none !important;
     background: white !important;
     display: block !important;
     visibility: visible !important;
-    page-break-inside: avoid !important;
+    /* Allow page breaks inside for multi-page resumes */
+    page-break-inside: auto !important;
   }
 
   /* Page breaks */
@@ -234,12 +238,18 @@
   }
 
   /* Avoid breaking these elements */
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     page-break-after: avoid;
     break-after: avoid;
   }
 
-  p, li {
+  p,
+  li {
     page-break-inside: avoid;
     break-inside: avoid;
   }

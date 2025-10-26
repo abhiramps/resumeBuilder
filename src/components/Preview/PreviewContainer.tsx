@@ -17,7 +17,7 @@ export interface PreviewContainerProps {
 
 /**
  * Preview Container Component
- * 
+ *
  * Wrapper component that provides:
  * - Centered preview with paper shadow effect
  * - Zoom controls for better viewing
@@ -103,8 +103,18 @@ export const PreviewContainer: React.FC<PreviewContainerProps> = ({
                 className="p-1 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
                 title="Zoom Out"
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M20 12H4"
+                  />
                 </svg>
               </button>
 
@@ -128,8 +138,18 @@ export const PreviewContainer: React.FC<PreviewContainerProps> = ({
                 className="p-1 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
                 title="Zoom In"
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 4v16m8-8H4"
+                  />
                 </svg>
               </button>
 
@@ -147,15 +167,19 @@ export const PreviewContainer: React.FC<PreviewContainerProps> = ({
           {/* Print Mode Toggle */}
           {showPrintMode && (
             <div className="flex items-center space-x-2">
-              <span className="text-sm font-medium text-gray-700">Print Mode:</span>
+              <span className="text-sm font-medium text-gray-700">
+                Print Mode:
+              </span>
               <button
                 onClick={togglePrintMode}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${printMode ? "bg-blue-600" : "bg-gray-200"
-                  }`}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                  printMode ? "bg-blue-600" : "bg-gray-200"
+                }`}
               >
                 <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${printMode ? "translate-x-6" : "translate-x-1"
-                    }`}
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    printMode ? "translate-x-6" : "translate-x-1"
+                  }`}
                 />
               </button>
             </div>
@@ -171,12 +195,45 @@ export const PreviewContainer: React.FC<PreviewContainerProps> = ({
         >
           {/* Wrapper with zoom - NOT applied during print */}
           <div style={printMode ? {} : containerStyles}>
-            <ResumePreview
-              ref={previewRef}
-              resume={resume}
-              printMode={true}
-              className="shadow-lg"
-            />
+            {printMode ? (
+              /* Print Mode: Simulate actual printed pages with margins */
+              <div
+                className="print-mode-simulation"
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "20px",
+                  background: "white",
+                }}
+              >
+                {/* Wrapper adds visual page margins that simulate @page margins */}
+                <div
+                  style={{
+                    width: "8.5in",
+                    minHeight: "11in",
+                    background: "white",
+                    boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+                    /* Use dynamic margins from layout settings to match PDF export */
+                    padding: `${resume.layout.pageMargins.top}in ${resume.layout.pageMargins.right}in ${resume.layout.pageMargins.bottom}in ${resume.layout.pageMargins.left}in`,
+                  }}
+                >
+                  <ResumePreview
+                    ref={previewRef}
+                    resume={resume}
+                    printMode={printMode}
+                    className=""
+                  />
+                </div>
+              </div>
+            ) : (
+              /* Normal Mode: Single continuous view */
+              <ResumePreview
+                ref={previewRef}
+                resume={resume}
+                printMode={printMode}
+                className="shadow-lg"
+              />
+            )}
           </div>
         </div>
       </div>
@@ -184,7 +241,8 @@ export const PreviewContainer: React.FC<PreviewContainerProps> = ({
       {/* Preview Info */}
       <div className="mt-4 text-center text-sm text-gray-500 no-print print:hidden">
         <p>
-          Preview shows how your resume will appear when printed or exported as PDF.
+          Preview shows how your resume will appear when printed or exported as
+          PDF.
           {printMode && " Print mode shows exact dimensions and styling."}
         </p>
       </div>
