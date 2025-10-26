@@ -235,7 +235,8 @@ const AbhiramTemplateComponent = forwardRef<HTMLDivElement, TemplateBaseProps>(
                   {templateHelpers.date.formatDateRange(
                     exp.startDate || "",
                     exp.endDate || "",
-                    exp.current
+                    exp.current,
+                    "month-year"
                   )}
                 </div>
               </div>

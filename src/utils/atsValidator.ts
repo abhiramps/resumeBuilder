@@ -49,12 +49,18 @@ const isValidPhone = (phone: string): boolean => {
 
 /**
  * Checks if date format is ATS-friendly (MM/YYYY or Month YYYY)
+ * Also accepts YYYY-MM format used for internal storage
  */
 const isValidDateFormat = (date: string): boolean => {
   if (!date || date.toLowerCase() === 'present') return true;
   
-  // Accept formats: MM/YYYY, Month YYYY, YYYY
-  const dateRegex = /^(\d{1,2}\/\d{4}|[A-Za-z]+\s\d{4}|\d{4})$/;
+  // Accept formats: 
+  // - MM/YYYY (e.g., "01/2020")
+  // - Month YYYY (e.g., "January 2020" or "Jan 2020")
+  // - YYYY (e.g., "2020")
+  // - YYYY-MM (internal storage format, e.g., "2020-01")
+  // - YYYY-MM-DD (ISO format, e.g., "2020-01-15")
+  const dateRegex = /^(\d{1,2}\/\d{4}|[A-Za-z]+\s\d{4}|\d{4}|\d{4}-\d{2}|\d{4}-\d{2}-\d{2})$/;
   return dateRegex.test(date.trim());
 };
 

@@ -10,30 +10,31 @@
  */
 export const dateHelpers = {
   /**
-   * Format date for resume display
+   * Format date for resume display (ATS-compliant)
    * @param date - Date string or Date object
    * @param format - Format type
    * @returns Formatted date string
    */
   formatDate: (
-    date: string | Date, 
+    date: string | Date,
     format: 'month-year' | 'full' | 'year' | 'short' = 'month-year'
   ): string => {
     if (!date) return '';
-    
+
     try {
       const dateObj = typeof date === 'string' ? new Date(date) : date;
-      
+
       // Check if date is valid
       if (isNaN(dateObj.getTime())) {
         return typeof date === 'string' ? date : '';
       }
-      
+
       const options: Intl.DateTimeFormatOptions = {};
-      
+
       switch (format) {
         case 'month-year':
-          options.month = 'short';
+          // Use abbreviated month for ATS compliance (e.g., "Jan 2022")
+          options.month = 'long';
           options.year = 'numeric';
           break;
         case 'full':
@@ -51,7 +52,7 @@ export const dateHelpers = {
         default:
           return typeof date === 'string' ? date : dateObj.toLocaleDateString();
       }
-      
+
       return dateObj.toLocaleDateString('en-US', options);
     } catch (error) {
       console.warn('Date formatting error:', error);
@@ -74,11 +75,11 @@ export const dateHelpers = {
     format: 'month-year' | 'full' | 'year' | 'short' = 'month-year'
   ): string => {
     const start = dateHelpers.formatDate(startDate, format);
-    
+
     if (current) {
       return `${start} - Present`;
     }
-    
+
     const end = dateHelpers.formatDate(endDate, format);
     return `${start} - ${end}`;
   },
@@ -93,17 +94,17 @@ export const dateHelpers = {
     try {
       const start = typeof startDate === 'string' ? new Date(startDate) : startDate;
       const end = endDate ? (typeof endDate === 'string' ? new Date(endDate) : endDate) : new Date();
-      
+
       if (isNaN(start.getTime()) || isNaN(end.getTime())) {
         return '';
       }
-      
+
       const diffTime = Math.abs(end.getTime() - start.getTime());
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      
+
       const years = Math.floor(diffDays / 365);
       const months = Math.floor((diffDays % 365) / 30);
-      
+
       if (years === 0 && months === 0) {
         return 'Less than 1 month';
       } else if (years === 0) {
@@ -143,8 +144,8 @@ export const textHelpers = {
    */
   titleCase: (text: string): string => {
     if (!text) return '';
-    return text.replace(/\w\S*/g, (txt) => 
-      txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+    return text.replace(/\w\S*/g, (txt) =>
+      txt.charAt(0).toUpperCase() + txt.slice(1).toLowerCase()
     );
   },
 
@@ -205,16 +206,16 @@ export const urlHelpers = {
    */
   formatForDisplay: (url: string): string => {
     if (!url) return '';
-    
+
     try {
       const urlObj = new URL(url);
       let hostname = urlObj.hostname;
-      
+
       // Remove www. prefix
       if (hostname.startsWith('www.')) {
         hostname = hostname.slice(4);
       }
-      
+
       const path = urlObj.pathname === '/' ? '' : urlObj.pathname;
       return hostname + path + urlObj.search;
     } catch (error) {
@@ -230,7 +231,7 @@ export const urlHelpers = {
    */
   isValid: (url: string): boolean => {
     if (!url) return false;
-    
+
     try {
       new URL(url);
       return true;
@@ -246,11 +247,11 @@ export const urlHelpers = {
    */
   ensureProtocol: (url: string): string => {
     if (!url) return '';
-    
+
     if (!/^https?:\/\//i.test(url)) {
       return `https://${url}`;
     }
-    
+
     return url;
   },
 
@@ -261,7 +262,7 @@ export const urlHelpers = {
    */
   getDomain: (url: string): string => {
     if (!url) return '';
-    
+
     try {
       const urlObj = new URL(urlHelpers.ensureProtocol(url));
       return urlObj.hostname.replace(/^www\./, '');
@@ -283,10 +284,10 @@ export const phoneHelpers = {
    */
   format: (phone: string, format: 'standard' | 'international' | 'dots' = 'standard'): string => {
     if (!phone) return '';
-    
+
     // Remove all non-digit characters
     const digits = phone.replace(/\D/g, '');
-    
+
     // Format based on length and format type
     if (digits.length === 10) {
       switch (format) {
@@ -324,7 +325,7 @@ export const phoneHelpers = {
    */
   isValid: (phone: string): boolean => {
     if (!phone) return false;
-    
+
     const digits = phone.replace(/\D/g, '');
     return digits.length === 10 || (digits.length === 11 && digits[0] === '1');
   },
@@ -428,10 +429,10 @@ export const styleHelpers = {
   colorWithOpacity: (color: string, opacity: number): string => {
     // Convert hex to RGB
     const hex = color.replace('#', '');
-    const r = parseInt(hex.substr(0, 2), 16);
-    const g = parseInt(hex.substr(2, 2), 16);
-    const b = parseInt(hex.substr(4, 2), 16);
-    
+    const r = parseInt(hex.slice(0, 2), 16);
+    const g = parseInt(hex.slice(2, 4), 16);
+    const b = parseInt(hex.slice(4, 6), 16);
+
     return `rgba(${r}, ${g}, ${b}, ${opacity})`;
   },
 
