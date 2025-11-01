@@ -56,12 +56,12 @@ export interface Skill {
   id: string;
   name: string;
   category:
-    | "languages"
-    | "frameworks"
-    | "databases"
-    | "tools"
-    | "cloud"
-    | "other";
+  | "languages"
+  | "frameworks"
+  | "databases"
+  | "tools"
+  | "cloud"
+  | "other";
   level: "beginner" | "intermediate" | "advanced" | "expert";
 }
 
@@ -125,13 +125,13 @@ export interface ResumeSection {
   enabled: boolean;
   order: number;
   content:
-    | { summary: string }
-    | { experiences: WorkExperience[] }
-    | { projects: Project[] }
-    | { skills: Skill[] }
-    | { education: Education[] }
-    | { certifications: Certification[] }
-    | { custom: CustomSection };
+  | { summary: string }
+  | { experiences: WorkExperience[] }
+  | { projects: Project[] }
+  | { skills: Skill[] }
+  | { education: Education[] }
+  | { certifications: Certification[] }
+  | { custom: CustomSection };
 }
 
 // Alias for Task 2 requirements
@@ -202,9 +202,9 @@ export type ResumeAction =
   | { type: "UPDATE_PERSONAL_INFO"; payload: Partial<PersonalInfo> }
   | { type: "ADD_SECTION"; payload: ResumeSection }
   | {
-      type: "UPDATE_SECTION";
-      payload: { id: string; updates: Partial<ResumeSection> };
-    }
+    type: "UPDATE_SECTION";
+    payload: { id: string; updates: Partial<ResumeSection> };
+  }
   | { type: "DELETE_SECTION"; payload: string }
   | { type: "REORDER_SECTIONS"; payload: string[] }
   | { type: "UPDATE_LAYOUT"; payload: Partial<LayoutSettings> }
@@ -218,6 +218,11 @@ export interface ResumeContextType {
   atsValidation: ATSValidation;
   isLoading: boolean;
   error: string | null;
+  // Undo/Redo functionality
+  canUndo: boolean;
+  canRedo: boolean;
+  undo: () => void;
+  redo: () => void;
 }
 
 // Component prop types

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useResumeContext } from '../../contexts/ResumeContext';
-import { Ruler, Space, RotateCcw, Link2, Unlink, Type, Palette, ChevronDown, ChevronRight } from 'lucide-react';
+import { Ruler, Space, RotateCcw, Link2, Unlink, Type, Palette, ChevronDown, ChevronRight, Database } from 'lucide-react';
 import { TemplateCustomization } from './TemplateCustomization';
+import { DataManagement } from './DataManagement';
 
 type Unit = 'inches' | 'mm';
 
@@ -66,7 +67,7 @@ export const LayoutControls: React.FC = () => {
   const [unit, setUnit] = useState<Unit>('inches');
   const [linkedMargins, setLinkedMargins] = useState(true);
   const [expandedSections, setExpandedSections] = useState<Set<string>>(
-    new Set(['margins', 'typography'])
+    new Set(['margins', 'typography', 'data'])
   );
 
   const toggleSection = (sectionId: string) => {
@@ -572,6 +573,29 @@ export const LayoutControls: React.FC = () => {
                 />
               </div>
             </div>
+          </div>
+        )}
+      </div>
+
+      {/* Data Management - Collapsible */}
+      <div className="border-b border-gray-200">
+        <button
+          onClick={() => toggleSection('data')}
+          className="w-full p-4 flex items-center justify-between hover:bg-gray-100 transition-colors"
+        >
+          <h4 className="text-sm font-semibold text-gray-900 flex items-center">
+            <Database className="w-4 h-4 text-gray-600 mr-2" />
+            Data Management
+          </h4>
+          {isSectionExpanded('data') ? (
+            <ChevronDown className="w-4 h-4 text-gray-500" />
+          ) : (
+            <ChevronRight className="w-4 h-4 text-gray-500" />
+          )}
+        </button>
+        {isSectionExpanded('data') && (
+          <div className="px-4 pb-4">
+            <DataManagement />
           </div>
         )}
       </div>

@@ -1,16 +1,21 @@
 import React, { useState } from "react";
 import { useResume } from "../../contexts/ResumeContext";
 import { TemplateType } from "../../types/resume.types";
-import { Download, Save, FileText, Loader2 } from "lucide-react";
+import { Download, Save, FileText, Loader2, Undo, Redo } from "lucide-react";
 import { TemplateSelector } from "../UI";
 import { TemplateImportExport } from "./TemplateImportExport";
 import { usePDFExportContext } from "../../contexts/PDFExportContext";
 import { useReactToPrint } from "react-to-print";
 
 const Header: React.FC = () => {
-  const { resume, dispatch } = useResume();
+  const { resume, dispatch, canUndo, canRedo, undo, redo } = useResume();
   const { previewRef } = usePDFExportContext();
   const [isExporting, setIsExporting] = useState(false);
+
+  // Detect if user is on Mac for keyboard shortcut hints
+  const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+  const undoShortcut = isMac ? '⌘Z' : 'Ctrl+Z';
+  const redoShortcut = isMac ? '⌘⇧Z' : 'Ctrl+Shift+Z';
 
   const handleTemplateChange = (template: TemplateType) => {
     dispatch({ type: "SET_TEMPLATE", payload: template });
@@ -129,6 +134,28 @@ const Header: React.FC = () => {
 
           {/* Action Buttons */}
           <div className="flex items-center space-x-2 sm:space-x-3">
+            {/* Undo/Redo Buttons */}
+            <div className="flex items-center space-x-1 border-r border-gray-200 pr-2 sm:pr-3">
+              <button
+                onClick={undo}
+                disabled={!canUndo}
+                className="flex items-center space-x-1 px-2 sm:px-3 py-2.5 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 text-sm font-medium shadow-sm disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-white"
+                title={`Undo (${undoShortcut})`}
+              >
+                <Undo className="h-4 w-4" />
+                <span className="hidden lg:inline">Undo</span>
+              </button>
+              <button
+                onClick={redo}
+                disabled={!canRedo}
+                className="flex items-center space-x-1 px-2 sm:px-3 py-2.5 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 text-sm font-medium shadow-sm disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-white"
+                title={`Redo (${redoShortcut})`}
+              >
+                <Redo className="h-4 w-4" />
+                <span className="hidden lg:inline">Redo</span>
+              </button>
+            </div>
+
             <TemplateImportExport />
 
             <button

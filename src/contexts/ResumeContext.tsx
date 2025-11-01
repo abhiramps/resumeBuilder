@@ -16,6 +16,7 @@ import { AppAction } from "../types/actions.types";
 import { createDefaultResume } from "../constants/defaultResume";
 import { useAutoSave } from "../hooks/useAutoSave";
 import { validateATS } from "../utils/atsValidator";
+import { useUndoRedo } from "../hooks/useUndoRedo";
 
 // Initial state
 const initialState: Resume = createDefaultResume();
@@ -753,6 +754,11 @@ export const ResumeProvider: React.FC<ResumeProviderProps> = ({ children }) => {
   const [isLoading] = React.useState(false);
   const [error] = React.useState<string | null>(null);
 
+  // Undo/Redo functionality
+  const { canUndo, canRedo, undo, redo } = useUndoRedo(resume, (newState) => {
+    dispatch({ type: 'SET_RESUME', payload: newState });
+  });
+
   // Auto-save hook
   useAutoSave(resume, {
     interval: 30000, // 30 seconds
@@ -812,6 +818,10 @@ export const ResumeProvider: React.FC<ResumeProviderProps> = ({ children }) => {
     atsValidation,
     isLoading,
     error,
+    canUndo,
+    canRedo,
+    undo,
+    redo,
   };
 
   return (
