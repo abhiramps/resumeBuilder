@@ -22,3 +22,22 @@ export {
 } from './useATSValidation';
 export { usePDFExport } from './usePDFExport';
 export type { PDFExportOptions, UsePDFExportReturn } from './usePDFExport';
+
+// Resume management hooks
+export {
+  useResume,
+  usePublicResume,
+  useCreateResume,
+  useUpdateResume,
+  useDeleteResume,
+  useDuplicateResume,
+  useShareResume,
+  useExportResume,
+  useImportResume,
+  RESUME_KEYS,
+} from './useResume';
+export { useResumes, useSearchResumes, useResumesByStatus } from './useResumes';
+
+// Auth and user hooks
+export { useAuth } from './useAuth';
+export { useUserProfile, useUpdateProfile, useDeleteAccount } from './useUser';
