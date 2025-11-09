@@ -2,47 +2,123 @@
 ### Task 2: TypeScript Type Definitions
 
 ```
-Create comprehensive TypeScript type definitions for the entire application.
+Create comprehensive TypeScript type definitions aligned with backend API.
 
 Create file: src/types/resume.types.ts
 
 Requirements:
-Define interfaces for:
-- Resume (main data structure)
-- PersonalInfo (name, contact details, social links)
-- Section (id, type, title, enabled, order, content)
-- SectionType (enum: summary, experience, projects, skills, education, certifications, custom)
-- ExperienceItem (job title, company, dates, responsibilities array)
-- ProjectItem (name, tech stack, dates, descriptions array)
-- SkillCategory (category name, skills array)
-- EducationItem (degree, university, dates, coursework)
-- CertificationItem (name, issuer, dates)
+Define interfaces matching backend Resume model:
+- Resume (id, userId, title, description, templateId, content, status, isPublic, publicSlug, viewCount, exportCount, createdAt, updatedAt)
+- ResumeContent (personalInfo, summary, experience, education, skills, certifications, projects, languages)
+- PersonalInfo (fullName, email, phone, location, website, linkedin, github)
+- Experience (id, company, position, location, startDate, endDate, current, description, highlights)
+- Education (id, institution, degree, field, location, startDate, endDate, gpa, description)
+- Skill (id, name, level, category)
+- Certification (id, name, issuer, date, expiryDate, credentialId, url)
+- Project (id, name, description, technologies, url, github, startDate, endDate)
+- Language (id, name, proficiency)
 - LayoutSettings (margins, spacing, line height, font sizes, font family, colors)
 - TemplateType (enum: classic, modern, minimal, abhiram)
-- TemplateConfig (id, name, thumbnail, ATS score, customizable options)
 
-Create file: src/types/actions.types.ts
-- Define all action types for the reducer
-- Union type for all actions
-- Action creator types
+Create file: src/types/api.types.ts
+- API request/response types
+- Pagination types
+- Error response types
+- Search/filter options
+
+Create file: src/types/sharing.types.ts
+- ShareResumeResponse
+- PublicResumeView
+- ResumeAnalytics
+
+Create file: src/types/version.types.ts
+- ResumeVersion
+- VersionDiff
+- CompareVersionsResult
 
 Deliverables:
-- Complete resume.types.ts
-- Complete actions.types.ts
+- Complete resume.types.ts matching backend
+- API types for all endpoints
+- Sharing and version types
 - All interfaces properly exported
 - JSDoc comments for complex types
 ```
 
 **Subtasks:**
 
-- 2.1: Define core data structure types (Resume, PersonalInfo, Section)
-- 2.2: Define content-specific types (Experience, Projects, Skills, Education)
-- 2.3: Define layout and styling types
-- 2.4: Define action types for state management
+- 2.1: Define core Resume types matching backend schema
+- 2.2: Define ResumeContent and nested types (Experience, Education, etc.)
+- 2.3: Define API request/response types
+- 2.4: Define sharing, version, and analytics types
 
 ---
 
-### Task 3: Default Resume Data and Constants
+### Task 3: API Client Setup
+
+```
+Create API client for backend communication.
+
+Create file: src/services/api.ts
+
+Requirements:
+- Axios instance with base URL configuration
+- Request/response interceptors
+- Authentication token handling
+- Error handling and transformation
+- Retry logic for failed requests
+- Request cancellation support
+
+Create file: src/services/auth.service.ts
+- signUp(email, password, fullName)
+- signIn(email, password)
+- signOut()
+- refreshToken()
+- getCurrentUser()
+
+Create file: src/services/resume.service.ts
+- createResume(data)
+- getResume(id)
+- updateResume(id, data)
+- deleteResume(id)
+- listResumes(options)
+- searchResumes(query, options)
+- exportResume(id)
+- importResume(data)
+- duplicateResume(id)
+- bulkExport(resumeIds)
+
+Create file: src/services/sharing.service.ts
+- shareResume(id)
+- unshareResume(id)
+- getPublicResume(slug)
+- updateShareSettings(id, isPublic)
+- getAnalytics(id)
+
+Create file: src/services/version.service.ts
+- createVersion(resumeId, data)
+- listVersions(resumeId)
+- getVersion(resumeId, versionId)
+- restoreVersion(resumeId, versionId)
+- compareVersions(resumeId, v1, v2)
+- deleteVersion(resumeId, versionId)
+
+Deliverables:
+- Complete API client with interceptors
+- All service methods implemented
+- Error handling
+- TypeScript types for all methods
+```
+
+**Subtasks:**
+
+- 3.1: Set up Axios client with interceptors
+- 3.2: Implement auth service methods
+- 3.3: Implement resume service methods
+- 3.4: Implement sharing and version services
+
+---
+
+### Task 4: Default Resume Data and Constants
 
 ```
 Create default resume data and application constants.
@@ -50,7 +126,7 @@ Create default resume data and application constants.
 Create file: src/constants/defaultResume.ts
 
 Requirements:
-- Export DEFAULT_RESUME object with all fields populated with placeholder data
+- Export DEFAULT_RESUME object matching backend ResumeContent structure
 - Include sample data for each section type
 - Use realistic software engineer resume content
 - Follow ATS best practices in default data
@@ -66,63 +142,142 @@ Create file: src/constants/templateConfigs.ts
 - Include default layout settings per template
 - Define customization capabilities per template
 
+Create file: src/constants/apiEndpoints.ts
+- Export all API endpoint constants
+- Base URLs for different environments
+- Endpoint path builders
+
 Deliverables:
-- Fully populated default resume
+- Fully populated default resume matching backend schema
 - Complete ATS guidelines
 - All template configurations
+- API endpoint constants
 - Properly typed with interfaces
 ```
 
 **Subtasks:**
 
-- 3.1: Create defaultResume.ts with comprehensive sample data
-- 3.2: Create atsGuidelines.ts with validation rules
-- 3.3: Create templateConfigs.ts with template definitions
+- 4.1: Create defaultResume.ts with backend-compatible structure
+- 4.2: Create atsGuidelines.ts with validation rules
+- 4.3: Create templateConfigs.ts with template definitions
+- 4.4: Create apiEndpoints.ts with all endpoints
 
 ---
 
-### Task 4: Resume Context and State Management
+### Task 5: Authentication Context and State
 
 ```
-Create the global state management system using Context API and useReducer.
+Create authentication state management with backend integration.
 
-Create file: src/contexts/ResumeContext.tsx
+Create file: src/contexts/AuthContext.tsx
 
 Requirements:
-- Create ResumeContext with TypeScript interfaces
-- Implement useReducer with all action handlers:
-  - UPDATE_PERSONAL_INFO
-  - ADD_SECTION
-  - UPDATE_SECTION
-  - DELETE_SECTION
-  - REORDER_SECTIONS
-  - TOGGLE_SECTION
-  - UPDATE_LAYOUT
-  - CHANGE_TEMPLATE
-  - IMPORT_RESUME
-  - RESET_RESUME
-- Create ResumeProvider component
-- Export useResumeContext hook with type safety
-- Initialize with DEFAULT_RESUME
-- Implement proper immutable updates
+- AuthContext with user state
+- Login/logout functionality
+- Token management (localStorage)
+- Auto token refresh
+- Protected route handling
+- User profile state
+
+State:
+- user: User | null
+- isAuthenticated: boolean
+- isLoading: boolean
+- error: string | null
+
+Actions:
+- login(email, password)
+- signup(email, password, fullName)
+- logout()
+- refreshAuth()
+- updateProfile(data)
+
+Create file: src/hooks/useAuth.ts
+- Custom hook for auth operations
+- Auto-refresh token before expiry
+- Handle auth errors
+
+Create file: src/components/Auth/ProtectedRoute.tsx
+- Wrapper for protected routes
+- Redirect to login if not authenticated
+- Show loading state
 
 Deliverables:
-- Working ResumeContext
-- Fully typed reducer
-- useResumeContext custom hook
-- All CRUD operations for sections
+- Working AuthContext with backend integration
+- Token management
+- Protected route component
+- Auto-refresh functionality
 ```
 
 **Subtasks:**
 
-- 4.1: Set up basic context structure and types
-- 4.2: Implement reducer with all action handlers
-- 4.3: Create provider component and custom hook
-- 4.4: Test state updates work correctly
+- 5.1: Create AuthContext with state management
+- 5.2: Implement login/signup/logout with API
+- 5.3: Add token refresh logic
+- 5.4: Create ProtectedRoute component
 
 ---
 
-### Task 5: Basic UI Components Library
+### Task 6: Resume Context and State Management
+
+```
+Create the global resume state management with backend sync.
+
+Create file: src/contexts/ResumeContext.tsx
+
+Requirements:
+- ResumeContext with current resume state
+- Sync with backend API
+- Auto-save functionality
+- Optimistic updates
+- Error handling and rollback
+
+State:
+- currentResume: Resume | null
+- resumes: Resume[]
+- isLoading: boolean
+- isSaving: boolean
+- error: string | null
+
+Actions:
+- loadResume(id)
+- createResume(data)
+- updateResume(id, data)
+- deleteResume(id)
+- listResumes(options)
+- searchResumes(query)
+- duplicateResume(id)
+- exportResume(id)
+- importResume(data)
+
+Create file: src/hooks/useResume.ts
+- Custom hook for resume operations
+- Auto-save with debouncing
+- Optimistic UI updates
+
+Create file: src/hooks/useAutoSave.ts
+- Auto-save resume changes
+- Debounce saves (2 seconds)
+- Show save status indicator
+- Handle save errors
+
+Deliverables:
+- Working ResumeContext with backend sync
+- Auto-save functionality
+- Optimistic updates
+- Error handling
+```
+
+**Subtasks:**
+
+- 6.1: Create ResumeContext with state management
+- 6.2: Implement CRUD operations with API
+- 6.3: Add auto-save with debouncing
+- 6.4: Implement optimistic updates and rollback
+
+---
+
+### Task 7: Basic UI Components Library
 
 ```
 Create reusable UI components used throughout the application.
@@ -185,7 +340,7 @@ Deliverables:
 
 ---
 
-### Task 6: Main Layout Structure
+### Task 8: Main Layout Structure
 
 ```
 Create the main application layout with three-panel design.
@@ -236,7 +391,7 @@ Deliverables:
 
 ---
 
-### Task 7: Auto-Save Hook
+### Task 9: Resume List and Dashboard
 
 ```
 Implement auto-save functionality using LocalStorage.

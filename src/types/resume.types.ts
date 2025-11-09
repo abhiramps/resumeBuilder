@@ -1,6 +1,7 @@
 /**
  * Core resume data types for the ATS-friendly resume builder
  * All types are designed to maintain ATS compliance while providing flexibility
+ * Updated to match backend API schema
  */
 
 /**
@@ -16,6 +17,7 @@ export interface PersonalInfo {
   linkedin?: string;
   github?: string;
   portfolio?: string;
+  website?: string;
 }
 
 /**
@@ -28,28 +30,28 @@ export interface WorkExperience {
   company: string;
   location: string;
   startDate: string;
-  endDate: string;
+  endDate?: string;
   current: boolean;
   description: string;
-  achievements: string[];
+  achievements?: string[];
 }
 
-// Alias for Task 2 requirements
+// Alias for backend API compatibility
 export type ExperienceItem = WorkExperience;
 
 export interface Project {
   id: string;
   name: string;
   description: string;
-  techStack: string[];
+  techStack?: string[];
   startDate: string;
-  endDate: string;
+  endDate?: string;
   current: boolean;
   url?: string;
   githubUrl?: string;
 }
 
-// Alias for Task 2 requirements
+// Alias for backend API compatibility
 export type ProjectItem = Project;
 
 export interface Skill {
@@ -77,12 +79,12 @@ export interface Education {
   institution: string;
   location: string;
   startDate: string;
-  endDate: string;
+  endDate?: string;
   gpa?: string;
   coursework?: string[];
 }
 
-// Alias for Task 2 requirements
+// Alias for backend API compatibility
 export type EducationItem = Education;
 
 export interface Certification {
@@ -95,14 +97,27 @@ export interface Certification {
   url?: string;
 }
 
-// Alias for Task 2 requirements
+// Alias for backend API compatibility
 export type CertificationItem = Certification;
 
 export interface CustomSection {
   id: string;
   title: string;
   content: string;
+  order?: number;
 }
+
+// Alias for backend API compatibility
+export type CustomSectionItem = CustomSection;
+
+export interface Language {
+  id: string;
+  name: string;
+  proficiency: 'basic' | 'conversational' | 'professional' | 'native';
+}
+
+// Alias for backend API compatibility
+export type LanguageItem = Language;
 
 export type SectionType =
   | "summary"
@@ -179,6 +194,47 @@ export interface Resume {
   template: TemplateType;
   createdAt: string;
   updatedAt: string;
+}
+
+/**
+ * Backend Resume Response (from API)
+ * Matches the backend database schema
+ */
+export interface BackendResume {
+  id: string;
+  userId: string;
+  title: string;
+  description?: string;
+  templateId: string;
+  content: ResumeContent;
+  status: 'draft' | 'published';
+  isPublic: boolean;
+  publicSlug?: string;
+  viewCount: number;
+  exportCount: number;
+  lastExportedAt?: string;
+  version: number;
+  isCurrentVersion: boolean;
+  atsScore?: number;
+  atsIssues?: any[];
+  lastAtsCheckAt?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/**
+ * Resume Content structure (matches backend JSONB content field)
+ */
+export interface ResumeContent {
+  personalInfo?: PersonalInfo;
+  summary?: string;
+  experience?: WorkExperience[];
+  education?: Education[];
+  skills?: Skill[];
+  certifications?: Certification[];
+  projects?: Project[];
+  languages?: Language[];
+  customSections?: CustomSection[];
 }
 
 // ATS Validation types
