@@ -7,23 +7,28 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useResumeBackend } from '../contexts/ResumeBackendContext';
 import { useResumeContext } from '../contexts/ResumeContext';
+import { PDFExportProvider } from '../contexts/PDFExportContext';
 import { EditorSidebar } from '../components/Editor/EditorSidebar';
-import { ResumePreview } from '../components/Preview/ResumePreview';
+import { PreviewContainer } from '../components/Preview/PreviewContainer';
+import { LayoutControls } from '../components/Layout/LayoutControls';
 import { Button } from '../components/UI/Button';
 import { SaveStatusIndicator } from '../components/UI/SaveStatusIndicator';
 import { TemplateSelector } from '../components/UI/TemplateSelector';
-import { ExportModal } from '../components/UI/ExportModal';
-import { ArrowLeft, Download, Share2, History, Eye, EyeOff } from 'lucide-react';
 
-export const EditorPage: React.FC = () => {
+import { usePDFExportContext } from '../contexts/PDFExportContext';
+import { useReactToPrint } from 'react-to-print';
+import { ArrowLeft, Download, Share2, History, Eye, EyeOff, Settings } from 'lucide-react';
+
+const EditorPageContent: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const { currentResume, loadResume, updateResume, isSaving, error } = useResumeBackend();
     const { resume, dispatch } = useResumeContext();
 
     const [showPreview, setShowPreview] = useState(true);
-    const [showExportModal, setShowExportModal] = useState(false);
+    const [showRightSidebar, setShowRightSidebar] = useState(true);
     const [showTemplateSelector, setShowTemplateSelector] = useState(false);
+    const [isExporting, setIsExporting] = useState(false);
 
     // Track if we've loaded the resume from backend
     const hasLoadedRef = useRef(false);
@@ -156,8 +161,67 @@ export const EditorPage: React.FC = () => {
         }
     };
 
-    const handleExport = () => {
-        setShowExportModal(true);
+    // PDF Export using context ref
+    const { previewRef } = usePDFExportContext();
+
+    const generateFileName = () => {
+        const name = resume.personalInfo.fullName || 'Resume';
+        const date = new Date().toISOString().split('T')[0];
+        return `${name.replace(/\s+/g, '_')}_Resume_${date}`;
+    };
+
+    const pageStyle = `
+        @page {
+            size: letter;
+            margin: ${resume.layout.pageMargins.top}in ${resume.layout.pageMargins.right}in ${resume.layout.pageMargins.bottom}in ${resume.layout.pageMargins.left}in;
+        }
+        @media print {
+            html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            body {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                color-adjust: exact;
+            }
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                color-adjust: exact !important;
+            }
+        }
+    `;
+
+    const handlePrint = useReactToPrint({
+        contentRef: previewRef,
+        documentTitle: generateFileName(),
+        onBeforePrint: async () => {
+            setIsExporting(true);
+        },
+        onAfterPrint: () => {
+            setIsExporting(false);
+        },
+        onPrintError: (errorLocation, error) => {
+            console.error('PDF Export Error:', errorLocation, error);
+            setIsExporting(false);
+        },
+        pageStyle,
+        suppressErrors: true,
+    });
+
+    const handleExportClick = () => {
+        if (!previewRef.current) {
+            console.error('Preview ref not available');
+            return;
+        }
+        handlePrint();
+    };
+
+    const toggleRightSidebar = () => {
+        setShowRightSidebar(!showRightSidebar);
     };
 
     const togglePreview = () => {
@@ -209,6 +273,16 @@ export const EditorPage: React.FC = () => {
                         {showPreview ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                     </Button>
 
+                    {/* Toggle Right Sidebar (Desktop) */}
+                    <Button
+                        variant="secondary"
+                        onClick={toggleRightSidebar}
+                        className="hidden lg:flex"
+                        title="Toggle Layout Controls"
+                    >
+                        <Settings className="w-5 h-5" />
+                    </Button>
+
                     {/* Version History */}
                     <Button variant="secondary" onClick={handleVersions}>
                         <History className="w-5 h-5 mr-2" />
@@ -221,10 +295,23 @@ export const EditorPage: React.FC = () => {
                         Share
                     </Button>
 
-                    {/* Export */}
-                    <Button variant="primary" onClick={handleExport}>
-                        <Download className="w-5 h-5 mr-2" />
-                        Export
+                    {/* Export PDF */}
+                    <Button
+                        variant="primary"
+                        onClick={handleExportClick}
+                        disabled={isExporting}
+                    >
+                        {isExporting ? (
+                            <>
+                                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                                Exporting...
+                            </>
+                        ) : (
+                            <>
+                                <Download className="w-5 h-5 mr-2" />
+                                Export PDF
+                            </>
+                        )}
                     </Button>
                 </div>
             </header>
@@ -255,12 +342,20 @@ export const EditorPage: React.FC = () => {
                     <EditorSidebar />
                 </div>
 
-                {/* Right Panel - Preview */}
+                {/* Center Panel - Preview */}
                 {showPreview && (
-                    <div className="hidden lg:block flex-1 overflow-y-auto bg-gray-100 p-8">
-                        <div className="max-w-4xl mx-auto">
-                            <ResumePreview resume={resume} />
-                        </div>
+                    <div className="hidden lg:block flex-1 overflow-y-auto bg-gray-100 p-6">
+                        <PreviewContainer
+                            showZoomControls={true}
+                            showPrintMode={true}
+                        />
+                    </div>
+                )}
+
+                {/* Right Panel - Layout Controls */}
+                {showRightSidebar && (
+                    <div className="hidden lg:block w-80 bg-white border-l border-gray-200 overflow-y-auto">
+                        <LayoutControls />
                     </div>
                 )}
 
@@ -274,24 +369,24 @@ export const EditorPage: React.FC = () => {
                             </Button>
                         </div>
                         <div className="p-4">
-                            <ResumePreview resume={resume} />
+                            <PreviewContainer
+                                showZoomControls={true}
+                                showPrintMode={true}
+                            />
                         </div>
                     </div>
                 )}
             </div>
 
-            {/* Export Modal */}
-            {showExportModal && (
-                <ExportModal
-                    isOpen={showExportModal}
-                    onClose={() => setShowExportModal(false)}
-                    onExport={(options) => {
-                        console.log('Export with options:', options);
-                        // TODO: Implement export functionality
-                    }}
-                    defaultFileName={`resume-${resume.personalInfo.fullName || 'untitled'}`}
-                />
-            )}
+
         </div>
+    );
+};
+
+export const EditorPage: React.FC = () => {
+    return (
+        <PDFExportProvider>
+            <EditorPageContent />
+        </PDFExportProvider>
     );
 };
