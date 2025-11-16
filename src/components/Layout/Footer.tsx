@@ -139,7 +139,7 @@ const Footer: React.FC = () => {
             <div className="flex items-center space-x-4">
               {/* Save Status Indicator */}
               <div className="hidden sm:block">
-                <SaveStatusIndicator autoSaveResult={mockAutoSaveResult} />
+                <SaveStatusIndicator isSaving={false} />
               </div>
 
               {/* Last Updated */}

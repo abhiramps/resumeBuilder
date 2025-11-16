@@ -31,6 +31,15 @@ const ResumePreviewComponent = forwardRef<HTMLDivElement, ResumePreviewProps>(
   (props, ref) => {
     const { resume, className = "", printMode = false } = props;
 
+    // Safety check: ensure resume has required properties
+    if (!resume || !resume.layout) {
+      return (
+        <div className="flex items-center justify-center p-8 bg-white rounded-lg shadow-sm">
+          <p className="text-gray-500">Loading resume preview...</p>
+        </div>
+      );
+    }
+
     // Render the appropriate template based on resume.template
     const templateProps = {
       resume,

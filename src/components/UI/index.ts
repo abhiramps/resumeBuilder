@@ -32,3 +32,5 @@ export { Modal } from "./Modal";
 
 export { ExportModal } from "./ExportModal";
 export type { ExportModalProps, ExportOptions } from "./ExportModal";
+
+export { ImportExportModal } from "./ImportExportModal";

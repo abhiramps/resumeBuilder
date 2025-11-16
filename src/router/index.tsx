@@ -16,6 +16,7 @@ import {
     VersionsPage,
 } from '../pages';
 import { useAuth } from '../contexts/AuthContext';
+import { ResumeProvider } from '../contexts/ResumeContext';
 
 // Protected Route Component
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -104,7 +105,9 @@ export const router = createBrowserRouter([
         path: '/editor/:id',
         element: (
             <ProtectedRoute>
-                <EditorPage />
+                <ResumeProvider>
+                    <EditorPage />
+                </ResumeProvider>
             </ProtectedRoute>
         ),
     },

@@ -3,10 +3,10 @@
  * Main editor with three-panel layout: editor, preview, and controls
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useResumeBackend } from '../contexts/ResumeBackendContext';
-import { useResume } from '../hooks/useResume';
+import { useResumeContext } from '../contexts/ResumeContext';
 import { EditorSidebar } from '../components/Editor/EditorSidebar';
 import { ResumePreview } from '../components/Preview/ResumePreview';
 import { Button } from '../components/UI/Button';
@@ -19,34 +19,126 @@ export const EditorPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const { currentResume, loadResume, updateResume, isSaving, error } = useResumeBackend();
-    const { resumeData, updateResumeData } = useResume();
+    const { resume, dispatch } = useResumeContext();
 
     const [showPreview, setShowPreview] = useState(true);
     const [showExportModal, setShowExportModal] = useState(false);
     const [showTemplateSelector, setShowTemplateSelector] = useState(false);
 
+    // Track if we've loaded the resume from backend
+    const hasLoadedRef = useRef(false);
+    const lastSavedRef = useRef<string>('');
+
     // Load resume on mount
     useEffect(() => {
-        if (id) {
+        if (id && !hasLoadedRef.current) {
             loadResume(id);
         }
-    }, [id]);
+    }, [id, loadResume]);
 
-    // Sync backend resume to local state
+    // Sync backend resume to local context (only once)
     useEffect(() => {
-        if (currentResume?.content) {
-            updateResumeData(currentResume.content);
+        if (currentResume && !hasLoadedRef.current) {
+            hasLoadedRef.current = true;
+
+            // Update local context with backend data
+            if (currentResume.content) {
+                // Reconstruct sections from backend data
+                const updatedSections = resume.sections.map(section => {
+                    if (section.type === 'summary' && currentResume.content.summary) {
+                        return {
+                            ...section,
+                            content: { summary: currentResume.content.summary }
+                        };
+                    }
+                    if (section.type === 'experience' && currentResume.content.experience) {
+                        return {
+                            ...section,
+                            content: { experiences: currentResume.content.experience }
+                        };
+                    }
+                    if (section.type === 'education' && currentResume.content.education) {
+                        return {
+                            ...section,
+                            content: { education: currentResume.content.education }
+                        };
+                    }
+                    if (section.type === 'skills' && currentResume.content.skills) {
+                        return {
+                            ...section,
+                            content: { skills: currentResume.content.skills }
+                        };
+                    }
+                    if (section.type === 'projects' && currentResume.content.projects) {
+                        return {
+                            ...section,
+                            content: { projects: currentResume.content.projects }
+                        };
+                    }
+                    if (section.type === 'certifications' && currentResume.content.certifications) {
+                        return {
+                            ...section,
+                            content: { certifications: currentResume.content.certifications }
+                        };
+                    }
+                    return section;
+                });
+
+                dispatch({
+                    type: 'SET_RESUME',
+                    payload: {
+                        ...resume,
+                        id: currentResume.id,
+                        personalInfo: currentResume.content.personalInfo || resume.personalInfo,
+                        sections: updatedSections,
+                        createdAt: currentResume.createdAt,
+                        updatedAt: currentResume.updatedAt,
+                    }
+                });
+            }
         }
     }, [currentResume]);
 
-    // Auto-save: sync local changes to backend
+    // Auto-save: sync local changes to backend (debounced)
     useEffect(() => {
-        if (currentResume && resumeData) {
+        if (!hasLoadedRef.current || !currentResume) return;
+
+        // Create a string representation of the resume for comparison
+        const resumeString = JSON.stringify({
+            personalInfo: resume.personalInfo,
+            sections: resume.sections,
+            layout: resume.layout,
+        });
+
+        // Skip if nothing changed
+        if (resumeString === lastSavedRef.current) return;
+
+        const timeoutId = setTimeout(() => {
+            lastSavedRef.current = resumeString;
+
+            // Extract content from sections
+            const summarySection = resume.sections.find(s => s.type === 'summary');
+            const experienceSection = resume.sections.find(s => s.type === 'experience');
+            const educationSection = resume.sections.find(s => s.type === 'education');
+            const skillsSection = resume.sections.find(s => s.type === 'skills');
+            const projectsSection = resume.sections.find(s => s.type === 'projects');
+            const certificationsSection = resume.sections.find(s => s.type === 'certifications');
+
             updateResume({
-                content: resumeData,
+                content: {
+                    personalInfo: resume.personalInfo,
+                    summary: (summarySection?.content as any)?.summary || '',
+                    experience: (experienceSection?.content as any)?.experiences || [],
+                    education: (educationSection?.content as any)?.education || [],
+                    skills: (skillsSection?.content as any)?.skills || [],
+                    projects: (projectsSection?.content as any)?.projects || [],
+                    certifications: (certificationsSection?.content as any)?.certifications || [],
+                },
             });
-        }
-    }, [resumeData]);
+        }, 2000); // Debounce by 2 seconds
+
+        return () => clearTimeout(timeoutId);
+    }, [resume.personalInfo, resume.sections, resume.layout]);
 
     const handleBack = () => {
         navigate('/dashboard');
@@ -147,7 +239,12 @@ export const EditorPage: React.FC = () => {
             {/* Template Selector Dropdown */}
             {showTemplateSelector && (
                 <div className="bg-white border-b border-gray-200 px-4 py-4">
-                    <TemplateSelector />
+                    <TemplateSelector
+                        currentTemplate={resume.templateId || 'modern'}
+                        onTemplateChange={(templateId) => {
+                            dispatch({ type: 'UPDATE_LAYOUT', payload: { templateId } });
+                        }}
+                    />
                 </div>
             )}
 
@@ -162,7 +259,7 @@ export const EditorPage: React.FC = () => {
                 {showPreview && (
                     <div className="hidden lg:block flex-1 overflow-y-auto bg-gray-100 p-8">
                         <div className="max-w-4xl mx-auto">
-                            <ResumePreview />
+                            <ResumePreview resume={resume} />
                         </div>
                     </div>
                 )}
@@ -177,7 +274,7 @@ export const EditorPage: React.FC = () => {
                             </Button>
                         </div>
                         <div className="p-4">
-                            <ResumePreview />
+                            <ResumePreview resume={resume} />
                         </div>
                     </div>
                 )}
@@ -188,7 +285,7 @@ export const EditorPage: React.FC = () => {
                 <ExportModal
                     isOpen={showExportModal}
                     onClose={() => setShowExportModal(false)}
-                    resumeId={id!}
+                    resume={resume}
                 />
             )}
         </div>
