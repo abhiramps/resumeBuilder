@@ -3,6 +3,7 @@
  * React Query hooks for resume version control
  */
 
+import { useState, useCallback } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { versionService } from '../services/version.service';
 import { QUERY_KEYS } from '../lib/queryClient';
@@ -96,4 +97,70 @@ export const useDeleteVersion = (resumeId: string) => {
             queryClient.invalidateQueries({ queryKey: QUERY_KEYS.versions(resumeId) });
         },
     });
+};
+
+
+/**
+ * Main versions hook for VersionsPage
+ * Provides all version management functionality in one hook
+ */
+export const useVersionsManagement = (resumeId: string) => {
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    // Fetch versions list
+    const { data: versionsData, refetch } = useQuery({
+        queryKey: QUERY_KEYS.versions(resumeId),
+        queryFn: () => versionService.list(resumeId),
+        enabled: !!resumeId,
+    });
+
+    const listVersions = useCallback(async () => {
+        setIsLoading(true);
+        setError(null);
+        try {
+            await refetch();
+        } catch (err: any) {
+            setError(err.message || 'Failed to load versions');
+        } finally {
+            setIsLoading(false);
+        }
+    }, [refetch]);
+
+    const createVersion = useCallback(async (name: string) => {
+        setIsLoading(true);
+        setError(null);
+        try {
+            await versionService.create(resumeId, { name });
+            await refetch();
+        } catch (err: any) {
+            setError(err.message || 'Failed to create version');
+            throw err;
+        } finally {
+            setIsLoading(false);
+        }
+    }, [resumeId, refetch]);
+
+    const restoreVersion = useCallback(async (versionId: string) => {
+        setIsLoading(true);
+        setError(null);
+        try {
+            await versionService.restore(resumeId, versionId);
+            await refetch();
+        } catch (err: any) {
+            setError(err.message || 'Failed to restore version');
+            throw err;
+        } finally {
+            setIsLoading(false);
+        }
+    }, [resumeId, refetch]);
+
+    return {
+        versions: versionsData || [],
+        isLoading,
+        error,
+        listVersions,
+        createVersion,
+        restoreVersion,
+    };
 };
