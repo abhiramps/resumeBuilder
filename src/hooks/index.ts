@@ -5,6 +5,7 @@
  */
 
 export { useAutoSave } from './useAutoSave';
+export { useDebounce } from './useDebounce';
 export { useTemplate } from './useTemplate';
 export {
   useTemplateStyles,
@@ -37,6 +38,25 @@ export {
   RESUME_KEYS,
 } from './useResume';
 export { useResumes, useSearchResumes, useResumesByStatus } from './useResumes';
+
+// Version management hooks
+export {
+  useVersions,
+  useVersion,
+  useCreateVersion,
+  useRestoreVersion,
+  useCompareVersions,
+  useDeleteVersion,
+} from './useVersions';
+
+// Sharing and analytics hooks
+export {
+  usePublicResume as usePublicResumeSharing,
+  useResumeAnalytics,
+  useShareResume as useShareResumeSharing,
+  useUnshareResume,
+  useUpdateShareSettings,
+} from './useSharing';
 
 // Auth and user hooks
 export { useAuth } from './useAuth';
