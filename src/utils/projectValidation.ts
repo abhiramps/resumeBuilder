@@ -99,13 +99,13 @@ export const getAllTechStackSuggestions = (): string[] => {
  */
 export const filterTechStackSuggestions = (input: string, existingTags: string[] = []): string[] => {
   if (!input.trim()) return [];
-  
+
   const allSuggestions = getAllTechStackSuggestions();
   const lowerInput = input.toLowerCase();
-  
+
   return allSuggestions
-    .filter(tech => 
-      tech.toLowerCase().includes(lowerInput) && 
+    .filter(tech =>
+      tech.toLowerCase().includes(lowerInput) &&
       !existingTags.some(existing => existing.toLowerCase() === tech.toLowerCase())
     )
     .slice(0, 10); // Limit to 10 suggestions
@@ -119,7 +119,7 @@ export const validateField = (
   value: string
 ): string | undefined => {
   const rules = PROJECT_VALIDATION_RULES[field];
-  
+
   if (!value.trim()) {
     if ('required' in rules && rules.required) {
       return `${field.charAt(0).toUpperCase() + field.slice(1)} is required`;
@@ -171,9 +171,9 @@ export const validateTechStack = (techStack: string[]): string | undefined => {
  */
 export const validateURL = (url: string, type: 'project' | 'github'): string | undefined => {
   if (!url.trim()) return undefined; // Empty URLs are allowed for optional fields
-  
+
   const rules = type === 'github' ? PROJECT_VALIDATION_RULES.githubUrl : PROJECT_VALIDATION_RULES.url;
-  
+
   if (!rules.pattern.test(url)) {
     return rules.errorMessage;
   }
@@ -230,7 +230,7 @@ export const validateProject = (project: Project): ProjectValidationErrors => {
   if (descriptionError) errors.description = descriptionError;
 
   // Validate tech stack
-  const techStackError = validateTechStack(project.techStack);
+  const techStackError = validateTechStack(project.techStack || []);
   if (techStackError) errors.techStack = techStackError;
 
   // Validate URLs
@@ -241,7 +241,7 @@ export const validateProject = (project: Project): ProjectValidationErrors => {
   if (githubUrlError) errors.githubUrl = githubUrlError;
 
   // Validate date range
-  const dateRangeError = validateDateRange(project.startDate, project.endDate, project.current);
+  const dateRangeError = validateDateRange(project.startDate || '', project.endDate || '', project.current);
   if (dateRangeError) errors.dateRange = dateRangeError;
 
   return errors;
@@ -274,7 +274,7 @@ export const checkATSCompliance = (project: Project): {
 
   // Check for problematic characters
   const problematicChars = /[^\w\s\-.,()&/%$#@!?:;'"]/g;
-  
+
   if (problematicChars.test(project.name)) {
     issues.push("Project name contains characters that may not be ATS-friendly");
   }
@@ -283,7 +283,7 @@ export const checkATSCompliance = (project: Project): {
     issues.push("Description contains characters that may not be ATS-friendly");
   }
 
-  project.techStack.forEach((tech) => {
+  (project.techStack || []).forEach((tech) => {
     if (problematicChars.test(tech)) {
       issues.push(`Technology "${tech}" contains characters that may not be ATS-friendly`);
     }
@@ -298,11 +298,13 @@ export const checkATSCompliance = (project: Project): {
     suggestions.push("Consider adding a project description to provide context");
   }
 
-  if (project.techStack.length === 0) {
+  const techStack = project.techStack || [];
+
+  if (techStack.length === 0) {
     suggestions.push("Consider adding technologies used in this project");
   }
 
-  if (project.techStack.length < 3) {
+  if (techStack.length < 3) {
     suggestions.push("Adding 3-5 key technologies is recommended for better visibility");
   }
 
@@ -324,17 +326,18 @@ export const generateProjectSummary = (project: Project): string => {
   const parts: string[] = [];
 
   if (project.name) parts.push(project.name);
-  
-  if (project.techStack.length > 0) {
-    const techDisplay = project.techStack.slice(0, 3).join(", ");
-    const remaining = project.techStack.length - 3;
+
+  const techStack = project.techStack || [];
+  if (techStack.length > 0) {
+    const techDisplay = techStack.slice(0, 3).join(", ");
+    const remaining = techStack.length - 3;
     parts.push(`(${techDisplay}${remaining > 0 ? ` +${remaining} more` : ""})`);
   }
 
   if (project.startDate) {
     const startDate = new Date(project.startDate + "-01");
     const startStr = startDate.toLocaleDateString("en-US", { month: "short", year: "numeric" });
-    
+
     if (project.current) {
       parts.push(`• ${startStr} - Present`);
     } else if (project.endDate) {
@@ -354,8 +357,8 @@ export const calculateProjectDuration = (project: Project): number => {
   if (!project.startDate) return 0;
 
   const start = new Date(project.startDate + "-01");
-  const end = project.current || !project.endDate 
-    ? new Date() 
+  const end = project.current || !project.endDate
+    ? new Date()
     : new Date(project.endDate + "-01");
 
   const diffTime = Math.abs(end.getTime() - start.getTime());
@@ -369,9 +372,9 @@ export const calculateProjectDuration = (project: Project): number => {
  */
 export const formatProjectDuration = (project: Project): string => {
   const months = calculateProjectDuration(project);
-  
+
   if (months === 0) return "";
-  
+
   const years = Math.floor(months / 12);
   const remainingMonths = months % 12;
 

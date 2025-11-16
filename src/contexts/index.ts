@@ -6,7 +6,7 @@
 export { AuthProvider, useAuth } from './AuthContext';
 export { ResumeProvider, useResume, useResumeContext } from './ResumeContext';
 export { ResumeBackendProvider, useResumeBackend } from './ResumeBackendContext';
-export { PDFExportProvider, usePDFExport } from './PDFExportContext';
+export { PDFExportProvider } from './PDFExportContext';
 
 // Re-export types
 export type { User, AuthState } from '../types/auth.types';

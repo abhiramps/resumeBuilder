@@ -374,10 +374,10 @@ const ProjectEntry: React.FC<ProjectEntryProps> = ({
                             {project.name || "New Project"}
                         </h4>
                         <p className="text-xs text-gray-500 truncate">
-                            {project.techStack.length > 0 && (
+                            {(project.techStack || []).length > 0 && (
                                 <>
-                                    {project.techStack.slice(0, 3).join(", ")}
-                                    {project.techStack.length > 3 && ` +${project.techStack.length - 3} more`}
+                                    {(project.techStack || []).slice(0, 3).join(", ")}
+                                    {(project.techStack || []).length > 3 && ` +${(project.techStack || []).length - 3} more`}
                                 </>
                             )}
                         </p>
@@ -521,7 +521,7 @@ const ProjectEntry: React.FC<ProjectEntryProps> = ({
 
                     {/* Tech Stack */}
                     <TechStackManager
-                        techStack={localProject.techStack}
+                        techStack={localProject.techStack || []}
                         onUpdate={(techStack) => handleFieldUpdate("techStack", techStack)}
                     />
                     {validationErrors.techStack && (
@@ -619,11 +619,11 @@ const ProjectEntry: React.FC<ProjectEntryProps> = ({
                         <p className="text-xs text-gray-600 leading-relaxed">{project.description}</p>
                     )}
 
-                    {project.techStack.length > 0 && (
+                    {(project.techStack || []).length > 0 && (
                         <div>
                             <h5 className="text-xs font-medium text-gray-700 mb-1.5">Technologies:</h5>
                             <div className="flex flex-wrap gap-1">
-                                {project.techStack.map((tech, index) => (
+                                {(project.techStack || []).map((tech, index) => (
                                     <span
                                         key={index}
                                         className="inline-flex items-center px-1.5 py-0.5 rounded text-xs bg-blue-100 text-blue-800"

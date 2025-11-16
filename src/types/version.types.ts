@@ -3,8 +3,6 @@
  * Types for resume version management and comparison
  */
 
-import type { ResumeContent } from './api.types';
-
 // Re-export from api.types for convenience
 export type { ResumeVersionResponse as ResumeVersion } from './api.types';
 export type { CreateVersionRequest as CreateVersionData } from './api.types';

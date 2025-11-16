@@ -551,7 +551,7 @@ const ExperienceEntry: React.FC<ExperienceEntryProps> = ({
 
                     {/* Bullet Points */}
                     <BulletPointManager
-                        bulletPoints={localExperience.achievements}
+                        bulletPoints={localExperience.achievements || []}
                         onUpdate={(bulletPoints) => handleFieldUpdate("achievements", bulletPoints)}
                     />
                 </div>
@@ -564,19 +564,19 @@ const ExperienceEntry: React.FC<ExperienceEntryProps> = ({
                         <p className="text-xs text-gray-600 leading-relaxed">{experience.description}</p>
                     )}
 
-                    {experience.achievements.length > 0 && (
+                    {(experience.achievements || []).length > 0 && (
                         <div>
                             <h5 className="text-xs font-medium text-gray-700 mb-1.5">Key Achievements:</h5>
                             <ul className="space-y-1">
-                                {experience.achievements.slice(0, 3).map((achievement, index) => (
+                                {(experience.achievements || []).slice(0, 3).map((achievement, index) => (
                                     <li key={index} className="text-xs text-gray-600 flex items-start">
                                         <span className="text-blue-600 mr-1.5 flex-shrink-0">•</span>
                                         <span className="leading-relaxed">{achievement}</span>
                                     </li>
                                 ))}
-                                {experience.achievements.length > 3 && (
+                                {(experience.achievements || []).length > 3 && (
                                     <li className="text-xs text-gray-500 italic ml-3">
-                                        +{experience.achievements.length - 3} more achievements
+                                        +{(experience.achievements || []).length - 3} more achievements
                                     </li>
                                 )}
                             </ul>

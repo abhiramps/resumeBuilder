@@ -60,7 +60,7 @@ export const validateField = (
   value: string
 ): string | undefined => {
   const rules = EXPERIENCE_VALIDATION_RULES[field];
-  
+
   if (!value.trim()) {
     if ('required' in rules && rules.required) {
       return `${field.charAt(0).toUpperCase() + field.slice(1)} is required`;
@@ -173,11 +173,11 @@ export const validateExperience = (experience: WorkExperience): ExperienceValida
   if (descriptionError) errors.description = descriptionError;
 
   // Validate date range
-  const dateRangeError = validateDateRange(experience.startDate, experience.endDate, experience.current);
+  const dateRangeError = validateDateRange(experience.startDate, experience.endDate || '', experience.current);
   if (dateRangeError) errors.dateRange = dateRangeError;
 
   // Validate achievements
-  const achievementErrors = validateAchievements(experience.achievements);
+  const achievementErrors = validateAchievements(experience.achievements || []);
   if (Object.keys(achievementErrors).length > 0) {
     errors.achievements = achievementErrors;
   }
@@ -204,7 +204,7 @@ export const hasValidationErrors = (errors: ExperienceValidationErrors): boolean
  */
 export const getValidationErrorCount = (errors: ExperienceValidationErrors): number => {
   let count = 0;
-  
+
   Object.keys(errors).forEach(key => {
     const error = errors[key as keyof ExperienceValidationErrors];
     if (typeof error === "string") {
@@ -230,7 +230,7 @@ export const checkATSCompliance = (experience: WorkExperience): {
 
   // Check for problematic characters
   const problematicChars = /[^\w\s\-.,()&/%$#@!?:;'"]/g;
-  
+
   if (problematicChars.test(experience.jobTitle)) {
     issues.push("Job title contains characters that may not be ATS-friendly");
   }
@@ -243,7 +243,9 @@ export const checkATSCompliance = (experience: WorkExperience): {
     issues.push("Description contains characters that may not be ATS-friendly");
   }
 
-  experience.achievements.forEach((achievement, index) => {
+  const achievements = experience.achievements || [];
+
+  achievements.forEach((achievement, index) => {
     if (problematicChars.test(achievement)) {
       issues.push(`Achievement ${index + 1} contains characters that may not be ATS-friendly`);
     }
@@ -262,20 +264,20 @@ export const checkATSCompliance = (experience: WorkExperience): {
     issues.push("Missing start date");
   }
 
-  if (experience.achievements.length === 0) {
+  if (achievements.length === 0) {
     suggestions.push("Consider adding achievements or responsibilities to strengthen your experience");
   }
 
-  if (experience.achievements.length < 3) {
+  if (achievements.length < 3) {
     suggestions.push("Adding 3-5 achievements per role is recommended for impact");
   }
 
   // Check for quantifiable achievements
-  const hasQuantifiableAchievements = experience.achievements.some(achievement => 
+  const hasQuantifiableAchievements = achievements.some(achievement =>
     /\d+/.test(achievement) || /%/.test(achievement) || /\$/.test(achievement)
   );
 
-  if (!hasQuantifiableAchievements && experience.achievements.length > 0) {
+  if (!hasQuantifiableAchievements && achievements.length > 0) {
     suggestions.push("Consider adding quantifiable results (numbers, percentages, dollar amounts) to your achievements");
   }
 
@@ -299,7 +301,7 @@ export const generateExperienceSummary = (experience: WorkExperience): string =>
   if (experience.startDate) {
     const startDate = new Date(experience.startDate + "-01");
     const startStr = startDate.toLocaleDateString("en-US", { month: "short", year: "numeric" });
-    
+
     if (experience.current) {
       parts.push(`• ${startStr} - Present`);
     } else if (experience.endDate) {
@@ -319,8 +321,8 @@ export const calculateExperienceDuration = (experience: WorkExperience): number 
   if (!experience.startDate) return 0;
 
   const start = new Date(experience.startDate + "-01");
-  const end = experience.current || !experience.endDate 
-    ? new Date() 
+  const end = experience.current || !experience.endDate
+    ? new Date()
     : new Date(experience.endDate + "-01");
 
   const diffTime = Math.abs(end.getTime() - start.getTime());
@@ -334,9 +336,9 @@ export const calculateExperienceDuration = (experience: WorkExperience): number 
  */
 export const formatExperienceDuration = (experience: WorkExperience): string => {
   const months = calculateExperienceDuration(experience);
-  
+
   if (months === 0) return "";
-  
+
   const years = Math.floor(months / 12);
   const remainingMonths = months % 12;
 

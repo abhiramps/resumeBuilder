@@ -54,13 +54,20 @@ export const backendToFrontendResume = (backendResume: ResumeResponse | BackendR
 
     // Skills section
     if (content.skills && content.skills.length > 0) {
+        // Convert SkillItem to Skill by ensuring category and level are valid types
+        const skills = content.skills.map(skill => ({
+            id: skill.id,
+            name: skill.name,
+            category: (skill.category as any) || 'other',
+            level: skill.level || 'intermediate',
+        }));
         sections.push({
             id: 'skills',
             type: 'skills',
             title: 'Skills',
             enabled: true,
             order: order++,
-            content: { skills: content.skills },
+            content: { skills },
         });
     }
 
