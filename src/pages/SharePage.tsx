@@ -53,9 +53,9 @@ export const SharePage: React.FC = () => {
     };
 
     const handleCopyLink = async () => {
-        if (shareLink?.publicUrl) {
+        if (shareLink && 'publicUrl' in shareLink) {
             try {
-                await navigator.clipboard.writeText(shareLink.publicUrl);
+                await navigator.clipboard.writeText((shareLink as any).publicUrl);
                 setCopied(true);
                 setTimeout(() => setCopied(false), 2000);
             } catch (err) {
@@ -141,7 +141,7 @@ export const SharePage: React.FC = () => {
 
                             <div className="flex gap-2">
                                 <Input
-                                    value={shareLink.publicUrl}
+                                    value={shareLink && 'publicUrl' in shareLink ? (shareLink as any).publicUrl : ''}
                                     readOnly
                                     className="flex-1"
                                 />
@@ -187,7 +187,7 @@ export const SharePage: React.FC = () => {
                                             </span>
                                         </div>
                                         <p className="text-3xl font-bold text-blue-600">
-                                            {analytics.totalViews || 0}
+                                            {analytics.viewCount || 0}
                                         </p>
                                     </div>
 
@@ -200,7 +200,7 @@ export const SharePage: React.FC = () => {
                                             </span>
                                         </div>
                                         <p className="text-3xl font-bold text-green-600">
-                                            {analytics.uniqueVisitors || 0}
+                                            {analytics.viewCount || 0}
                                         </p>
                                     </div>
 
@@ -221,22 +221,22 @@ export const SharePage: React.FC = () => {
                                 </div>
 
                                 {/* Recent Views */}
-                                {analytics.recentViews && analytics.recentViews.length > 0 && (
+                                {analytics.viewsByDate && analytics.viewsByDate.length > 0 && (
                                     <div className="mt-6">
                                         <h3 className="text-sm font-semibold text-gray-900 mb-3">
-                                            Recent Views
+                                            Views by Date
                                         </h3>
                                         <div className="space-y-2">
-                                            {analytics.recentViews.map((view, index) => (
+                                            {analytics.viewsByDate.map((view, index) => (
                                                 <div
                                                     key={index}
                                                     className="flex items-center justify-between py-2 px-3 bg-gray-50 rounded"
                                                 >
                                                     <span className="text-sm text-gray-600">
-                                                        {new Date(view.viewedAt).toLocaleString()}
+                                                        {new Date(view.date).toLocaleDateString()}
                                                     </span>
                                                     <span className="text-xs text-gray-500">
-                                                        {view.location || 'Unknown location'}
+                                                        {view.count} views
                                                     </span>
                                                 </div>
                                             ))}

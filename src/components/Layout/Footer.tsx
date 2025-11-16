@@ -10,15 +10,15 @@ const Footer: React.FC = () => {
   const [showATSModal, setShowATSModal] = useState(false);
 
   // Mock auto-save result for status indicator
-  const mockAutoSaveResult = {
-    saveStatus: "saved" as const,
-    lastSaved: new Date().toISOString(),
-    error: undefined,
-    saveNow: async () => { },
-    clearSaved: async () => { },
-    restoreData: async () => null,
-    isRestored: false,
-  };
+  // const mockAutoSaveResult = {
+  //   saveStatus: "saved" as const,
+  //   lastSaved: new Date().toISOString(),
+  //   error: undefined,
+  //   saveNow: async () => { },
+  //   clearSaved: async () => { },
+  //   restoreData: async () => null,
+  //   isRestored: false,
+  // };
 
   const getScoreColor = (score: number) => {
     if (score >= 90) return "text-green-600";

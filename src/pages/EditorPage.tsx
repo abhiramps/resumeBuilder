@@ -240,9 +240,9 @@ export const EditorPage: React.FC = () => {
             {showTemplateSelector && (
                 <div className="bg-white border-b border-gray-200 px-4 py-4">
                     <TemplateSelector
-                        currentTemplate={resume.templateId || 'modern'}
-                        onTemplateChange={(templateId) => {
-                            dispatch({ type: 'UPDATE_LAYOUT', payload: { templateId } });
+                        currentTemplate={resume.template || 'modern'}
+                        onTemplateChange={(template) => {
+                            dispatch({ type: 'SET_TEMPLATE', payload: template });
                         }}
                     />
                 </div>
@@ -285,7 +285,11 @@ export const EditorPage: React.FC = () => {
                 <ExportModal
                     isOpen={showExportModal}
                     onClose={() => setShowExportModal(false)}
-                    resume={resume}
+                    onExport={(options) => {
+                        console.log('Export with options:', options);
+                        // TODO: Implement export functionality
+                    }}
+                    defaultFileName={`resume-${resume.personalInfo.fullName || 'untitled'}`}
                 />
             )}
         </div>

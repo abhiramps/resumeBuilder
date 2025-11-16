@@ -131,7 +131,7 @@ export const DashboardPage: React.FC = () => {
         }
     };
 
-    const handleImportSuccess = (resume: ResumeResponse) => {
+    const handleImportSuccess = (_resume: ResumeResponse) => {
         loadResumes();
         setShowImportExportModal(false);
     };

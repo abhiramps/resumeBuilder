@@ -13,8 +13,7 @@ import {
     FileText,
     File,
     CheckCircle,
-    AlertCircle,
-    Copy
+    AlertCircle
 } from 'lucide-react';
 import { useImportExport } from '../../hooks/useImportExport';
 import type { ResumeResponse } from '../../types/api.types';
@@ -177,8 +176,8 @@ export const ImportExportModal: React.FC<ImportExportModalProps> = ({
                         <button
                             onClick={() => setActiveTab('export')}
                             className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors ${activeTab === 'export'
-                                    ? 'border-blue-600 text-blue-600'
-                                    : 'border-transparent text-gray-600 hover:text-gray-900'
+                                ? 'border-blue-600 text-blue-600'
+                                : 'border-transparent text-gray-600 hover:text-gray-900'
                                 }`}
                         >
                             <Download className="w-4 h-4 inline mr-2" />
@@ -187,8 +186,8 @@ export const ImportExportModal: React.FC<ImportExportModalProps> = ({
                         <button
                             onClick={() => setActiveTab('import')}
                             className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors ${activeTab === 'import'
-                                    ? 'border-blue-600 text-blue-600'
-                                    : 'border-transparent text-gray-600 hover:text-gray-900'
+                                ? 'border-blue-600 text-blue-600'
+                                : 'border-transparent text-gray-600 hover:text-gray-900'
                                 }`}
                         >
                             <Upload className="w-4 h-4 inline mr-2" />
@@ -230,8 +229,8 @@ export const ImportExportModal: React.FC<ImportExportModalProps> = ({
                                                 key={option.value}
                                                 onClick={() => setSelectedFormat(option.value)}
                                                 className={`flex items-start gap-4 p-4 border-2 rounded-lg transition-all ${selectedFormat === option.value
-                                                        ? 'border-blue-600 bg-blue-50'
-                                                        : 'border-gray-200 hover:border-gray-300'
+                                                    ? 'border-blue-600 bg-blue-50'
+                                                    : 'border-gray-200 hover:border-gray-300'
                                                     }`}
                                             >
                                                 <Icon className={`w-6 h-6 flex-shrink-0 ${selectedFormat === option.value ? 'text-blue-600' : 'text-gray-400'

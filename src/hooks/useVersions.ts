@@ -131,7 +131,7 @@ export const useVersionsManagement = (resumeId: string) => {
         setIsLoading(true);
         setError(null);
         try {
-            await versionService.create(resumeId, { name });
+            await versionService.create(resumeId, { versionName: name });
             await refetch();
         } catch (err: any) {
             setError(err.message || 'Failed to create version');
