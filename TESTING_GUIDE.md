@@ -5,7 +5,7 @@
 ### Prerequisites
 - Node.js 18+ installed
 - Backend server running on port 3001
-- Frontend dev server on port 5173
+- Frontend dev server on port 3000
 
 ### 1. Start Backend (Terminal 1)
 ```bash
@@ -28,7 +28,7 @@ Expected output:
 ```
 VITE v7.x.x  ready in xxx ms
 
-➜  Local:   http://localhost:5173/
+➜  Local:   http://localhost:3000/
 ```
 
 ## Testing Checklist
@@ -36,7 +36,7 @@ VITE v7.x.x  ready in xxx ms
 ### Authentication Flow
 
 #### Signup
-1. Navigate to `http://localhost:5173`
+1. Navigate to `http://localhost:3000`
 2. Click "create a new account"
 3. Fill in:
    - Full Name: "Test User"
@@ -94,12 +94,12 @@ VITE v7.x.x  ready in xxx ms
 
 ### Protected Routes
 1. Sign out
-2. Try to access `http://localhost:5173/dashboard`
+2. Try to access `http://localhost:3000/dashboard`
 3. ✅ Should redirect to `/login`
 
 ### Public Routes
 1. Sign in
-2. Try to access `http://localhost:5173/login`
+2. Try to access `http://localhost:3000/login`
 3. ✅ Should redirect to `/dashboard`
 
 ## Expected Behavior
@@ -128,16 +128,16 @@ VITE v7.x.x  ready in xxx ms
 **Solution**: Start backend server on port 3001
 
 ### Port Already in Use
-**Symptom**: "Port 5173 is already in use"
+**Symptom**: "Port 3000 is already in use"
 **Solution**: 
 ```bash
-# Kill process on port 5173
-lsof -ti:5173 | xargs kill -9
+# Kill process on port 3000
+lsof -ti:3000 | xargs kill -9
 ```
 
 ### CORS Errors
 **Symptom**: "CORS policy" errors in console
-**Solution**: Check backend CORS configuration allows `http://localhost:5173`
+**Solution**: Check backend CORS configuration allows `http://localhost:3000`
 
 ### Authentication Not Persisting
 **Symptom**: Logged out after refresh

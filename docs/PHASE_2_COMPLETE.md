@@ -109,7 +109,7 @@ npm run dev
 ```
 
 ### 3. Test Authentication Flow
-1. Navigate to `http://localhost:5173`
+1. Navigate to `http://localhost:3000`
 2. You'll be redirected to `/login`
 3. Try signing up with a new account
 4. After signup, you'll be redirected to `/dashboard`
