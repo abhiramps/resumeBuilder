@@ -8,8 +8,8 @@ import { QueryClient } from '@tanstack/react-query';
 export const queryClient = new QueryClient({
     defaultOptions: {
         queries: {
-            // Stale time: 5 minutes
-            staleTime: 5 * 60 * 1000,
+            // Stale time: 2 minutes (reduced for fresher data)
+            staleTime: 2 * 60 * 1000,
 
             // Cache time: 10 minutes
             gcTime: 10 * 60 * 1000,
@@ -22,10 +22,19 @@ export const queryClient = new QueryClient({
 
             // Refetch on reconnect
             refetchOnReconnect: true,
+
+            // Network mode for better offline handling
+            networkMode: 'online',
+
+            // Placeholders while loading
+            placeholderData: (previousData) => previousData,
         },
         mutations: {
             // Retry failed mutations
             retry: 0,
+
+            // Network mode for mutations
+            networkMode: 'online',
         },
     },
 });

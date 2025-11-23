@@ -18,5 +18,15 @@ export default defineConfig({
   build: {
     outDir: "dist",
     sourcemap: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'tanstack-query': ['@tanstack/react-query'],
+          'ui-libs': ['lucide-react', '@dnd-kit/core', '@dnd-kit/sortable'],
+        },
+      },
+    },
+    chunkSizeWarningLimit: 1000,
   },
 });

@@ -10,6 +10,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { Button } from '../components/UI/Button';
 import { Input } from '../components/UI/Input';
 import { ImportExportModal } from '../components/UI/ImportExportModal';
+import { SkeletonCardGrid } from '../components/UI/SkeletonCard';
 import { Plus, Search, FileText, Copy, Trash2, Share2, MoreVertical, Download, Upload, CheckSquare } from 'lucide-react';
 import type { ResumeResponse } from '../types/api.types';
 
@@ -255,14 +256,9 @@ export const DashboardPage: React.FC = () => {
                     </div>
                 )}
 
-                {/* Loading State */}
+                {/* Loading State with Skeleton */}
                 {isLoading && (
-                    <div className="flex items-center justify-center py-12">
-                        <div className="text-center">
-                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-                            <p className="mt-4 text-gray-600">Loading resumes...</p>
-                        </div>
-                    </div>
+                    <SkeletonCardGrid count={6} />
                 )}
 
                 {/* Empty State */}
