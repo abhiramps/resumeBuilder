@@ -27,7 +27,7 @@ export const queryClient = new QueryClient({
             networkMode: 'online',
 
             // Placeholders while loading
-            placeholderData: (previousData) => previousData,
+            placeholderData: (previousData: unknown) => previousData,
         },
         mutations: {
             // Retry failed mutations
