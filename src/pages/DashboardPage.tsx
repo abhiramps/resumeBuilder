@@ -35,9 +35,18 @@ export const DashboardPage: React.FC = () => {
     const [bulkSelectMode, setBulkSelectMode] = useState(false);
     const [selectedResumes, setSelectedResumes] = useState<Set<string>>(new Set());
 
+    // Load resumes on mount - only once
     useEffect(() => {
+        const loadResumes = async () => {
+            try {
+                await listResumes({ search: searchQuery || undefined });
+            } catch (err) {
+                console.error('Failed to load resumes:', err);
+            }
+        };
+
         loadResumes();
-    }, []);
+    }, []); // Empty dependency array - only run once on mount
 
     const loadResumes = async () => {
         try {

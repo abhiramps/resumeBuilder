@@ -3,7 +3,7 @@
  * Main editor with three-panel layout: editor, preview, and controls
  */
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useResumeBackend } from '../contexts/ResumeBackendContext';
 import { useResumeContext } from '../contexts/ResumeContext';
@@ -17,7 +17,7 @@ import { TemplateSelector } from '../components/UI/TemplateSelector';
 
 import { usePDFExportContext } from '../contexts/PDFExportContext';
 import { useReactToPrint } from 'react-to-print';
-import { ArrowLeft, Download, Share2, History, Eye, EyeOff, Settings } from 'lucide-react';
+import { ArrowLeft, Download, Share2, History, Eye, EyeOff, Settings, Save } from 'lucide-react';
 
 const EditorPageContent: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -32,19 +32,20 @@ const EditorPageContent: React.FC = () => {
 
     // Track if we've loaded the resume from backend
     const hasLoadedRef = useRef(false);
-    const lastSavedRef = useRef<string>('');
+    const hasSyncedRef = useRef(false);
 
-    // Load resume on mount
+    // Load resume on mount - only once
     useEffect(() => {
         if (id && !hasLoadedRef.current) {
+            hasLoadedRef.current = true;
             loadResume(id);
         }
-    }, [id, loadResume]);
+    }, [id]);
 
-    // Sync backend resume to local context (only once)
+    // Sync backend resume to local context (only once when data is loaded)
     useEffect(() => {
-        if (currentResume && !hasLoadedRef.current) {
-            hasLoadedRef.current = true;
+        if (currentResume && currentResume.id === id && !hasSyncedRef.current) {
+            hasSyncedRef.current = true;
 
             // Update local context with backend data
             if (currentResume.content) {
@@ -102,48 +103,32 @@ const EditorPageContent: React.FC = () => {
                 });
             }
         }
-    }, [currentResume]);
+    }, [currentResume?.id]);
 
-    // Auto-save: sync local changes to backend (debounced)
-    useEffect(() => {
-        if (!hasLoadedRef.current || !currentResume) return;
+    // Manual save function
+    const handleSave = useCallback(async () => {
+        if (!currentResume) return;
 
-        // Create a string representation of the resume for comparison
-        const resumeString = JSON.stringify({
-            personalInfo: resume.personalInfo,
-            sections: resume.sections,
-            layout: resume.layout,
+        // Extract content from sections
+        const summarySection = resume.sections.find(s => s.type === 'summary');
+        const experienceSection = resume.sections.find(s => s.type === 'experience');
+        const educationSection = resume.sections.find(s => s.type === 'education');
+        const skillsSection = resume.sections.find(s => s.type === 'skills');
+        const projectsSection = resume.sections.find(s => s.type === 'projects');
+        const certificationsSection = resume.sections.find(s => s.type === 'certifications');
+
+        updateResume({
+            content: {
+                personalInfo: resume.personalInfo,
+                summary: (summarySection?.content as any)?.summary || '',
+                experience: (experienceSection?.content as any)?.experiences || [],
+                education: (educationSection?.content as any)?.education || [],
+                skills: (skillsSection?.content as any)?.skills || [],
+                projects: (projectsSection?.content as any)?.projects || [],
+                certifications: (certificationsSection?.content as any)?.certifications || [],
+            },
         });
-
-        // Skip if nothing changed
-        if (resumeString === lastSavedRef.current) return;
-
-        const timeoutId = setTimeout(() => {
-            lastSavedRef.current = resumeString;
-
-            // Extract content from sections
-            const summarySection = resume.sections.find(s => s.type === 'summary');
-            const experienceSection = resume.sections.find(s => s.type === 'experience');
-            const educationSection = resume.sections.find(s => s.type === 'education');
-            const skillsSection = resume.sections.find(s => s.type === 'skills');
-            const projectsSection = resume.sections.find(s => s.type === 'projects');
-            const certificationsSection = resume.sections.find(s => s.type === 'certifications');
-
-            updateResume({
-                content: {
-                    personalInfo: resume.personalInfo,
-                    summary: (summarySection?.content as any)?.summary || '',
-                    experience: (experienceSection?.content as any)?.experiences || [],
-                    education: (educationSection?.content as any)?.education || [],
-                    skills: (skillsSection?.content as any)?.skills || [],
-                    projects: (projectsSection?.content as any)?.projects || [],
-                    certifications: (certificationsSection?.content as any)?.certifications || [],
-                },
-            });
-        }, 2000); // Debounce by 2 seconds
-
-        return () => clearTimeout(timeoutId);
-    }, [resume.personalInfo, resume.sections, resume.layout]);
+    }, [resume, currentResume, updateResume]);
 
     const handleBack = () => {
         navigate('/dashboard');
@@ -295,9 +280,28 @@ const EditorPageContent: React.FC = () => {
                         Share
                     </Button>
 
-                    {/* Export PDF */}
+                    {/* Save Button */}
                     <Button
                         variant="primary"
+                        onClick={handleSave}
+                        disabled={isSaving}
+                    >
+                        {isSaving ? (
+                            <>
+                                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                                Saving...
+                            </>
+                        ) : (
+                            <>
+                                <Save className="w-5 h-5 mr-2" />
+                                Save
+                            </>
+                        )}
+                    </Button>
+
+                    {/* Export PDF */}
+                    <Button
+                        variant="secondary"
                         onClick={handleExportClick}
                         disabled={isExporting}
                     >
