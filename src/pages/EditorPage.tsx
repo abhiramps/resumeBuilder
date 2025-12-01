@@ -118,8 +118,10 @@ const EditorPageContent: React.FC = () => {
                     payload: {
                         ...resume,
                         id: currentResume.id,
+                        template: currentResume.templateId || resume.template,
                         personalInfo: currentResume.content.personalInfo || resume.personalInfo,
                         sections: updatedSections,
+                        layout: currentResume.content.layout || resume.layout,
                         createdAt: currentResume.createdAt,
                         updatedAt: currentResume.updatedAt,
                     }
@@ -158,6 +160,7 @@ const EditorPageContent: React.FC = () => {
 
         updateResume({
             title: editedTitle || currentResume.title,
+            templateId: resume.template || 'modern',
             content: {
                 personalInfo: resume.personalInfo,
                 summary: (summarySection?.content as any)?.summary || '',
@@ -167,6 +170,7 @@ const EditorPageContent: React.FC = () => {
                 projects: (projectsSection?.content as any)?.projects || [],
                 certifications: (certificationsSection?.content as any)?.certifications || [],
                 sectionOrder,
+                layout: resume.layout,
             },
         });
     }, [resume, currentResume, updateResume, editedTitle]);
