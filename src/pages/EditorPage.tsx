@@ -120,6 +120,7 @@ const EditorPageContent: React.FC = () => {
                         id: currentResume.id,
                         personalInfo: currentResume.content.personalInfo || resume.personalInfo,
                         sections: updatedSections,
+                        layout: currentResume.content.layout || resume.layout,
                         createdAt: currentResume.createdAt,
                         updatedAt: currentResume.updatedAt,
                     }
@@ -167,6 +168,7 @@ const EditorPageContent: React.FC = () => {
                 projects: (projectsSection?.content as any)?.projects || [],
                 certifications: (certificationsSection?.content as any)?.certifications || [],
                 sectionOrder,
+                layout: resume.layout,
             },
         });
     }, [resume, currentResume, updateResume, editedTitle]);

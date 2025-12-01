@@ -152,6 +152,7 @@ export interface ResumeContent {
     languages?: LanguageItem[];
     customSections?: CustomSectionItem[];
     sectionOrder?: SectionMetadata[];
+    layout?: ResumeLayout;
 }
 
 export interface SectionMetadata {
@@ -160,6 +161,29 @@ export interface SectionMetadata {
     title: string;
     enabled: boolean;
     order: number;
+}
+
+export interface ResumeLayout {
+    pageMargins: {
+        top: number;
+        right: number;
+        bottom: number;
+        left: number;
+    };
+    sectionSpacing: number;
+    lineHeight: number;
+    fontSize: {
+        name: number;
+        title: number;
+        sectionHeader: number;
+        body: number;
+    };
+    fontFamily: string;
+    colors: {
+        primary: string;
+        secondary: string;
+        text: string;
+    };
 }
 
 export interface PersonalInfo {
