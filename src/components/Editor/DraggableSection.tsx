@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { GripVertical, Eye, EyeOff, Trash2 } from 'lucide-react';
+import { GripVertical, Eye, EyeOff, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
 import { ResumeSection } from '../../types/resume.types';
 
 interface DraggableSectionProps {
@@ -18,6 +18,8 @@ export const DraggableSection: React.FC<DraggableSectionProps> = ({
     onToggle,
     onDelete,
 }) => {
+    const [isCollapsed, setIsCollapsed] = useState(false);
+
     const {
         attributes,
         listeners,
@@ -52,8 +54,18 @@ export const DraggableSection: React.FC<DraggableSectionProps> = ({
                     <GripVertical className="w-5 h-5 text-gray-400" />
                 </button>
 
-                {/* Section Title */}
-                <h3 className="flex-1 font-semibold text-gray-900">{section.title}</h3>
+                {/* Section Title - Clickable to collapse/expand */}
+                <button
+                    onClick={() => setIsCollapsed(!isCollapsed)}
+                    className="flex-1 text-left font-semibold text-gray-900 hover:text-blue-600 transition-colors flex items-center gap-2"
+                >
+                    {section.title}
+                    {isCollapsed ? (
+                        <ChevronDown className="w-4 h-4 text-gray-500" />
+                    ) : (
+                        <ChevronUp className="w-4 h-4 text-gray-500" />
+                    )}
+                </button>
 
                 {/* Action Buttons */}
                 <div className="flex items-center gap-1">
@@ -81,10 +93,12 @@ export const DraggableSection: React.FC<DraggableSectionProps> = ({
                 </div>
             </div>
 
-            {/* Section Content */}
-            <div className={`p-4 ${!section.enabled ? 'opacity-50' : ''}`}>
-                {children}
-            </div>
+            {/* Section Content - Collapsible */}
+            {!isCollapsed && (
+                <div className={`p-4 ${!section.enabled ? 'opacity-50' : ''}`}>
+                    {children}
+                </div>
+            )}
         </div>
     );
 };

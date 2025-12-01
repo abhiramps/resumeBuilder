@@ -52,7 +52,7 @@ const EditorPageContent: React.FC = () => {
             // Update local context with backend data
             if (currentResume.content) {
                 // Reconstruct sections from backend data
-                const updatedSections = resume.sections.map(section => {
+                let updatedSections = resume.sections.map(section => {
                     if (section.type === 'summary' && currentResume.content.summary) {
                         return {
                             ...section,
@@ -92,6 +92,27 @@ const EditorPageContent: React.FC = () => {
                     return section;
                 });
 
+                // Restore section order and metadata if saved
+                if (currentResume.content.sectionOrder && currentResume.content.sectionOrder.length > 0) {
+                    updatedSections = updatedSections.map(section => {
+                        const savedMetadata = currentResume.content.sectionOrder?.find(
+                            s => s.type === section.type
+                        );
+                        if (savedMetadata) {
+                            return {
+                                ...section,
+                                id: savedMetadata.id,
+                                title: savedMetadata.title,
+                                enabled: savedMetadata.enabled,
+                                order: savedMetadata.order,
+                            };
+                        }
+                        return section;
+                    });
+                    // Sort by saved order
+                    updatedSections.sort((a, b) => a.order - b.order);
+                }
+
                 dispatch({
                     type: 'SET_RESUME',
                     payload: {
@@ -126,6 +147,15 @@ const EditorPageContent: React.FC = () => {
         const projectsSection = resume.sections.find(s => s.type === 'projects');
         const certificationsSection = resume.sections.find(s => s.type === 'certifications');
 
+        // Save section metadata (order, enabled status, etc.)
+        const sectionOrder = resume.sections.map(section => ({
+            id: section.id,
+            type: section.type,
+            title: section.title,
+            enabled: section.enabled,
+            order: section.order,
+        }));
+
         updateResume({
             title: editedTitle || currentResume.title,
             content: {
@@ -136,6 +166,7 @@ const EditorPageContent: React.FC = () => {
                 skills: (skillsSection?.content as any)?.skills || [],
                 projects: (projectsSection?.content as any)?.projects || [],
                 certifications: (certificationsSection?.content as any)?.certifications || [],
+                sectionOrder,
             },
         });
     }, [resume, currentResume, updateResume, editedTitle]);

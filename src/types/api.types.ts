@@ -151,6 +151,15 @@ export interface ResumeContent {
     projects?: ProjectItem[];
     languages?: LanguageItem[];
     customSections?: CustomSectionItem[];
+    sectionOrder?: SectionMetadata[];
+}
+
+export interface SectionMetadata {
+    id: string;
+    type: string;
+    title: string;
+    enabled: boolean;
+    order: number;
 }
 
 export interface PersonalInfo {

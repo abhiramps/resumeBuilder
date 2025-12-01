@@ -14,6 +14,7 @@ import { ResumeSection } from '../../types/resume.types';
 
 export const EditorSidebar: React.FC = () => {
     const { resume, dispatch, atsValidation } = useResumeContext();
+    const [isPersonalInfoCollapsed, setIsPersonalInfoCollapsed] = React.useState(false);
 
     const handleReorderSections = (sectionIds: string[]) => {
         dispatch({ type: 'REORDER_SECTIONS', payload: sectionIds });
@@ -57,12 +58,26 @@ export const EditorSidebar: React.FC = () => {
 
             {/* Personal Information - Not draggable, always at top */}
             <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
-                <div className="px-4 py-3 bg-gray-50 border-b border-gray-200">
+                <button
+                    onClick={() => setIsPersonalInfoCollapsed(!isPersonalInfoCollapsed)}
+                    className="w-full px-4 py-3 bg-gray-50 border-b border-gray-200 flex items-center justify-between hover:bg-gray-100 transition-colors"
+                >
                     <h3 className="font-semibold text-gray-900">Personal Information</h3>
-                </div>
-                <div className="p-4">
-                    <PersonalInfoEditor />
-                </div>
+                    {isPersonalInfoCollapsed ? (
+                        <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                    ) : (
+                        <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                        </svg>
+                    )}
+                </button>
+                {!isPersonalInfoCollapsed && (
+                    <div className="p-4">
+                        <PersonalInfoEditor />
+                    </div>
+                )}
             </div>
 
             {/* Sortable Sections */}
