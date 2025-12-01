@@ -29,6 +29,8 @@ const EditorPageContent: React.FC = () => {
     const [showRightSidebar, setShowRightSidebar] = useState(true);
     const [showTemplateSelector, setShowTemplateSelector] = useState(false);
     const [isExporting, setIsExporting] = useState(false);
+    const [isEditingTitle, setIsEditingTitle] = useState(false);
+    const [editedTitle, setEditedTitle] = useState('');
 
     // Track if we've loaded the resume from backend
     const hasLoadedRef = useRef(false);
@@ -105,6 +107,13 @@ const EditorPageContent: React.FC = () => {
         }
     }, [currentResume?.id]);
 
+    // Initialize edited title when currentResume changes
+    useEffect(() => {
+        if (currentResume) {
+            setEditedTitle(currentResume.title);
+        }
+    }, [currentResume?.id]);
+
     // Manual save function
     const handleSave = useCallback(async () => {
         if (!currentResume) return;
@@ -118,6 +127,7 @@ const EditorPageContent: React.FC = () => {
         const certificationsSection = resume.sections.find(s => s.type === 'certifications');
 
         updateResume({
+            title: editedTitle || currentResume.title,
             content: {
                 personalInfo: resume.personalInfo,
                 summary: (summarySection?.content as any)?.summary || '',
@@ -128,7 +138,34 @@ const EditorPageContent: React.FC = () => {
                 certifications: (certificationsSection?.content as any)?.certifications || [],
             },
         });
-    }, [resume, currentResume, updateResume]);
+    }, [resume, currentResume, updateResume, editedTitle]);
+
+    const handleTitleClick = () => {
+        setIsEditingTitle(true);
+    };
+
+    const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setEditedTitle(e.target.value);
+    };
+
+    const handleTitleBlur = () => {
+        setIsEditingTitle(false);
+        if (editedTitle.trim() === '') {
+            setEditedTitle(currentResume?.title || 'Untitled Resume');
+        }
+    };
+
+    const handleTitleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+            setIsEditingTitle(false);
+            if (editedTitle.trim() === '') {
+                setEditedTitle(currentResume?.title || 'Untitled Resume');
+            }
+        } else if (e.key === 'Escape') {
+            setEditedTitle(currentResume?.title || 'Untitled Resume');
+            setIsEditingTitle(false);
+        }
+    };
 
     const handleBack = () => {
         navigate('/dashboard');
@@ -233,9 +270,26 @@ const EditorPageContent: React.FC = () => {
                         <ArrowLeft className="w-5 h-5" />
                     </Button>
                     <div>
-                        <h1 className="text-lg font-semibold text-gray-900">
-                            {currentResume.title}
-                        </h1>
+                        {isEditingTitle ? (
+                            <input
+                                type="text"
+                                value={editedTitle}
+                                onChange={handleTitleChange}
+                                onBlur={handleTitleBlur}
+                                onKeyDown={handleTitleKeyDown}
+                                autoFocus
+                                className="text-lg font-semibold text-gray-900 border-b-2 border-blue-600 focus:outline-none bg-transparent px-1"
+                                style={{ minWidth: '200px' }}
+                            />
+                        ) : (
+                            <h1
+                                className="text-lg font-semibold text-gray-900 cursor-pointer hover:text-blue-600 transition-colors"
+                                onClick={handleTitleClick}
+                                title="Click to edit title"
+                            >
+                                {editedTitle || currentResume.title}
+                            </h1>
+                        )}
                         <SaveStatusIndicator isSaving={isSaving} />
                     </div>
                 </div>
