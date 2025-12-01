@@ -3,9 +3,8 @@
  * Manages resume state with backend synchronization and auto-save
  */
 
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback } from 'react';
 import { resumeService } from '../services/resume.service';
-import { useDebounce } from '../hooks/useDebounce';
 import type {
     ResumeResponse,
     CreateResumeRequest,
@@ -44,40 +43,6 @@ export const ResumeBackendProvider: React.FC<{ children: React.ReactNode }> = ({
     const [isLoading, setIsLoading] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [pendingUpdate, setPendingUpdate] = useState<UpdateResumeRequest | null>(null);
-
-    // Debounce auto-save (2 seconds)
-    const debouncedUpdate = useDebounce(pendingUpdate, 2000);
-
-    /**
-     * Auto-save effect - saves when debounced update changes
-     */
-    useEffect(() => {
-        if (debouncedUpdate && currentResume) {
-            saveResume(debouncedUpdate);
-        }
-    }, [debouncedUpdate, currentResume]);
-
-    /**
-     * Save resume to backend
-     */
-    const saveResume = async (data: UpdateResumeRequest) => {
-        if (!currentResume) return;
-
-        setIsSaving(true);
-        try {
-            const updated = await resumeService.updateResume(currentResume.id, data);
-            setCurrentResume(updated);
-            setPendingUpdate(null);
-            setError(null);
-        } catch (err: any) {
-            const errorMessage = err.response?.data?.error?.message || 'Auto-save failed';
-            setError(errorMessage);
-            console.error('Auto-save failed:', err);
-        } finally {
-            setIsSaving(false);
-        }
-    };
 
     /**
      * Load a resume by ID
@@ -98,20 +63,24 @@ export const ResumeBackendProvider: React.FC<{ children: React.ReactNode }> = ({
     }, []);
 
     /**
-     * Update resume (optimistic update + auto-save)
+     * Update resume (manual save)
      */
-    const updateResume = useCallback((data: UpdateResumeRequest) => {
+    const updateResume = useCallback(async (data: UpdateResumeRequest) => {
         if (!currentResume) return;
 
-        // Optimistic update
-        setCurrentResume({
-            ...currentResume,
-            ...data,
-            updatedAt: new Date().toISOString(),
-        });
-
-        // Queue for auto-save
-        setPendingUpdate(data);
+        setIsSaving(true);
+        setError(null);
+        try {
+            const updated = await resumeService.updateResume(currentResume.id, data);
+            setCurrentResume(updated);
+        } catch (err: any) {
+            const errorMessage = err.response?.data?.error?.message || 'Failed to save resume';
+            setError(errorMessage);
+            console.error('Save failed:', err);
+            throw new Error(errorMessage);
+        } finally {
+            setIsSaving(false);
+        }
     }, [currentResume]);
 
     /**
@@ -205,13 +174,11 @@ export const ResumeBackendProvider: React.FC<{ children: React.ReactNode }> = ({
     }, []);
 
     /**
-     * Force sync - immediately save pending changes
+     * Force sync - no longer needed with manual save
      */
     const forceSync = useCallback(async () => {
-        if (pendingUpdate && currentResume) {
-            await saveResume(pendingUpdate);
-        }
-    }, [pendingUpdate, currentResume]);
+        // No-op - manual save only
+    }, []);
 
     const value: ResumeBackendContextType = {
         currentResume,
