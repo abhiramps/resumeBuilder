@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Input, Button } from "../UI";
 import { useResumeContext } from "../../contexts/ResumeContext";
+import { useResumeBackend } from "../../contexts/ResumeBackendContext";
 import { PersonalInfo } from "../../types/resume.types";
+import type { UpdateResumeRequest } from "../../types/api.types";
 
 /**
  * Custom link interface for additional URLs
@@ -48,12 +50,20 @@ export const PersonalInfoEditor: React.FC<PersonalInfoEditorProps> = ({
   className = "",
 }) => {
   const { resume, dispatch } = useResumeContext();
+  const {
+    currentResume,
+    updateResume,
+    isSaving: backendIsSaving,
+  } = useResumeBackend();
   const [personalInfo, setPersonalInfo] = useState<PersonalInfo>(
     resume.personalInfo
   );
   const [customLinks, setCustomLinks] = useState<CustomLink[]>([]);
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [saveSuccess, setSaveSuccess] = useState(false);
 
   // Update local state when context changes
   useEffect(() => {
@@ -309,20 +319,102 @@ export const PersonalInfoEditor: React.FC<PersonalInfoEditorProps> = ({
   };
 
   /**
+   * Check if there are critical errors (required fields only)
+   * This determines if the save button should be disabled
+   */
+  const hasCriticalErrors = (): boolean => {
+    // Only check required fields: fullName, title, email, phone, location
+    if (!personalInfo.fullName.trim()) return true;
+    if (!personalInfo.title.trim()) return true;
+    if (!personalInfo.location.trim()) return true;
+
+    // Check for validation errors on required fields
+    if (
+      errors.fullName ||
+      errors.title ||
+      errors.email ||
+      errors.phone ||
+      errors.location
+    ) {
+      return true;
+    }
+
+    return false;
+  };
+
+  /**
    * Handle form submission
    */
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const validationErrors = validateForm();
 
-    if (Object.keys(validationErrors).length === 0) {
-      // Form is valid, update context
-      dispatch({
-        type: "UPDATE_PERSONAL_INFO",
-        payload: personalInfo,
-      });
-    } else {
+    if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
+      return;
+    }
+
+    // Form is valid, update local context first
+    dispatch({
+      type: "UPDATE_PERSONAL_INFO",
+      payload: personalInfo,
+    });
+
+    // Save to backend if we have a current resume
+    if (!currentResume) {
+      console.warn("No current resume to save");
+      return;
+    }
+
+    setIsSaving(true);
+    setSaveError(null);
+    setSaveSuccess(false);
+
+    try {
+      // Transform resume data to UpdateResumeRequest format
+      // Preserve all existing content and only update personalInfo
+      const updateData: UpdateResumeRequest = {
+        content: {
+          personalInfo: {
+            fullName: personalInfo.fullName,
+            title: personalInfo.title,
+            email: personalInfo.email,
+            phone: personalInfo.phone,
+            location: personalInfo.location,
+            linkedin: personalInfo.linkedin,
+            github: personalInfo.github,
+            portfolio: personalInfo.portfolio,
+            website: personalInfo.website,
+          },
+          // Preserve all other content from current resume
+          ...(currentResume.content && {
+            summary: currentResume.content.summary,
+            experience: currentResume.content.experience,
+            education: currentResume.content.education,
+            skills: currentResume.content.skills,
+            certifications: currentResume.content.certifications,
+            projects: currentResume.content.projects,
+            languages: currentResume.content.languages,
+            customSections: currentResume.content.customSections,
+            sectionOrder: currentResume.content.sectionOrder,
+            layout: currentResume.content.layout || resume.layout,
+          }),
+        },
+      };
+
+      await updateResume(updateData);
+      setSaveSuccess(true);
+
+      // Clear success message after 3 seconds
+      setTimeout(() => {
+        setSaveSuccess(false);
+      }, 3000);
+    } catch (err: any) {
+      const errorMessage = err.message || "Failed to save changes";
+      setSaveError(errorMessage);
+      console.error("Save failed:", err);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -331,8 +423,9 @@ export const PersonalInfoEditor: React.FC<PersonalInfoEditorProps> = ({
    */
   const CollapseIcon = () => (
     <svg
-      className={`w-5 h-5 transition-transform duration-200 ${isCollapsed ? "rotate-180" : ""
-        }`}
+      className={`w-5 h-5 transition-transform duration-200 ${
+        isCollapsed ? "rotate-180" : ""
+      }`}
       fill="none"
       stroke="currentColor"
       viewBox="0 0 24 24"
@@ -569,14 +662,28 @@ export const PersonalInfoEditor: React.FC<PersonalInfoEditorProps> = ({
             )}
           </div>
 
+          {/* Save Status Messages */}
+          {saveError && (
+            <div className="rounded-md bg-red-50 p-3 border border-red-200">
+              <p className="text-sm text-red-800">{saveError}</p>
+            </div>
+          )}
+          {saveSuccess && (
+            <div className="rounded-md bg-green-50 p-3 border border-green-200">
+              <p className="text-sm text-green-800">
+                Changes saved successfully!
+              </p>
+            </div>
+          )}
+
           {/* Form Actions */}
           <div className="flex justify-end pt-4 border-t border-gray-200">
             <Button
               type="submit"
               variant="primary"
-              disabled={Object.keys(errors).length > 0}
+              disabled={hasCriticalErrors() || isSaving || backendIsSaving}
             >
-              Save Changes
+              {isSaving || backendIsSaving ? "Saving..." : "Save Changes"}
             </Button>
           </div>
         </form>
