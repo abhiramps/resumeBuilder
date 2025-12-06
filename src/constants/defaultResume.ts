@@ -299,7 +299,7 @@ export const createDefaultResume = (): Resume => {
     personalInfo: defaultPersonalInfo,
     sections: defaultSections,
     layout: defaultLayout,
-    template: "abhiram",
+    template: "professional",
     createdAt: now,
     updatedAt: now,
   };
@@ -314,7 +314,7 @@ export const createEmptyResume = (): Resume => {
     personalInfo: defaultPersonalInfo,
     sections: [],
     layout: defaultLayout,
-    template: "abhiram",
+    template: "professional",
     createdAt: now,
     updatedAt: now,
   };

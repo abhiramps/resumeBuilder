@@ -691,7 +691,7 @@ export const getTemplateATSScore = (templateType: TemplateType): number => {
     classic: 95,
     modern: 92,
     minimal: 100,
-    abhiram: 95,
+    professional: 95,
   };
 
   return scores[templateType];
