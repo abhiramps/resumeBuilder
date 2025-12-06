@@ -19,6 +19,8 @@ export interface User {
     email: string;
     fullName?: string;
     avatarUrl?: string;
+    email_confirmed_at?: string | null;
+    confirmed_at?: string | null;
 }
 
 /**

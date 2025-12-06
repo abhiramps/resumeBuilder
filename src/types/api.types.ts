@@ -44,12 +44,14 @@ export interface AuthResponse {
         refresh_token: string;
         expires_in: number;
         token_type: string;
-    };
+    } | null;
     user: {
         id: string;
         email: string;
         fullName?: string;
-    };
+        email_confirmed_at?: string | null;
+    } | null;
+    requiresEmailVerification?: boolean;
 }
 
 export interface SessionResponse {
