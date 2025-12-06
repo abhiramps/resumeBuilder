@@ -6,6 +6,7 @@
 import React from "react";
 import { createBrowserRouter, Navigate, useLocation } from "react-router-dom";
 import {
+  LandingPage,
   LoginPage,
   SignupPage,
   ForgotPasswordPage,
@@ -69,7 +70,7 @@ const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <Navigate to="/dashboard" replace />,
+    element: <LandingPage />,
   },
   {
     path: "/login",
