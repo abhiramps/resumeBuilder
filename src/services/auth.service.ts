@@ -22,8 +22,9 @@ export const authService = {
             data
         );
 
-        // Store token and user data
-        if (response.data.session) {
+        // Only store token and user data if session exists and email is verified
+        // Don't store anything if email verification is required
+        if (response.data.session && !response.data.requiresEmailVerification && response.data.user) {
             setAuthToken(response.data.session.access_token);
             localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, response.data.session.refresh_token);
             localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(response.data.user));
