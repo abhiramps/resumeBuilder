@@ -7,7 +7,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 import {
   FileText,
-  CheckCircle2,
   Palette,
   Download,
   Share2,
@@ -17,6 +16,12 @@ import {
   ArrowRight,
   Zap,
   Shield,
+  Instagram,
+  Twitter,
+  Linkedin,
+  Github,
+  Mail,
+  Phone,
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 
@@ -97,6 +102,14 @@ export const LandingPage: React.FC = () => {
             </span>
           </div>
           <div className="flex items-center space-x-4">
+            <a
+              href="https://mail.google.com/mail/?view=cm&to=abhiramps776@gmail.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-4 py-2 text-gray-700 hover:text-gray-900 font-medium transition-colors hidden sm:block"
+            >
+              Contact Us
+            </a>
             {isAuthenticated ? (
               <Link
                 to="/dashboard"
@@ -229,17 +242,165 @@ export const LandingPage: React.FC = () => {
 
       {/* Footer */}
       <footer className="border-t border-gray-200 bg-white">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex flex-col md:flex-row items-center justify-between">
-            <div className="flex items-center space-x-2 mb-4 md:mb-0">
-              <FileText className="h-6 w-6 text-primary" />
-              <span className="text-lg font-semibold text-gray-900">
-                ResumeBuilder
-              </span>
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+            {/* Brand */}
+            <div>
+              <div className="flex items-center space-x-2 mb-4">
+                <FileText className="h-6 w-6 text-primary" />
+                <span className="text-lg font-semibold text-gray-900">
+                  ResumeBuilder
+                </span>
+              </div>
+              <p className="text-sm text-gray-600">
+                Create professional, ATS-optimized resumes that get you hired.
+              </p>
             </div>
-            <p className="text-sm text-gray-600">
-              © {new Date().getFullYear()} ResumeBuilder. All rights reserved.
-            </p>
+
+            {/* Quick Links */}
+            <div>
+              <h3 className="text-sm font-semibold text-gray-900 mb-4">
+                Quick Links
+              </h3>
+              <ul className="space-y-2">
+                <li>
+                  <Link
+                    to={isAuthenticated ? "/dashboard" : "/signup"}
+                    className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+                  >
+                    Get Started
+                  </Link>
+                </li>
+                <li>
+                  <a
+                    href="https://mail.google.com/mail/?view=cm&to=abhiramps776@gmail.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+                  >
+                    Contact Us
+                  </a>
+                </li>
+                {!isAuthenticated && (
+                  <li>
+                    <Link
+                      to="/login"
+                      className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+                    >
+                      Sign In
+                    </Link>
+                  </li>
+                )}
+              </ul>
+            </div>
+
+            {/* Contact Information */}
+            <div>
+              <h3 className="text-sm font-semibold text-gray-900 mb-4">
+                Contact Information
+              </h3>
+              <ul className="space-y-3">
+                <li>
+                  <a
+                    href="https://mail.google.com/mail/?view=cm&to=abhiramps776@gmail.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center space-x-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
+                  >
+                    <Mail className="h-4 w-4" />
+                    <span>abhiramps776@gmail.com</span>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="tel:+919745991905"
+                    className="flex items-center space-x-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
+                  >
+                    <Phone className="h-4 w-4" />
+                    <span>+91 97459 91905</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            {/* Social Media */}
+            <div>
+              <h3 className="text-sm font-semibold text-gray-900 mb-4">
+                Follow Us
+              </h3>
+              <div className="flex items-center space-x-4">
+                <a
+                  href="https://www.instagram.com/_abhiram.me?igsh=dHdxcW1jbGZ4bjBn"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 text-gray-600 hover:text-pink-600 hover:bg-pink-50 rounded-lg transition-all"
+                  aria-label="Instagram"
+                >
+                  <Instagram className="h-5 w-5" />
+                </a>
+                <a
+                  href="https://twitter.com/resumebuilder"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 text-gray-600 hover:text-blue-400 hover:bg-blue-50 rounded-lg transition-all"
+                  aria-label="Twitter"
+                >
+                  <Twitter className="h-5 w-5" />
+                </a>
+                <a
+                  href="https://linkedin.com/company/resumebuilder"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
+                  aria-label="LinkedIn"
+                >
+                  <Linkedin className="h-5 w-5" />
+                </a>
+                <a
+                  href="https://github.com/resumebuilder"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all"
+                  aria-label="GitHub"
+                >
+                  <Github className="h-5 w-5" />
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* Copyright */}
+          <div className="border-t border-gray-200 pt-8">
+            <div className="flex flex-col items-center space-y-4">
+              <p className="text-sm text-gray-600">
+                © {new Date().getFullYear()} ResumeBuilder. All rights reserved.
+              </p>
+              <p className="text-sm text-gray-500">
+                Designed and developed by{" "}
+                <a
+                  href="https://www.instagram.com/_abhiram.me?igsh=dHdxcW1jbGZ4bjBn"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary hover:text-primary/80 font-medium transition-colors"
+                >
+                  Abhiram
+                </a>
+              </p>
+              <div className="flex items-center space-x-6">
+                <a
+                  href="#"
+                  className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+                >
+                  Privacy Policy
+                </a>
+                <a
+                  href="#"
+                  className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+                >
+                  Terms of Service
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </footer>
