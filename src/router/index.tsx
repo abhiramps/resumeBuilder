@@ -9,6 +9,7 @@ import {
   LoginPage,
   SignupPage,
   ForgotPasswordPage,
+  EmailConfirmPage,
   DashboardPage,
   ProfilePage,
   EditorPage,
@@ -91,6 +92,14 @@ export const router = createBrowserRouter([
     element: (
       <PublicRoute>
         <ForgotPasswordPage />
+      </PublicRoute>
+    ),
+  },
+  {
+    path: "/auth/confirm",
+    element: (
+      <PublicRoute>
+        <EmailConfirmPage />
       </PublicRoute>
     ),
   },
