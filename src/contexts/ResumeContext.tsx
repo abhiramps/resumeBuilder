@@ -258,7 +258,7 @@ const resumeReducer = (state: Resume, action: AppAction): Resume => {
     case "RESET_TEMPLATE":
       return {
         ...state,
-        template: "abhiram" as TemplateType,
+        template: "professional" as TemplateType,
         updatedAt: now,
       };
 
@@ -269,9 +269,9 @@ const resumeReducer = (state: Resume, action: AppAction): Resume => {
         sections: state.sections.map((section) =>
           section.id === action.payload.sectionId && section.type === "summary"
             ? {
-              ...section,
-              content: { summary: action.payload.summary },
-            }
+                ...section,
+                content: { summary: action.payload.summary },
+              }
             : section
         ),
         updatedAt: now,
@@ -282,16 +282,16 @@ const resumeReducer = (state: Resume, action: AppAction): Resume => {
         ...state,
         sections: state.sections.map((section) =>
           section.id === action.payload.sectionId &&
-            section.type === "experience"
+          section.type === "experience"
             ? {
-              ...section,
-              content: {
-                experiences: [
-                  ...(section.content as any).experiences,
-                  action.payload.experience,
-                ],
-              },
-            }
+                ...section,
+                content: {
+                  experiences: [
+                    ...(section.content as any).experiences,
+                    action.payload.experience,
+                  ],
+                },
+              }
             : section
         ),
         updatedAt: now,
@@ -302,18 +302,18 @@ const resumeReducer = (state: Resume, action: AppAction): Resume => {
         ...state,
         sections: state.sections.map((section) =>
           section.id === action.payload.sectionId &&
-            section.type === "experience"
+          section.type === "experience"
             ? {
-              ...section,
-              content: {
-                experiences: (section.content as any).experiences.map(
-                  (exp: any) =>
-                    exp.id === action.payload.experienceId
-                      ? { ...exp, ...action.payload.updates }
-                      : exp
-                ),
-              },
-            }
+                ...section,
+                content: {
+                  experiences: (section.content as any).experiences.map(
+                    (exp: any) =>
+                      exp.id === action.payload.experienceId
+                        ? { ...exp, ...action.payload.updates }
+                        : exp
+                  ),
+                },
+              }
             : section
         ),
         updatedAt: now,
@@ -324,15 +324,15 @@ const resumeReducer = (state: Resume, action: AppAction): Resume => {
         ...state,
         sections: state.sections.map((section) =>
           section.id === action.payload.sectionId &&
-            section.type === "experience"
+          section.type === "experience"
             ? {
-              ...section,
-              content: {
-                experiences: (section.content as any).experiences.filter(
-                  (exp: any) => exp.id !== action.payload.experienceId
-                ),
-              },
-            }
+                ...section,
+                content: {
+                  experiences: (section.content as any).experiences.filter(
+                    (exp: any) => exp.id !== action.payload.experienceId
+                  ),
+                },
+              }
             : section
         ),
         updatedAt: now,
@@ -343,19 +343,19 @@ const resumeReducer = (state: Resume, action: AppAction): Resume => {
         ...state,
         sections: state.sections.map((section) =>
           section.id === action.payload.sectionId &&
-            section.type === "experience"
+          section.type === "experience"
             ? {
-              ...section,
-              content: {
-                experiences: action.payload.experienceIds
-                  .map((id) =>
-                    (section.content as any).experiences.find(
-                      (exp: any) => exp.id === id
+                ...section,
+                content: {
+                  experiences: action.payload.experienceIds
+                    .map((id) =>
+                      (section.content as any).experiences.find(
+                        (exp: any) => exp.id === id
+                      )
                     )
-                  )
-                  .filter(Boolean),
-              },
-            }
+                    .filter(Boolean),
+                },
+              }
             : section
         ),
         updatedAt: now,
@@ -368,14 +368,14 @@ const resumeReducer = (state: Resume, action: AppAction): Resume => {
         sections: state.sections.map((section) =>
           section.id === action.payload.sectionId && section.type === "projects"
             ? {
-              ...section,
-              content: {
-                projects: [
-                  ...(section.content as any).projects,
-                  action.payload.project,
-                ],
-              },
-            }
+                ...section,
+                content: {
+                  projects: [
+                    ...(section.content as any).projects,
+                    action.payload.project,
+                  ],
+                },
+              }
             : section
         ),
         updatedAt: now,
@@ -387,15 +387,15 @@ const resumeReducer = (state: Resume, action: AppAction): Resume => {
         sections: state.sections.map((section) =>
           section.id === action.payload.sectionId && section.type === "projects"
             ? {
-              ...section,
-              content: {
-                projects: (section.content as any).projects.map((proj: any) =>
-                  proj.id === action.payload.projectId
-                    ? { ...proj, ...action.payload.updates }
-                    : proj
-                ),
-              },
-            }
+                ...section,
+                content: {
+                  projects: (section.content as any).projects.map((proj: any) =>
+                    proj.id === action.payload.projectId
+                      ? { ...proj, ...action.payload.updates }
+                      : proj
+                  ),
+                },
+              }
             : section
         ),
         updatedAt: now,
@@ -407,13 +407,13 @@ const resumeReducer = (state: Resume, action: AppAction): Resume => {
         sections: state.sections.map((section) =>
           section.id === action.payload.sectionId && section.type === "projects"
             ? {
-              ...section,
-              content: {
-                projects: (section.content as any).projects.filter(
-                  (proj: any) => proj.id !== action.payload.projectId
-                ),
-              },
-            }
+                ...section,
+                content: {
+                  projects: (section.content as any).projects.filter(
+                    (proj: any) => proj.id !== action.payload.projectId
+                  ),
+                },
+              }
             : section
         ),
         updatedAt: now,
@@ -425,17 +425,17 @@ const resumeReducer = (state: Resume, action: AppAction): Resume => {
         sections: state.sections.map((section) =>
           section.id === action.payload.sectionId && section.type === "projects"
             ? {
-              ...section,
-              content: {
-                projects: action.payload.projectIds
-                  .map((id) =>
-                    (section.content as any).projects.find(
-                      (proj: any) => proj.id === id
+                ...section,
+                content: {
+                  projects: action.payload.projectIds
+                    .map((id) =>
+                      (section.content as any).projects.find(
+                        (proj: any) => proj.id === id
+                      )
                     )
-                  )
-                  .filter(Boolean),
-              },
-            }
+                    .filter(Boolean),
+                },
+              }
             : section
         ),
         updatedAt: now,
@@ -447,14 +447,14 @@ const resumeReducer = (state: Resume, action: AppAction): Resume => {
         sections: state.sections.map((section) =>
           section.id === action.payload.sectionId && section.type === "skills"
             ? {
-              ...section,
-              content: {
-                skills: [
-                  ...(section.content as any).skills,
-                  action.payload.skill,
-                ],
-              },
-            }
+                ...section,
+                content: {
+                  skills: [
+                    ...(section.content as any).skills,
+                    action.payload.skill,
+                  ],
+                },
+              }
             : section
         ),
         updatedAt: now,
@@ -466,15 +466,15 @@ const resumeReducer = (state: Resume, action: AppAction): Resume => {
         sections: state.sections.map((section) =>
           section.id === action.payload.sectionId && section.type === "skills"
             ? {
-              ...section,
-              content: {
-                skills: (section.content as any).skills.map((skill: any) =>
-                  skill.id === action.payload.skillId
-                    ? { ...skill, ...action.payload.updates }
-                    : skill
-                ),
-              },
-            }
+                ...section,
+                content: {
+                  skills: (section.content as any).skills.map((skill: any) =>
+                    skill.id === action.payload.skillId
+                      ? { ...skill, ...action.payload.updates }
+                      : skill
+                  ),
+                },
+              }
             : section
         ),
         updatedAt: now,
@@ -486,13 +486,13 @@ const resumeReducer = (state: Resume, action: AppAction): Resume => {
         sections: state.sections.map((section) =>
           section.id === action.payload.sectionId && section.type === "skills"
             ? {
-              ...section,
-              content: {
-                skills: (section.content as any).skills.filter(
-                  (skill: any) => skill.id !== action.payload.skillId
-                ),
-              },
-            }
+                ...section,
+                content: {
+                  skills: (section.content as any).skills.filter(
+                    (skill: any) => skill.id !== action.payload.skillId
+                  ),
+                },
+              }
             : section
         ),
         updatedAt: now,
@@ -504,17 +504,17 @@ const resumeReducer = (state: Resume, action: AppAction): Resume => {
         sections: state.sections.map((section) =>
           section.id === action.payload.sectionId && section.type === "skills"
             ? {
-              ...section,
-              content: {
-                skills: action.payload.skillIds
-                  .map((id) =>
-                    (section.content as any).skills.find(
-                      (skill: any) => skill.id === id
+                ...section,
+                content: {
+                  skills: action.payload.skillIds
+                    .map((id) =>
+                      (section.content as any).skills.find(
+                        (skill: any) => skill.id === id
+                      )
                     )
-                  )
-                  .filter(Boolean),
-              },
-            }
+                    .filter(Boolean),
+                },
+              }
             : section
         ),
         updatedAt: now,
@@ -525,16 +525,16 @@ const resumeReducer = (state: Resume, action: AppAction): Resume => {
         ...state,
         sections: state.sections.map((section) =>
           section.id === action.payload.sectionId &&
-            section.type === "education"
+          section.type === "education"
             ? {
-              ...section,
-              content: {
-                education: [
-                  ...(section.content as any).education,
-                  action.payload.education,
-                ],
-              },
-            }
+                ...section,
+                content: {
+                  education: [
+                    ...(section.content as any).education,
+                    action.payload.education,
+                  ],
+                },
+              }
             : section
         ),
         updatedAt: now,
@@ -545,18 +545,18 @@ const resumeReducer = (state: Resume, action: AppAction): Resume => {
         ...state,
         sections: state.sections.map((section) =>
           section.id === action.payload.sectionId &&
-            section.type === "education"
+          section.type === "education"
             ? {
-              ...section,
-              content: {
-                education: (section.content as any).education.map(
-                  (edu: any) =>
-                    edu.id === action.payload.educationId
-                      ? { ...edu, ...action.payload.updates }
-                      : edu
-                ),
-              },
-            }
+                ...section,
+                content: {
+                  education: (section.content as any).education.map(
+                    (edu: any) =>
+                      edu.id === action.payload.educationId
+                        ? { ...edu, ...action.payload.updates }
+                        : edu
+                  ),
+                },
+              }
             : section
         ),
         updatedAt: now,
@@ -567,15 +567,15 @@ const resumeReducer = (state: Resume, action: AppAction): Resume => {
         ...state,
         sections: state.sections.map((section) =>
           section.id === action.payload.sectionId &&
-            section.type === "education"
+          section.type === "education"
             ? {
-              ...section,
-              content: {
-                education: (section.content as any).education.filter(
-                  (edu: any) => edu.id !== action.payload.educationId
-                ),
-              },
-            }
+                ...section,
+                content: {
+                  education: (section.content as any).education.filter(
+                    (edu: any) => edu.id !== action.payload.educationId
+                  ),
+                },
+              }
             : section
         ),
         updatedAt: now,
@@ -586,19 +586,19 @@ const resumeReducer = (state: Resume, action: AppAction): Resume => {
         ...state,
         sections: state.sections.map((section) =>
           section.id === action.payload.sectionId &&
-            section.type === "education"
+          section.type === "education"
             ? {
-              ...section,
-              content: {
-                education: action.payload.educationIds
-                  .map((id) =>
-                    (section.content as any).education.find(
-                      (edu: any) => edu.id === id
+                ...section,
+                content: {
+                  education: action.payload.educationIds
+                    .map((id) =>
+                      (section.content as any).education.find(
+                        (edu: any) => edu.id === id
+                      )
                     )
-                  )
-                  .filter(Boolean),
-              },
-            }
+                    .filter(Boolean),
+                },
+              }
             : section
         ),
         updatedAt: now,
@@ -609,16 +609,16 @@ const resumeReducer = (state: Resume, action: AppAction): Resume => {
         ...state,
         sections: state.sections.map((section) =>
           section.id === action.payload.sectionId &&
-            section.type === "certifications"
+          section.type === "certifications"
             ? {
-              ...section,
-              content: {
-                certifications: [
-                  ...(section.content as any).certifications,
-                  action.payload.certification,
-                ],
-              },
-            }
+                ...section,
+                content: {
+                  certifications: [
+                    ...(section.content as any).certifications,
+                    action.payload.certification,
+                  ],
+                },
+              }
             : section
         ),
         updatedAt: now,
@@ -629,18 +629,18 @@ const resumeReducer = (state: Resume, action: AppAction): Resume => {
         ...state,
         sections: state.sections.map((section) =>
           section.id === action.payload.sectionId &&
-            section.type === "certifications"
+          section.type === "certifications"
             ? {
-              ...section,
-              content: {
-                certifications: (section.content as any).certifications.map(
-                  (cert: any) =>
-                    cert.id === action.payload.certificationId
-                      ? { ...cert, ...action.payload.updates }
-                      : cert
-                ),
-              },
-            }
+                ...section,
+                content: {
+                  certifications: (section.content as any).certifications.map(
+                    (cert: any) =>
+                      cert.id === action.payload.certificationId
+                        ? { ...cert, ...action.payload.updates }
+                        : cert
+                  ),
+                },
+              }
             : section
         ),
         updatedAt: now,
@@ -651,17 +651,17 @@ const resumeReducer = (state: Resume, action: AppAction): Resume => {
         ...state,
         sections: state.sections.map((section) =>
           section.id === action.payload.sectionId &&
-            section.type === "certifications"
+          section.type === "certifications"
             ? {
-              ...section,
-              content: {
-                certifications: (
-                  section.content as any
-                ).certifications.filter(
-                  (cert: any) => cert.id !== action.payload.certificationId
-                ),
-              },
-            }
+                ...section,
+                content: {
+                  certifications: (
+                    section.content as any
+                  ).certifications.filter(
+                    (cert: any) => cert.id !== action.payload.certificationId
+                  ),
+                },
+              }
             : section
         ),
         updatedAt: now,
@@ -672,19 +672,19 @@ const resumeReducer = (state: Resume, action: AppAction): Resume => {
         ...state,
         sections: state.sections.map((section) =>
           section.id === action.payload.sectionId &&
-            section.type === "certifications"
+          section.type === "certifications"
             ? {
-              ...section,
-              content: {
-                certifications: action.payload.certificationIds
-                  .map((id) =>
-                    (section.content as any).certifications.find(
-                      (cert: any) => cert.id === id
+                ...section,
+                content: {
+                  certifications: action.payload.certificationIds
+                    .map((id) =>
+                      (section.content as any).certifications.find(
+                        (cert: any) => cert.id === id
+                      )
                     )
-                  )
-                  .filter(Boolean),
-              },
-            }
+                    .filter(Boolean),
+                },
+              }
             : section
         ),
         updatedAt: now,
@@ -696,15 +696,15 @@ const resumeReducer = (state: Resume, action: AppAction): Resume => {
         sections: state.sections.map((section) =>
           section.id === action.payload.sectionId && section.type === "custom"
             ? {
-              ...section,
-              content: {
-                custom: {
-                  id: (section.content as any).custom.id,
-                  title: action.payload.title,
-                  content: action.payload.content,
+                ...section,
+                content: {
+                  custom: {
+                    id: (section.content as any).custom.id,
+                    title: action.payload.title,
+                    content: action.payload.content,
+                  },
                 },
-              },
-            }
+              }
             : section
         ),
         updatedAt: now,
@@ -756,7 +756,7 @@ export const ResumeProvider: React.FC<ResumeProviderProps> = ({ children }) => {
 
   // Undo/Redo functionality
   const { canUndo, canRedo, undo, redo } = useUndoRedo(resume, (newState) => {
-    dispatch({ type: 'SET_RESUME', payload: newState });
+    dispatch({ type: "SET_RESUME", payload: newState });
   });
 
   // Auto-save hook

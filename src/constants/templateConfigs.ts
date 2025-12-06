@@ -104,10 +104,10 @@ export const MINIMAL_TEMPLATE_CONFIG: TemplateConfig = {
   },
 };
 
-// Abhiram Template Configuration (Based on successful backend engineer resume)
-export const ABHIRAM_TEMPLATE_CONFIG: TemplateConfig = {
-  id: "abhiram",
-  name: "Abhiram",
+// Professional Template Configuration (Based on successful backend engineer resume)
+export const PROFESSIONAL_TEMPLATE_CONFIG: TemplateConfig = {
+  id: "professional",
+  name: "Professional",
   description:
     "Professional template optimized for backend engineers with proven ATS success",
   preview: "",
@@ -142,7 +142,7 @@ export const TEMPLATE_CONFIGS: Record<TemplateType, TemplateConfig> = {
   classic: CLASSIC_TEMPLATE_CONFIG,
   modern: MODERN_TEMPLATE_CONFIG,
   minimal: MINIMAL_TEMPLATE_CONFIG,
-  abhiram: ABHIRAM_TEMPLATE_CONFIG,
+  professional: PROFESSIONAL_TEMPLATE_CONFIG,
 };
 
 // Default layout settings for each template
@@ -174,7 +174,7 @@ export const TEMPLATE_DEFAULT_LAYOUTS = {
     colors: { primary: "#000000", secondary: "#666666", text: "#333333" },
   },
 
-  abhiram: {
+  professional: {
     pageMargins: { top: 1.0, right: 1.0, bottom: 1.0, left: 1.0 },
     sectionSpacing: 18,
     lineHeight: 1.4,
@@ -219,7 +219,7 @@ export const TEMPLATE_CUSTOMIZATION_OPTIONS = {
     atsCompliant: true,
   },
 
-  abhiram: {
+  professional: {
     customizableColors: ["primary", "secondary"],
     customizableFonts: true,
     customizableSpacing: true,
@@ -234,7 +234,7 @@ export const TEMPLATE_CUSTOMIZATION_OPTIONS = {
 // Template recommendations based on industry/role
 export const TEMPLATE_RECOMMENDATIONS = {
   "software-engineer": {
-    recommended: ["abhiram", "modern"],
+    recommended: ["professional", "modern"],
     reasoning:
       "Clean, technical-focused layouts work best for engineering roles",
   },
@@ -246,23 +246,23 @@ export const TEMPLATE_RECOMMENDATIONS = {
   },
 
   "backend-developer": {
-    recommended: ["abhiram", "classic"],
+    recommended: ["professional", "classic"],
     reasoning: "Traditional layouts emphasize technical skills and experience",
   },
 
   "fullstack-developer": {
-    recommended: ["abhiram", "modern"],
+    recommended: ["professional", "modern"],
     reasoning: "Balanced approach showcasing both technical and design skills",
   },
 
   "devops-engineer": {
-    recommended: ["abhiram", "minimal"],
+    recommended: ["professional", "minimal"],
     reasoning:
       "Technical focus with clean presentation of tools and technologies",
   },
 
   "data-scientist": {
-    recommended: ["classic", "abhiram"],
+    recommended: ["classic", "professional"],
     reasoning:
       "Professional layouts that highlight analytical and technical skills",
   },
@@ -295,7 +295,7 @@ export const getRecommendedTemplates = (role: string): TemplateConfig[] => {
   const recommendation =
     TEMPLATE_RECOMMENDATIONS[role as keyof typeof TEMPLATE_RECOMMENDATIONS];
   if (!recommendation) {
-    return [ABHIRAM_TEMPLATE_CONFIG, CLASSIC_TEMPLATE_CONFIG];
+    return [PROFESSIONAL_TEMPLATE_CONFIG, CLASSIC_TEMPLATE_CONFIG];
   }
 
   return recommendation.recommended.map((id) => TEMPLATE_CONFIGS[id]);
@@ -335,7 +335,7 @@ export const TEMPLATE_COMPARISON = {
     bestFor: ["Academic positions", "Research roles", "Content-heavy resumes"],
   },
 
-  abhiram: {
+  professional: {
     atsScore: 100,
     readabilityScore: 88,
     customizationScore: 80,

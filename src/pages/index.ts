@@ -3,6 +3,7 @@
  * Central export for all page components
  */
 
+export { LandingPage } from './LandingPage';
 export { LoginPage } from './LoginPage';
 export { SignupPage } from './SignupPage';
 export { ForgotPasswordPage } from './ForgotPasswordPage';

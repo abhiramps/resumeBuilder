@@ -20,7 +20,7 @@ export const useTemplate = () => {
    * Get current template configuration
    */
   const currentTemplate = useMemo(() => {
-    return TEMPLATE_CONFIGS[resume.template] || TEMPLATE_CONFIGS.abhiram;
+    return TEMPLATE_CONFIGS[resume.template] || TEMPLATE_CONFIGS.professional;
   }, [resume.template]);
 
   /**
@@ -37,7 +37,7 @@ export const useTemplate = () => {
    */
   const switchTemplate = useCallback((templateId: TemplateType, preserveLayout: boolean = false) => {
     const templateConfig = TEMPLATE_CONFIGS[templateId];
-    
+
     if (!templateConfig) {
       console.error(`Template ${templateId} not found`);
       return;
@@ -81,7 +81,7 @@ export const useTemplate = () => {
   const applyTemplateDefaults = useCallback((templateId?: TemplateType) => {
     const targetTemplate = templateId || resume.template;
     const templateConfig = TEMPLATE_CONFIGS[targetTemplate];
-    
+
     if (templateConfig) {
       // Convert template styles to layout settings
       const defaultLayout: Partial<LayoutSettings> = {
@@ -139,7 +139,7 @@ export const useTemplate = () => {
    */
   const getRecommendations = useCallback(() => {
     const recommendations: TemplateType[] = [];
-    
+
     // Analyze resume content
     const hasProjects = resume.sections.some(s => s.type === 'projects' && s.enabled);
     const hasSkills = resume.sections.some(s => s.type === 'skills' && s.enabled);
@@ -149,9 +149,9 @@ export const useTemplate = () => {
 
     // Recommend based on content
     if (hasProjects && hasSkills) {
-      recommendations.push('modern', 'abhiram');
+      recommendations.push('modern', 'professional');
     }
-    
+
     if (hasMultipleExperiences) {
       recommendations.push('classic', 'minimal');
     }
@@ -187,7 +187,7 @@ export const useTemplate = () => {
       classic: 95,
       modern: 90,
       minimal: 98,
-      abhiram: 100,
+      professional: 100,
     };
 
     const atsScore = atsScores[templateId];
@@ -206,12 +206,12 @@ export const useTemplate = () => {
     // Check for missing required sections
     const hasExperience = resume.sections.some(s => s.type === 'experience' && s.enabled);
     const hasEducation = resume.sections.some(s => s.type === 'education' && s.enabled);
-    
+
     if (!hasExperience) {
       issues.push('Experience section is recommended for professional templates');
       score -= 10;
     }
-    
+
     if (!hasEducation) {
       issues.push('Education section is recommended');
       score -= 5;
@@ -237,14 +237,14 @@ export const useTemplate = () => {
       classic: 95,
       modern: 90,
       minimal: 98,
-      abhiram: 100,
+      professional: 100,
     };
 
     const bestForMap = {
       classic: ['Traditional industries', 'Conservative companies', 'Senior roles'],
       modern: ['Tech companies', 'Startups', 'Creative roles'],
       minimal: ['Academic positions', 'Research roles', 'Content-heavy resumes'],
-      abhiram: ['Backend engineering', 'DevOps', 'Technical leadership'],
+      professional: ['Backend engineering', 'DevOps', 'Technical leadership'],
     };
 
     return {
@@ -275,12 +275,12 @@ export const useTemplate = () => {
     // Current state
     currentTemplate,
     availableTemplates,
-    
+
     // Actions
     switchTemplate,
     applyTemplateDefaults,
     resetTemplate,
-    
+
     // Utilities
     getTemplate,
     supportsCustomization,

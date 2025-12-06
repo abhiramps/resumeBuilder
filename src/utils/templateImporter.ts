@@ -153,7 +153,7 @@ const validateTemplateStructure = (data: any): ImportValidationResult => {
 
   if (!data.templateType) {
     errors.push('Missing templateType field');
-  } else if (!['classic', 'modern', 'minimal', 'abhiram'].includes(data.templateType)) {
+  } else if (!['classic', 'modern', 'minimal', 'professional'].includes(data.templateType)) {
     errors.push(`Invalid templateType: ${data.templateType}`);
   }
 

@@ -1,6 +1,11 @@
 import { forwardRef, memo } from "react";
 import { Resume } from "../../types/resume.types";
-import { ClassicTemplate, ModernTemplate, MinimalTemplate, AbhiramTemplate } from "../Templates";
+import {
+  ClassicTemplate,
+  ModernTemplate,
+  MinimalTemplate,
+  ProfessionalTemplate,
+} from "../Templates";
 
 /**
  * Resume Preview Component Props
@@ -16,7 +21,7 @@ export interface ResumePreviewProps {
 
 /**
  * Resume Preview Component
- * 
+ *
  * Displays the formatted resume with:
  * - Letter size (8.5" x 11") dimensions
  * - User's layout settings applied
@@ -24,7 +29,7 @@ export interface ResumePreviewProps {
  * - Sections in correct order
  * - Print-optimized styling
  * - ATS-safe formatting
- * 
+ *
  * Uses forwardRef for PDF generation compatibility
  */
 const ResumePreviewComponent = forwardRef<HTMLDivElement, ResumePreviewProps>(
@@ -45,7 +50,7 @@ const ResumePreviewComponent = forwardRef<HTMLDivElement, ResumePreviewProps>(
       resume,
       layout: resume.layout,
       printMode,
-      className
+      className,
     };
 
     switch (resume.template) {
@@ -55,14 +60,13 @@ const ResumePreviewComponent = forwardRef<HTMLDivElement, ResumePreviewProps>(
         return <ModernTemplate ref={ref} {...templateProps} />;
       case "minimal":
         return <MinimalTemplate ref={ref} {...templateProps} />;
-      case "abhiram":
-        return <AbhiramTemplate ref={ref} {...templateProps} />;
+      case "professional":
+        return <ProfessionalTemplate ref={ref} {...templateProps} />;
       default:
-        return <AbhiramTemplate ref={ref} {...templateProps} />;
+        return <ProfessionalTemplate ref={ref} {...templateProps} />;
     }
   }
 );
-
 
 ResumePreviewComponent.displayName = "ResumePreview";
 
