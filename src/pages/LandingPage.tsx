@@ -348,7 +348,7 @@ export const LandingPage: React.FC = () => {
                   <Twitter className="h-5 w-5" />
                 </a>
                 <a
-                  href="https://linkedin.com/company/resumebuilder"
+                  href="https://www.linkedin.com/in/abhiramps"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
@@ -357,7 +357,7 @@ export const LandingPage: React.FC = () => {
                   <Linkedin className="h-5 w-5" />
                 </a>
                 <a
-                  href="https://github.com/resumebuilder"
+                  href="https://github.com/abhiramps"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all"

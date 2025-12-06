@@ -307,12 +307,13 @@ export const SignupPage: React.FC = () => {
             <Button
               type="button"
               variant="secondary"
-              className="w-full"
-              disabled={isLoading}
+              className="w-full opacity-60 cursor-not-allowed"
+              disabled={true}
               onClick={() => {
                 // OAuth implementation will be added
                 console.log("Google OAuth");
               }}
+              title="OAuth login coming soon"
             >
               <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                 <path
@@ -338,12 +339,13 @@ export const SignupPage: React.FC = () => {
             <Button
               type="button"
               variant="secondary"
-              className="w-full"
-              disabled={isLoading}
+              className="w-full opacity-60 cursor-not-allowed"
+              disabled={true}
               onClick={() => {
                 // OAuth implementation will be added
                 console.log("GitHub OAuth");
               }}
+              title="OAuth login coming soon"
             >
               <svg
                 className="w-5 h-5 mr-2"
