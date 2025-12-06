@@ -6,6 +6,7 @@
 export { LoginPage } from './LoginPage';
 export { SignupPage } from './SignupPage';
 export { ForgotPasswordPage } from './ForgotPasswordPage';
+export { EmailConfirmPage } from './EmailConfirmPage';
 export { DashboardPage } from './DashboardPage';
 export { ProfilePage } from './ProfilePage';
 export { EditorPage } from './EditorPage';
