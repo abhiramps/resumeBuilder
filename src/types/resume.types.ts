@@ -180,7 +180,7 @@ export interface LayoutSettings {
   };
 }
 
-export type TemplateType = "classic" | "modern" | "minimal" | "abhiram";
+export type TemplateType = "classic" | "modern" | "minimal" | "professional";
 
 /**
  * Main resume data structure containing all sections and settings

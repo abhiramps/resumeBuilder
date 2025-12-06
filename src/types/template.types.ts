@@ -125,9 +125,9 @@ export const TEMPLATE_CONFIGS: Record<TemplateType, TemplateConfig> = {
       },
     },
   },
-  abhiram: {
-    id: "abhiram",
-    name: "Abhiram",
+  professional: {
+    id: "professional",
+    name: "Professional",
     description:
       "Professional template based on successful backend engineer resume",
     preview: "",

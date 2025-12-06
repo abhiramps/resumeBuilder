@@ -10,7 +10,7 @@ import {
 } from "../../types/resume.types";
 
 /**
- * Abhiram Template Component
+ * Professional Template Component
  *
  * Professional backend engineer focused resume template.
  * Based on the provided resume.html design.
@@ -25,7 +25,7 @@ import {
  * ATS Compliance: 95/100
  * Best For: Backend engineers, technical roles, professional presentation
  */
-const AbhiramTemplateComponent = forwardRef<HTMLDivElement, TemplateBaseProps>(
+const ProfessionalTemplateComponent = forwardRef<HTMLDivElement, TemplateBaseProps>(
   (props, ref) => {
     const { resume, layout, className = "", printMode = false } = props;
     const enabledSections = resume.sections
@@ -519,7 +519,7 @@ const AbhiramTemplateComponent = forwardRef<HTMLDivElement, TemplateBaseProps>(
     return (
       <div
         ref={ref}
-        className={`abhiram-template ${className}`}
+        className={`professional-template ${className}`}
         style={containerStyles}
       >
         {/* Header Section */}
@@ -570,9 +570,10 @@ const AbhiramTemplateComponent = forwardRef<HTMLDivElement, TemplateBaseProps>(
   }
 );
 
-AbhiramTemplateComponent.displayName = "AbhiramTemplate";
+ProfessionalTemplateComponent.displayName = "ProfessionalTemplate";
 
 // Memoize the template to prevent unnecessary re-renders
-export const AbhiramTemplate = memo(AbhiramTemplateComponent);
+export const ProfessionalTemplate = memo(ProfessionalTemplateComponent);
 
-export default AbhiramTemplate;
+export default ProfessionalTemplate;
+
